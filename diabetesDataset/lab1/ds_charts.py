@@ -20,8 +20,8 @@ import config as cfg
 
 
 
-FONT_TEXT = fm.FontProperties(size=8)
-TEXT_MARGIN = 0.05
+FONT_TEXT = fm.FontProperties(size=5)
+TEXT_MARGIN = 0.15
 
 _reset_epoch_test_example()
 set_epoch('0000-12-31T00:00:00')  # old epoch (pre MPL 3.3)
@@ -58,9 +58,9 @@ def set_locators(xvalues: list, ax: Axes = None, rotation: bool=False):
         return None
     elif isinstance(xvalues[0], str):
         if rotation:
-            ax.set_xticklabels(xvalues, rotation=90, fontsize='small', ha='center')
+            ax.set_xticklabels(xvalues, rotation=90, fontsize='x-small', ha='center')
         else:
-            ax.set_xticklabels(xvalues, fontsize='small', ha='center')
+            ax.set_xticklabels(xvalues, fontsize='x-small', ha='center')
         return None
     else:
         ax.set_xlim(xvalues[0], xvalues[-1])
@@ -92,7 +92,8 @@ def bar_chart(xvalues: list, yvalues: list, ax: Axes = None, title: str = '', xl
     set_locators(xvalues, ax=ax, rotation=rotation)
     ax.bar(xvalues, yvalues, edgecolor=cfg.LINE_COLOR, color=cfg.FILL_COLOR, tick_label=xvalues)
     for i in range(len(yvalues)):
-        ax.text(i, yvalues[i] + TEXT_MARGIN, f'{yvalues[i]:.2f}', ha='center', fontproperties=FONT_TEXT)
+        ax.text(i, yvalues[i] + TEXT_MARGIN, f'{yvalues[i]}', ha='center', fontproperties=FONT_TEXT)
+       # ax.text(i, yvalues[i] + TEXT_MARGIN, f'{yvalues[i]:.2f}', ha='center', fontproperties=FONT_TEXT)
 
 
 def multiple_bar_chart(xvalues: list, yvalues: dict, ax: Axes = None, title: str = '', xlabel: str = '', ylabel: str = '', percentage: bool = False, unit=1):
@@ -103,10 +104,10 @@ def multiple_bar_chart(xvalues: list, yvalues: dict, ax: Axes = None, title: str
     width = 0.8 / nseries
     pos_center = pos_group + (nseries-1)*width/2
     ax.set_xticks(pos_center)
-    ax.set_xticklabels(xvalues)
+    ax.set_xticklabels(xvalues, rotation=40)
     i = 0
     legend = []
-    format_str = '%.2f' if unit == 1 else '%.0f'
+    format_str = '%.1f' if unit == 1 else '%.0f'
     for metric in yvalues:
         bar = ax.bar(pos_group, yvalues[metric], width=width, edgecolor=cfg.LINE_COLOR, color=cfg.ACTIVE_COLORS[i])
         ax.bar_label(bar, padding=3, fmt=format_str, fontsize='xx-small')
@@ -234,7 +235,7 @@ def get_variable_types(df: DataFrame) -> dict:
         'Symbolic': []
     }
     for c in df.columns:
-        print(df[c].dtype)
+        # print(df[c].dtype)
         uniques = df[c].dropna(inplace=False).unique()
         if len(uniques) == 2:
             variable_types['Binary'].append(c)
