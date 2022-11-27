@@ -81,4 +81,3 @@ heatmap(abs(corr_mtx), xticklabels=corr_mtx.columns, yticklabels=corr_mtx.column
 title('Correlation analysis')
 savefig(f'images/correlation_analysis.png')
 show()
-# %%
