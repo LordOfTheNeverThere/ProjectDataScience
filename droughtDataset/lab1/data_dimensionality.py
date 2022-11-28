@@ -32,7 +32,7 @@ def get_variable_types(data) -> dict:
         'Date': [],
         'Symbolic': []
     }
-    for c in data.columns[1:]:
+    for c in data.columns:
         uniques = data[c].dropna(inplace=False).unique()
 
         if len(uniques) == 2:
@@ -47,9 +47,9 @@ def get_variable_types(data) -> dict:
             variable_types['Symbolic'].append(c)
 
 
-#FIPS is a county code, so its symbolic
-    data["fips"].astype('category')
-    variable_types['Symbolic'].append(data["fips"])
+# #FIPS is a county code, so its symbolic
+#     data["fips"].astype('category')
+#     variable_types['Symbolic'].append(data["fips"])
     return variable_types
 
 
