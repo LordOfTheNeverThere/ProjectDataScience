@@ -50,5 +50,5 @@ for i in range(rows):
         axs[i, j].set_xlabel(variables[i])
         axs[i, j].set_ylabel('Nr records')
         axs[i, j].hist(data[variables[i]].values, bins=bins[j])
-savefig('diabetesDataset/lab1/images/granularity/granularity_study.png')
+savefig('diabetesDataset/lab1/images/granularity/granularity_study.png', dpi=400)
 show()

@@ -78,10 +78,12 @@ from ds_charts import get_variable_types, choose_grid, HEIGHT
 # from collections import Counter
 # import numpy
 # numeric_vars = get_variable_types(data_num)['Numeric']
+
 # # permite contar o nr de vezes que aparece cada valor
 # # recounted = Counter(data[numeric_vars[8]])
 # # print(recounted)
-
+# # numeric_vars = numeric_vars[7:8]
+# rows, cols = choose_grid(len(numeric_vars))
 # if [] == numeric_vars:
 #     raise ValueError('There are no numeric variables.')
 
@@ -96,9 +98,13 @@ from ds_charts import get_variable_types, choose_grid, HEIGHT
 #     i, j = (i + 1, 0) if (n+1) % cols == 0 else (i, j + 1)
 # # permite ver quais os bins e quantos valores
 # # print(numpy.histogram(data[numeric_vars[9]].dropna().values, 'auto'))
-# savefig('diabetesDataset/lab1/images/single_histograms_numeric.png')
+# savefig('diabetesDataset/lab1/images/single_histograms_numeric.png', dpi = 450)
 # show()
 
+
+# check number of missing values
+# for i in data.columns:
+#     print(i, data[data[i] == '?'].shape[0])
 
 
 # from matplotlib.pyplot import savefig, show, subplots
@@ -120,60 +126,116 @@ from ds_charts import get_variable_types, choose_grid, HEIGHT
 
 # falta confirmar estes
 
-from numpy import log
-from pandas import Series
-from scipy.stats import norm, expon, lognorm
-from matplotlib.pyplot import savefig, show, subplots, Axes
-from ds_charts import HEIGHT, multiple_line_chart, get_variable_types
+# from numpy import log
+# from pandas import Series
+# from scipy.stats import norm, expon, lognorm
+# from matplotlib.pyplot import savefig, show, subplots, Axes
+# from ds_charts import HEIGHT, multiple_line_chart, get_variable_types
 
-def compute_known_distributions(x_values: list) -> dict:
-    distributions = dict()
-    # Gaussian
-    mean, sigma = norm.fit(x_values)
-    distributions['Normal(%.1f,%.2f)'%(mean,sigma)] = norm.pdf(x_values, mean, sigma)
-    # Exponential
-    loc, scale = expon.fit(x_values)
-    distributions['Exp(%.2f)'%(1/scale)] = expon.pdf(x_values, loc, scale)
-    # LogNorm
-    sigma, loc, scale = lognorm.fit(x_values)
-    distributions['LogNor(%.1f,%.2f)'%(log(scale),sigma)] = lognorm.pdf(x_values, sigma, loc, scale)
-    return distributions
+# def compute_known_distributions(x_values: list) -> dict:
+#     distributions = dict()
+#     # Gaussian
+#     mean, sigma = norm.fit(x_values)
+#     distributions['Normal(%.1f,%.2f)'%(mean,sigma)] = norm.pdf(x_values, mean, sigma)
+#     # Exponential
+#     loc, scale = expon.fit(x_values)
+#     distributions['Exp(%.2f)'%(1/scale)] = expon.pdf(x_values, loc, scale)
+#     # LogNorm
+#     sigma, loc, scale = lognorm.fit(x_values)
+#     distributions['LogNor(%.1f,%.2f)'%(log(scale),sigma)] = lognorm.pdf(x_values, sigma, loc, scale)
+#     return distributions
 
-def histogram_with_distributions(ax: Axes, series: Series, var: str):
-    values = series.sort_values().values
-    ax.hist(values, 20, density=True)
-    distributions = compute_known_distributions(values)
-    multiple_line_chart(values, distributions, ax=ax, title='Best fit for %s'%var, xlabel=var, ylabel='')
+# def histogram_with_distributions(ax: Axes, series: Series, var: str):
+#     values = series.sort_values().values
+#     ax.hist(values, 20, density=True)
+#     distributions = compute_known_distributions(values)
+#     multiple_line_chart(values, distributions, ax=ax, title='Best fit for %s'%var, xlabel=var, ylabel='')
 
-numeric_vars = get_variable_types(data_num)['Numeric']
-rows, cols = choose_grid(len(numeric_vars))
-if [] == numeric_vars:
-    raise ValueError('There are no numeric variables.')
+# numeric_vars = get_variable_types(data_num)['Numeric']
+# numeric_vars = numeric_vars[1:2]
+# rows, cols = choose_grid(len(numeric_vars))
+# if [] == numeric_vars:
+#     raise ValueError('There are no numeric variables.')
 
-fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT, rows*HEIGHT), squeeze=False)
-i, j = 0, 0
-for n in range(len(numeric_vars)):
-    histogram_with_distributions(axs[i, j], data[numeric_vars[n]].dropna(), numeric_vars[n])
-    i, j = (i + 1, 0) if (n+1) % cols == 0 else (i, j + 1)
-savefig('diabetesDataset/lab1/images/histogram_numeric_distribution.png')
-show()
-
+# fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT, rows*HEIGHT), squeeze=False)
+# i, j = 0, 0
+# for n in range(len(numeric_vars)):
+#     histogram_with_distributions(axs[i, j], data[numeric_vars[n]].dropna(), numeric_vars[n])
+#     i, j = (i + 1, 0) if (n+1) % cols == 0 else (i, j + 1)
+# savefig('diabetesDataset/lab1/images/histogram_numeric_distribution_test.png')
+# show()
+# print(data['num_medications'].unique())
 # falta correr a partir daqui
 
 
 ########### perceber o que fazer com diag1, diag2, etc pos6-9::::::::::: o mighel ai fazer o encoding e depois é so usar aqui
+from encoding import diseaseEncoder
+diagDf = data[['diag_1', 'diag_2', 'diag_3']]
+data.drop(['diag_1', 'diag_2', 'diag_3'], axis=1, inplace=True)
+newFeatures = diseaseEncoder(diagDf)
+
+d = {}
+for x in newFeatures:
+    d[x] = sum(newFeatures[x])
+# print(d)
+# import matplotlib.pyplot as plt
+# plt.hist(d, width = 0.6)
+# plt.xticks(rotation='vertical')
+# tight_layout()
+# show()
 
 
-# from matplotlib.pyplot import savefig, show, subplots
-# from ds_charts import HEIGHT, choose_grid, get_variable_types, bar_chart
+from matplotlib.pyplot import savefig, show, subplots, bar, xticks
+from ds_charts import get_variable_types, choose_grid, HEIGHT, bar_chart
+from collections import Counter
+import numpy as np
+numeric_vars = list(d.keys())
 
-# symbolic_vars = get_variable_types(data)['Symbolic']
-# symbolic_vars = symbolic_vars[6:9]
+rows, cols = choose_grid(len(numeric_vars))
+if [] == numeric_vars:
+    raise ValueError('There are no numeric variables.')
+
+bar_chart(list(d.keys()), list(d.values()), title='Histogram for diagnostics', xlabel='type of diagnostics', ylabel='nr records')
+xticks(rotation='vertical')
+tight_layout()
+savefig('diabetesDataset/lab1/images/histograms_symbolic_6_9.png')
+# fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT, rows*HEIGHT), squeeze=False)
+# i, j = 0, 0
+# for n in range(len(numeric_vars)):
+#     axs[i, j].set_title('Histogram for %s'%numeric_vars[n])
+#     axs[i, j].set_xlabel(numeric_vars[n])
+#     axs[i, j].set_ylabel("nr records")
+#     axs[i, j].hist(d[numeric_vars[n]], 'auto')
+    
+#     i, j = (i + 1, 0) if (n+1) % cols == 0 else (i, j + 1)
+# # permite ver quais os bins e quantos valores
+# # print(numpy.histogram(data[numeric_vars[9]].dropna().values, 'auto'))
+# # savefig('diabetesDataset/lab1/images/single_histograms_numeric.png', dpi = 450)
+
+# show()
+
+
+for index, newFeature in enumerate(newFeatures):
+    data.insert(17 + index, newFeature ,newFeatures[newFeature]) ## Data with the new categories
+
+
+
+
+
+from matplotlib.pyplot import savefig, show, subplots
+from ds_charts import HEIGHT, choose_grid, get_variable_types, bar_chart
+
+symbolic_vars = get_variable_types(data)['Symbolic']
+print(symbolic_vars)
+
+
+# print(symbolic_vars)
+# symbolic_vars = symbolic_vars[5:6]
 # if [] == symbolic_vars:
 #     raise ValueError('There are no symbolic variables.')
 
 # rows, cols = choose_grid(len(symbolic_vars))
-# fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT, rows*HEIGHT), squeeze=False)
+# fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT*3, rows*HEIGHT), squeeze=False)
 # i, j = 0, 0
 # for n in range(len(symbolic_vars)):
     
@@ -193,5 +255,6 @@ show()
 #     bar_chart(x_val, y_val, ax=axs[i, j], title='Histogram for %s'%symbolic_vars[n], xlabel=symbolic_vars[n], ylabel='nr records', percentage=False, rotation = 45)
 #     i, j = (i + 1, 0) if (n+1) % cols == 0 else (i, j + 1)
 # fig.subplots_adjust(hspace=.9)
-# savefig('diabetesDataset/lab1/images/histograms_symbolic.png')
+# tight_layout()
+# savefig('diabetesDataset/lab1/images/histograms_symbolic_6.png')
 # show()
