@@ -68,7 +68,7 @@ def icd9Sorter(diseaseCodes):
 
         elif float(diseaseCode) < 1000:
             icd9Array[16] += 1
-
+    print(icd9Array)
     return icd9Array
         
 
