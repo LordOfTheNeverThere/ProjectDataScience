@@ -12,7 +12,7 @@ from ds_charts import get_variable_types, HEIGHT
 register_matplotlib_converters()
 
 # kaggleOGData = pd.read_csv('../kaggleDataset.csv')
-data = pd.read_csv('../drought.csv', na_values='?')
+data = pd.read_csv('droughtDataset/drought.csv', na_values='?')
 data['date'] = pd.to_datetime(data['date'], format = '%d/%m/%Y')
 data.shape
 
@@ -43,8 +43,9 @@ def get_variable_types(data) -> dict:
     variable_types['Symbolic'].append(data["fips"])
     return variable_types
 
+numeric_vars = list(data.columns)[20:] 
+numeric_vars = [list(data.columns)[0]]+ numeric_vars
 
-numeric_vars = get_variable_types(data)['Numeric']
 if [] == numeric_vars:
     raise ValueError('There are no numeric variables.')
 
@@ -56,10 +57,9 @@ for i in range(len(numeric_vars)):
     for j in range(i+1, len(numeric_vars)):
 
         var2 = numeric_vars[j]
-        axs[i, j-1].set_title("%s x %s"%(var1,var2))
+        # axs[i, j-1].set_title("%s x %s"%(var1,var2))
         axs[i, j-1].set_xlabel(var1)
         axs[i, j-1].set_ylabel(var2)
         axs[i, j-1].scatter(data[var1], data[var2])
-savefig(f'images/sparsity_study_numeric.png')
-show()
+savefig(f'droughtDataset/lab1/images/sparsity_study_numeric_soil.png')
 

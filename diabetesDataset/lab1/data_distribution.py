@@ -169,14 +169,14 @@ from ds_charts import get_variable_types, choose_grid, HEIGHT
 
 
 ########### perceber o que fazer com diag1, diag2, etc pos6-9::::::::::: o mighel ai fazer o encoding e depois é so usar aqui
-from encoding import diseaseEncoder
-diagDf = data[['diag_1', 'diag_2', 'diag_3']]
-data.drop(['diag_1', 'diag_2', 'diag_3'], axis=1, inplace=True)
-newFeatures = diseaseEncoder(diagDf)
+# from encoding import diseaseEncoder
+# diagDf = data[['diag_1', 'diag_2', 'diag_3']]
+# data.drop(['diag_1', 'diag_2', 'diag_3'], axis=1, inplace=True)
+# newFeatures = diseaseEncoder(diagDf)
 
-d = {}
-for x in newFeatures:
-    d[x] = sum(newFeatures[x])
+# d = {}
+# for x in newFeatures:
+#     d[x] = sum(newFeatures[x])
 # print(d)
 # import matplotlib.pyplot as plt
 # plt.hist(d, width = 0.6)
@@ -185,20 +185,20 @@ for x in newFeatures:
 # show()
 
 
-from matplotlib.pyplot import savefig, show, subplots, bar, xticks
-from ds_charts import get_variable_types, choose_grid, HEIGHT, bar_chart
-from collections import Counter
-import numpy as np
-numeric_vars = list(d.keys())
+# from matplotlib.pyplot import savefig, show, subplots, bar, xticks
+# from ds_charts import get_variable_types, choose_grid, HEIGHT, bar_chart
+# from collections import Counter
+# import numpy as np
+# numeric_vars = list(d.keys())
 
-rows, cols = choose_grid(len(numeric_vars))
-if [] == numeric_vars:
-    raise ValueError('There are no numeric variables.')
+# rows, cols = choose_grid(len(numeric_vars))
+# if [] == numeric_vars:
+#     raise ValueError('There are no numeric variables.')
 
-bar_chart(list(d.keys()), list(d.values()), title='Histogram for diagnostics', xlabel='type of diagnostics', ylabel='nr records')
-xticks(rotation='vertical')
-tight_layout()
-savefig('diabetesDataset/lab1/images/histograms_symbolic_6_9.png')
+# bar_chart(list(d.keys()), list(d.values()), title='Histogram for diagnostics', xlabel='type of diagnostics', ylabel='nr records')
+# xticks(rotation='vertical')
+# tight_layout()
+# savefig('diabetesDataset/lab1/images/histograms_symbolic_6_9.png')
 # fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT, rows*HEIGHT), squeeze=False)
 # i, j = 0, 0
 # for n in range(len(numeric_vars)):
@@ -215,8 +215,8 @@ savefig('diabetesDataset/lab1/images/histograms_symbolic_6_9.png')
 # show()
 
 
-for index, newFeature in enumerate(newFeatures):
-    data.insert(17 + index, newFeature ,newFeatures[newFeature]) ## Data with the new categories
+# for index, newFeature in enumerate(newFeatures):
+#     data.insert(17 + index, newFeature ,newFeatures[newFeature]) ## Data with the new categories
 
 
 
@@ -229,32 +229,32 @@ symbolic_vars = get_variable_types(data)['Symbolic']
 print(symbolic_vars)
 
 
-# print(symbolic_vars)
-# symbolic_vars = symbolic_vars[5:6]
-# if [] == symbolic_vars:
-#     raise ValueError('There are no symbolic variables.')
+print(symbolic_vars)
+symbolic_vars = symbolic_vars[6:9]
+if [] == symbolic_vars:
+    raise ValueError('There are no symbolic variables.')
 
-# rows, cols = choose_grid(len(symbolic_vars))
-# fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT*3, rows*HEIGHT), squeeze=False)
-# i, j = 0, 0
-# for n in range(len(symbolic_vars)):
+rows, cols = choose_grid(len(symbolic_vars))
+fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT, rows*HEIGHT), squeeze=False)
+i, j = 0, 0
+for n in range(len(symbolic_vars)):
     
-#     counts = data[symbolic_vars[n]].value_counts()
+    counts = data[symbolic_vars[n]].value_counts()
 
-#     x_val = counts.index.to_list()
-#     y_val =  counts.values
+    x_val = counts.index.to_list()
+    y_val =  counts.values
 
-#     if symbolic_vars[n] in ['age']:
-#         x_val = [counts.index.to_list()[i] for i in [9, 8, 7, 5, 4, 2, 1, 0, 3, 6]]
-#         y_val = [counts.values[i] for i in [9, 8, 7, 5, 4, 2, 1, 0, 3, 6]]
+    if symbolic_vars[n] in ['age']:
+        x_val = [counts.index.to_list()[i] for i in [9, 8, 7, 5, 4, 2, 1, 0, 3, 6]]
+        y_val = [counts.values[i] for i in [9, 8, 7, 5, 4, 2, 1, 0, 3, 6]]
 
-#     if symbolic_vars[n] in ['weight']:
-#         x_val = [counts.index.to_list()[i] for i in [5, 4, 1, 0, 2, 3, 6, 7, 8]]
-#         y_val = [counts.values[i] for i in [5, 4, 1, 0, 2, 3, 6, 7, 8]]
+    if symbolic_vars[n] in ['weight']:
+        x_val = [counts.index.to_list()[i] for i in [5, 4, 1, 0, 2, 3, 6, 7, 8]]
+        y_val = [counts.values[i] for i in [5, 4, 1, 0, 2, 3, 6, 7, 8]]
 
-#     bar_chart(x_val, y_val, ax=axs[i, j], title='Histogram for %s'%symbolic_vars[n], xlabel=symbolic_vars[n], ylabel='nr records', percentage=False, rotation = 45)
-#     i, j = (i + 1, 0) if (n+1) % cols == 0 else (i, j + 1)
-# fig.subplots_adjust(hspace=.9)
-# tight_layout()
-# savefig('diabetesDataset/lab1/images/histograms_symbolic_6.png')
-# show()
+    bar_chart(x_val, y_val, ax=axs[i, j], title='Histogram for %s'%symbolic_vars[n] + ', bins = %s'%len(data[symbolic_vars[n]].unique()), xlabel=symbolic_vars[n], ylabel='nr records' , percentage=False, rotation = 45)
+    i, j = (i + 1, 0) if (n+1) % cols == 0 else (i, j + 1)
+fig.subplots_adjust(hspace=.9)
+tight_layout()
+savefig('diabetesDataset/lab1/images/histograms_symbolic_69.png')
+show()

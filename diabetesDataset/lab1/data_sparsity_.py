@@ -42,23 +42,22 @@ data = data.drop(['payer_code'], axis=1)
 data = data.drop(['diag_1'], axis=1)
 data = data.drop(['diag_2'], axis=1)
 data = data.drop(['diag_3'], axis=1)
+data = data.drop(['race'], axis=1)
 
-symbolic_vars = get_variable_types(data)['Symbolic']
-symbolic_vars = symbolic_vars[8:16]
-print(symbolic_vars)
-
-if [] == symbolic_vars:
-    raise ValueError('There are no symbolic variables.')
+symbolic_vars = get_variable_types(data)['Numeric']
+symbolic_vars = symbolic_vars + get_variable_types(data)['Symbolic']
 
 rows, cols = len(symbolic_vars)-1, len(symbolic_vars)-1
 fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT, rows*HEIGHT), squeeze=False)
 for i in range(len(symbolic_vars)):
     var1 = symbolic_vars[i]
+    print(var1)
     for j in range(i+1, len(symbolic_vars)):
         var2 = symbolic_vars[j]
-        axs[i, j-1].set_title("%s x %s"%(var1,var2))
+        print(var2)
+        #axs[i, j-1].set_title("%s x %s"%(var1,var2))
         axs[i, j-1].set_xlabel(var1)
         axs[i, j-1].set_ylabel(var2)
         axs[i, j-1].scatter(data[var1], data[var2])
-savefig(f'diabetesDataset/lab1/images/sparsity/sparsity_study_symbolic_all_16.png')
+savefig(f'diabetesDataset/lab1/images/sparsity/sparsity_study_symbolic_all_teste_com_nomes.png')
 show()
