@@ -201,19 +201,3 @@ tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
 savefig('images/allDims_variable_types.png')
 show()
 
-# %%
-# Missing Values Full dims
-mv = {}
-for var in data:
-    nr = data[var].isna().sum()
-    if nr > 0:
-        mv[var] = nr
-
-figure()
-bar_chart(list(mv.keys()), list(mv.values()), title='Number of Missing values per var',
-          ylabel='Number of Missing values', rotation=True)
-tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
-savefig('images/allDims_mv.png')
-show()
-
-# %%
