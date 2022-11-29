@@ -36,15 +36,55 @@ variables = get_variable_types(data)['Numeric']
 if [] == variables:
     raise ValueError('There are no numeric variables.')
 
-rows = len(variables)
+print(len(data["fips"].unique()))
+
+rows = len(variables)+1
 bins = (10, 100, 1000)
 cols = len(bins)
 fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT, rows*HEIGHT), squeeze=False)
-for i in range(rows):
+for i in range(rows-1):
+    if(i == 0 or i > 18):
+        bins = (10, 25, 50)
+    else:
+        bins = (10, 100, 1000)
     for j in range(cols):
+
+
         axs[i, j].set_title('Histogram for %s %d bins'%(variables[i], bins[j]))
         axs[i, j].set_xlabel(variables[i])
         axs[i, j].set_ylabel('Nr records')
         axs[i, j].hist(data[variables[i]].values, bins=bins[j])
+#
+
+# #ANALISAR AS DATAS
+# i = 0
+# j = 0
+# bins = (10, 100, 1000)
+# year = data["date"].groupby(data["date"].dt.year).count()
+# year = year.to_dict()
+#
+#
+#
+# # bar(list(month.keys()), list(month.values()))
+#
+#
+#
+# j=0
+#
+# axs[i, j].set_title('Histogram for dates by Year')
+# axs[i, j].set_xlabel("date")
+# axs[i, j].set_ylabel('Nr records')
+# axs[i, j].bar(list(year.keys()), list(year.values()))
+#
+# j=1
+# axs[i, j].set_title('Histogram for dates by Month and Year')
+# axs[i, j].set_xlabel("date")
+# axs[i, j].set_ylabel('Nr records')
+# axs[i, j].bar(list(month.keys()), list(month.values()))
+
+
+
+
 savefig('images/granularity_study.png')
+
 # show()
