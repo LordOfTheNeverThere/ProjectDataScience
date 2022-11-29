@@ -38,53 +38,65 @@ if [] == variables:
 
 print(len(data["fips"].unique()))
 
-rows = len(variables)+1
-bins = (10, 100, 1000)
-cols = len(bins)
-fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT, rows*HEIGHT), squeeze=False)
-for i in range(rows-1):
-    if(i == 0 or i > 18):
-        bins = (10, 25, 50)
-    else:
-        bins = (10, 100, 1000)
-    for j in range(cols):
-
-
-        axs[i, j].set_title('Histogram for %s %d bins'%(variables[i], bins[j]))
-        axs[i, j].set_xlabel(variables[i])
-        axs[i, j].set_ylabel('Nr records')
-        axs[i, j].hist(data[variables[i]].values, bins=bins[j])
-#
-
-# #ANALISAR AS DATAS
-# i = 0
-# j = 0
+# rows = len(variables)+1
 # bins = (10, 100, 1000)
-# year = data["date"].groupby(data["date"].dt.year).count()
-# year = year.to_dict()
+# cols = len(bins)
+# fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT, rows*HEIGHT), squeeze=False)
+# for i in range(rows-1):
+#     if(i == 0 or i > 18):
+#         bins = (10, 25, 50)
+#     else:
+#         bins = (10, 100, 1000)
+#     for j in range(cols):
 #
 #
-#
-# # bar(list(month.keys()), list(month.values()))
-#
-#
-#
-# j=0
-#
-# axs[i, j].set_title('Histogram for dates by Year')
-# axs[i, j].set_xlabel("date")
-# axs[i, j].set_ylabel('Nr records')
-# axs[i, j].bar(list(year.keys()), list(year.values()))
-#
-# j=1
-# axs[i, j].set_title('Histogram for dates by Month and Year')
-# axs[i, j].set_xlabel("date")
-# axs[i, j].set_ylabel('Nr records')
-# axs[i, j].bar(list(month.keys()), list(month.values()))
+#         axs[i, j].set_title('Histogram for %s %d bins'%(variables[i], bins[j]))
+#         axs[i, j].set_xlabel(variables[i])
+#         axs[i, j].set_ylabel('Nr records')
+#         axs[i, j].hist(data[variables[i]].values, bins=bins[j])
+# #
+# savefig('images/granularity_study.png')
+
+#ANALISAR AS DATAS
+rows = 1
+cols = 3
+fig, axs = subplots(1, 1, figsize=(1*HEIGHT, 1*HEIGHT), squeeze=False)
+i = 0
+j = 0
+bins = (10, 100, 1000)
+year = data["date"].groupby(data["date"].dt.year).count()
+year = year.to_dict()
+
+data["count"] = 1
+new_data = data[["date", "count"]]
+# new_data.plot.hist(column = "date", y = "count", rot = 0)
+# savefig('images/granularity_dates_study3.png')
+
+# new_data.groupby(pd.Grouper(key = "date", freq='M'))
+new_data = new_data.resample(rule='M', on='date')['count'].sum()
+print(new_data)
+# bar(list(month.keys()), list(month.values()))
+month = new_data.to_dict()
 
 
 
+j=0
+fig, axs = subplots(1, 1, figsize=(1*HEIGHT, 1*HEIGHT), squeeze=False)
 
-savefig('images/granularity_study.png')
+axs[i, j].set_title('Histogram for dates by Year')
+axs[i, j].set_xlabel("date")
+axs[i, j].set_ylabel('Nr records')
+axs[i, j].bar(list(year.keys()), list(year.values()))
+savefig('images/granularity_dates_study1.png')
+
+j=0
+fig, axs = subplots(1, 1, figsize=(1*HEIGHT, 1*HEIGHT), squeeze=False)
+
+axs[i, j].set_title('Histogram for dates by Month')
+axs[i, j].set_xlabel("date")
+axs[i, j].set_ylabel('Nr records')
+new_data.plot.bar(x = "date", y = "count", rot = 0)
+
+savefig('images/granularity_dates_study2.png')
 
 # show()
