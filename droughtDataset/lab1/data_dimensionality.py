@@ -53,7 +53,7 @@ def get_variable_types(data) -> dict:
     return variable_types
 
 
-
+#
 variable_types = get_variable_types(data)
 
 counts = {}
@@ -92,9 +92,9 @@ print(corr_mtx)
 from matplotlib.pyplot import figure, savefig, show, title
 from seaborn import heatmap
 
-fig = figure(figsize=[47, 47])
+fig = figure(figsize=[48, 48])
 
-heatmap(abs(corr_mtx), xticklabels=corr_mtx.columns, yticklabels=corr_mtx.columns, annot=True, cmap='Reds')
+heatmap(abs(corr_mtx), xticklabels=corr_mtx.columns, yticklabels=corr_mtx.columns, annot=True, cmap='Greys')
 title('Correlation analysis')
 savefig(f'images/correlation_analysis.png')
 show()
