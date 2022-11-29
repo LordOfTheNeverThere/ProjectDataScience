@@ -1,0 +1,68 @@
+admission_type_id,description;;;;;;;;;;
+1,Emergency;;5; ;;;;;;;
+2,Urgent;;3;;;;;;;;
+3,Elective;;1;;;;;;;;
+4,Newborn;;2;;;;;;;;
+5,Not Available;;0;;;;;;;;
+6,NULL;;0;;;;;;;;
+7,Trauma Center;;4;;;;;;;;
+8,Not Mapped;;0;;;;;;;;
+,;;;;;;;;;;
+discharge_disposition_id,description;;;;;;;;;;
+1,Discharged to home;;;;;;;;;;1
+2,Discharged/transferred to another short term hospital;;;;;;;;;;14
+3,Discharged/transferred to SNF;;;;;;;;;;5
+4,Discharged/transferred to ICF;;;;;;;;;;
+5,Discharged/transferred to another type of inpatient care institution;;;;;;;;;;11
+6,Discharged/transferred to home with home health service;;;;;;;;;;2
+7,Left AMA;;;;;;;;;;
+8,Discharged/transferred to home under care of Home IV provider;;;;;;;;;;3
+9,Admitted as an inpatient to this hospital;;;;;;;;;;15
+10,Neonate discharged to another hospital for neonatal aftercare;;;;;;;;;;23
+11,Expired;;;;;;;;;;0
+12,Still patient or expected to return for outpatient services;;;;;;;;;;8
+13,Hospice / home;;;;;;;;;;16
+14,Hospice / medical facility;;;;;;;;;;17
+15,Discharged/transferred within this institution to Medicare approved swing bed;;;;;;;;;;4
+16,Discharged/transferred/referred another institution for outpatient services;;;;;;;;;;10
+17,Discharged/transferred/referred to this institution for outpatient services;;;;;;;;;;9
+18,NULL;;;;;;;;;;0
+"19,""Expired at home. Medicaid only, hospice.""";;;;;;;;;;18
+"20,""Expired in a medical facility. Medicaid only, hospice.""";;;;;;;;;;19
+"21,""Expired, place unknown. Medicaid only, hospice.""";;;;;;;;;;20
+22,Discharged/transferred to another rehab fac including rehab units of a hospital .;;;;;;;;;;21
+23,Discharged/transferred to a long term care hospital.;;;;;;;;;;12
+24,Discharged/transferred to a nursing facility certified under Medicaid but not certified under Medicare.;;;;;;;;;;6
+25,Not Mapped;;;;;;;;;;0
+26,Unknown/Invalid;;;;;;;;;;0
+30,Discharged/transferred to another Type of Health Care Institution not Defined Elsewhere;;;;;;;;;;7
+27,Discharged/transferred to a federal health care facility.;;;;;;;;;;4
+28,Discharged/transferred/referred to a psychiatric hospital of psychiatric distinct part unit of a hospital;;;;;;;;;;22
+29,Discharged/transferred to a Critical Access Hospital (CAH).;;;;;;;;;;13
+,;;;;;;;;;;
+admission_source_id,description;;;;;;;;;;
+1, Physician Referral;;;;;;;;;2;
+2,Clinic Referral;;;;;;;;;1;
+3,HMO Referral;;;;;;;;;1;
+4,Transfer from a hospital;;;;;;;;;13;
+5, Transfer from a Skilled Nursing Facility (SNF);;;;;;;;;6;
+6, Transfer from another health care facility;;;;;;;;;5;
+7, Emergency Room;;;;;;;;;19;
+8, Court/Law Enforcement;;;;;;;;;18;
+9, Not Available;;;;;;;;;0;
+10, Transfer from critial access hospital;;;;;;;;;4;
+11,Normal Delivery;;;;;;;;;3;
+12, Premature Delivery;;;;;;;;;15;
+13, Sick Baby;;;;;;;;;16;
+14, Extramural Birth;;;;;;;;;11;
+15,Not Available;;;;;;;;;0;
+17,NULL;;;;;;;;;0;
+18, Transfer From Another Home Health Agency;;;;;;;;;8;
+19,Readmission to Same Home Health Agency;;;;;;;;;7;
+20, Not Mapped;;;;;;;;;0;
+21,Unknown/Invalid;;;;;;;;;0;
+22, Transfer from hospital inpt/same fac reslt in a sep claim;;;;;;;;;14;
+23, Born inside this hospital;;;;;;;;;10;
+24, Born outside this hospital;;;;;;;;;12;
+25, Transfer from Ambulatory Surgery Center;;;;;;;;;9;
+26,Transfer from Hospice;;;;;;;;;17;

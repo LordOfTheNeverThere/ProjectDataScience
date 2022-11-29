@@ -122,3 +122,5 @@ newFeatures = diseaseEncoder(diagDf)
 for index, newFeature in enumerate(newFeatures):
     data.insert(17 + index, newFeature ,newFeatures[newFeature]) ## Data with the new categories
 # %%
+data.to_csv('diabetic_data_ICD9Cats.csv')
+# %%
