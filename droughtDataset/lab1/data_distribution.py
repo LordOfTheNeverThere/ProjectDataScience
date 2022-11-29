@@ -180,6 +180,7 @@ def histogram_with_distributions(ax: Axes, series: Series, var: str):
 if [] == numeric_vars:
     raise ValueError('There are no numeric variables.')
 
+#with the changes
 
 i, j = 0, 0
 for n in range(4, 19):
