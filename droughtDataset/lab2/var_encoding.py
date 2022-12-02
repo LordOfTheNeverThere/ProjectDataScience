@@ -27,3 +27,5 @@ for date in data["date"]:
 data["date"] = index
 
 data.to_csv('../Data/simpledates.csv')
+
+cona
