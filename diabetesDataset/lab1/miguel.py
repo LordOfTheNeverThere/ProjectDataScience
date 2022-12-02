@@ -181,10 +181,10 @@ variable_types = get_variable_types(data) #Get the right types in place
 corr_mtx = abs(data[variable_types['Numeric']].corr())
 print(corr_mtx)
 
-fig = figure(figsize=[75, 75])
+fig = figure(figsize=[40, 40])
 
 heatmap(abs(corr_mtx), xticklabels=corr_mtx.columns,
-        yticklabels=corr_mtx.columns, annot=True, cmap='Reds')
+        yticklabels=corr_mtx.columns, annot=True, cmap='Greys')
 title('Correlation analysis')
 tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
 savefig(f'images/allDims_correlation_analysis.png')
