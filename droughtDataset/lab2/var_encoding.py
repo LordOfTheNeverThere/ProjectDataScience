@@ -26,4 +26,4 @@ for date in data["date"]:
 
 data["date"] = index
 
-data.to_csv('../data/simpledates.csv')
+data.to_csv('../Data/simpledates.csv')
