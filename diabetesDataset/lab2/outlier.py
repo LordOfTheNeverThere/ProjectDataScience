@@ -70,4 +70,4 @@ for var in numeric_vars:
     df[var] = df[var].apply(lambda x: top_threshold if x > top_threshold else bottom_threshold if x < bottom_threshold else x)
 
 print('data after truncating outliers:', df.describe())
-df.to_csv(f'data/{file}_truncate_outliers.csv', index=True)
+# df.to_csv(f'data/{file}_truncate_outliers.csv', index=True)
