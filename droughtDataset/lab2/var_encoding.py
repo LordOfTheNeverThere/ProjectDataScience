@@ -9,4 +9,11 @@ register_matplotlib_converters()
 data = pd.read_csv('../drought.csv', na_values='?')
 data['date'] = pd.to_datetime(data['date'], format = '%d/%m/%Y')
 
-#ENCODING DATAS MÊS a MÊS linearmente
+#ENCODING DATAS LINEAR BÁSICO
+index = []
+for i in range(len(data["date"])):
+    index.append(i)
+data["date"] = index
+
+
+data.to_csv('simpledates.csv')
