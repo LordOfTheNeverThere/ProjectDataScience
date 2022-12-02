@@ -38,24 +38,24 @@ if [] == variables:
 
 print(len(data["fips"].unique()))
 
-# rows = len(variables)+1
-# bins = (10, 100, 1000)
-# cols = len(bins)
-# fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT, rows*HEIGHT), squeeze=False)
-# for i in range(rows-1):
-#     if(i == 0 or i > 18):
-#         bins = (10, 25, 50)
-#     else:
-#         bins = (10, 100, 1000)
-#     for j in range(cols):
+rows = len(variables)+1
+bins = (10, 100, 1000)
+cols = len(bins)
+fig, axs = subplots(rows, cols, figsize=(cols*HEIGHT, rows*HEIGHT), squeeze=False)
+for i in range(rows-1):
+    if(i == 0 or i > 18):
+        bins = (10, 25, 50)
+    else:
+        bins = (10, 100, 1000)
+    for j in range(cols):
+
+
+        axs[i, j].set_title('Histogram for %s %d bins'%(variables[i], bins[j]))
+        axs[i, j].set_xlabel(variables[i])
+        axs[i, j].set_ylabel('Nr records')
+        axs[i, j].hist(data[variables[i]].values, bins=bins[j])
 #
-#
-#         axs[i, j].set_title('Histogram for %s %d bins'%(variables[i], bins[j]))
-#         axs[i, j].set_xlabel(variables[i])
-#         axs[i, j].set_ylabel('Nr records')
-#         axs[i, j].hist(data[variables[i]].values, bins=bins[j])
-# #
-# savefig('images/granularity_study.png')
+savefig('images/granularity_study.png')
 
 #ANALISAR AS DATAS
 rows = 1
