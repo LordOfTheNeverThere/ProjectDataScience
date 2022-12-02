@@ -15,5 +15,4 @@ for i in range(len(data["date"])):
     index.append(i)
 data["date"] = index
 
-
 data.to_csv('../data/simpledates.csv')
