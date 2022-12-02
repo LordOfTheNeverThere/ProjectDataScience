@@ -23,16 +23,22 @@ data['date'] = pd.to_datetime(data['date'], format = '%d/%m/%Y')
 # data.to_csv('../Data/datesyyyymmdd.csv')
 #
 #
-# #EPOCH TIME MUAHAHAHA
-# data = pd.read_csv('../Data/drought.csv', na_values='?')
-# data['date'] = pd.to_datetime(data['date'], format = '%d/%m/%Y')
-# data['date'] = pd.to_datetime(data["date"]).values.astype(np.int64) // 10 ** 6
-# data.to_csv('../Data/datesEPOCH.csv')
+#EPOCH TIME MUAHAHAHA
+data = pd.read_csv('../Data/drought.csv', na_values='?')
+data['date'] = pd.to_datetime(data['date'], format = '%d/%m/%Y')
+data['date'] = pd.to_datetime(data["date"]).values.astype(np.int64) // 10 ** 6
+data.to_csv('../Data/datesEPOCH.csv')
 
 
 #CYCLICAL TYPE BEAT
 data = pd.read_csv('../Data/drought.csv', na_values='?')
 data['date'] = pd.to_datetime(data['date'], format = '%d/%m/%Y')
+data.insert(2, "ymonth", data['date'].dt.month, True)
+data.insert(2, "xmonth", data['date'].dt.month, True)
+data["xmonth"] = np.cos(2* np.pi * data["xmonth"] / 12)
+data["ymonth"] = np.sin(2* np.pi * data["ymonth"] / 12)
+data['date'] = pd.to_datetime(data["date"]).values.astype(np.int64) // 10 ** 6
+data.to_csv('../Data/datesCyclical.csv')
 
-
+print(data)
 
