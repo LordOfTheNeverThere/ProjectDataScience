@@ -15,6 +15,7 @@ import matplotlib.font_manager as fm
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.tree import export_graphviz
 from sklearn.metrics import confusion_matrix, plot_roc_curve
+import sklearn
 
 import config as cfg
 
@@ -128,9 +129,10 @@ def plot_evaluation_results(labels: ndarray, trn_y, prd_trn, tst_y, prd_tst):
         'Specificity': [tn_trn / (tn_trn + fp_trn), tn_tst / (tn_tst + fp_tst)],
         'Precision': [tp_trn / (tp_trn + fp_trn), tp_tst / (tp_tst + fp_tst)]}
 
-    _, axs = subplots(1, 2, figsize=(2 * HEIGHT, HEIGHT))
+    fig1, axs = subplots(1, 2, figsize=(2 * HEIGHT, HEIGHT))
     multiple_bar_chart(['Train', 'Test'], evaluation, ax=axs[0], title="Model's performance over Train and Test sets", percentage=True)
-    plot_confusion_matrix(cnf_mtx_tst, labels, ax=axs[1], title='Test')
+    sklearn.metrics.ConfusionMatrixDisplay.from_predictions(tst_y, prd_tst)
+    fig1.show()
 
 
 def horizontal_bar_chart(elements: list, values: list, error: list, ax: Axes = None, title: str = '', xlabel: str = '', ylabel: str = ''):
