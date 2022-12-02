@@ -236,7 +236,6 @@ def get_variable_types(df: DataFrame) -> dict:
         'Symbolic': []
     }
     for c in df.columns:
-        print(df[c].dtype)
         uniques = df[c].dropna(inplace=False).unique()
         if len(uniques) == 2:
             variable_types['Binary'].append(c)

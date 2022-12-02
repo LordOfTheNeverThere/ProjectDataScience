@@ -11,6 +11,8 @@ register_matplotlib_converters()
 data = pd.read_csv('../drought.csv', na_values='?')
 data['date'] = pd.to_datetime(data['date'], format = '%d/%m/%Y')
 data.shape
+
+print(data)
 # %% #
 
 

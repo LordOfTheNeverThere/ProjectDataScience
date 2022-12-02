@@ -1,0 +1,4 @@
+Missing value imputation
+- tenho 3 hipóteses, mas para testar com NB Bayes preciso de ter todas codificadas e a codificação q foi feita tira os null values todos.
+
+- 

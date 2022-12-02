@@ -1,0 +1,2 @@
+drought.csv - Untouched dataset
+simpledates.csv - datas de 0 a len(data)
