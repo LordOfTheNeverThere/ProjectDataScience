@@ -52,6 +52,7 @@ for path in list:
     print(norm_data_minmax.describe())
 
     # Show Results
+
     fig, axs = subplots(1, 3, figsize=(20,10),squeeze=False)
     axs[0, 0].set_title('Original data')
     data.boxplot(ax=axs[0, 0])
@@ -61,4 +62,10 @@ for path in list:
     norm_data_minmax.boxplot(ax=axs[0, 2])
     savefig(f'../../lab2/images/scaling_boxplots/{file}_boxplot.png')
     #show()
+
+    # Save
+
+    #norm_data_zscore.to_csv('data/algae_scaled_zscore.csv', index=False)
+
+
 
