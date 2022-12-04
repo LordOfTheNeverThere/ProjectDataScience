@@ -1,3 +1,7 @@
 drought.csv - Untouched dataset
 simpledates.csv - datas de 0 a len(data)
 outliers_treat.py - dealing with outliers
+
+1st var encoding - 3 options
+2nd outliers treatment - 4 options
+3rd scaling - 2 options

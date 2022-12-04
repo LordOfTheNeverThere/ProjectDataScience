@@ -50,7 +50,7 @@ for path in list:
         outliers = df[(df[var] > top_threshold) | (df[var] < bottom_threshold)]
         df.drop(outliers.index, axis=0, inplace=True)
 
-    df.to_csv(f'../OutliersTreat/{file}_{OPTION}_drop_outliers.csv', index=True)
+    df.to_csv(f'../OutliersTreat/{file}_{OPTION}_drop_outliers.csv', index=False)
     print('data after dropping outliers:', df.shape)
 
     #Replacing outliers with fixed value (in this case, median value)
@@ -66,7 +66,7 @@ for path in list:
         df[var] = df[var].apply(lambda x: median if x > top_threshold or x < bottom_threshold else x)
 
     print('data after replacing outliers:', df.describe())
-    df.to_csv(f'../OutliersTreat/{file}_{OPTION}_replacing_outliers_median.csv', index=True)
+    df.to_csv(f'../OutliersTreat/{file}_{OPTION}_replacing_outliers_median.csv', index=False)
 
     #Replacing outliers with fixed value (in this case, mean value)
 
@@ -81,7 +81,7 @@ for path in list:
         df[var] = df[var].apply(lambda x: median if x > top_threshold or x < bottom_threshold else x)
 
     print('data after replacing outliers:', df.describe())
-    df.to_csv(f'../OutliersTreat/{file}_{OPTION}_replacing_outliers_mean.csv', index=True)
+    df.to_csv(f'../OutliersTreat/{file}_{OPTION}_replacing_outliers_mean.csv', index=False)
 
     # Truncating outliers
 
@@ -95,4 +95,4 @@ for path in list:
         df[var] = df[var].apply(lambda x: top_threshold if x > top_threshold else bottom_threshold if x < bottom_threshold else x)
 
     print('data after truncating outliers:', df.describe())
-    df.to_csv(f'../OutliersTreat/{file}_{OPTION}_truncate_outliers.csv', index=True)
+    df.to_csv(f'../OutliersTreat/{file}_{OPTION}_truncate_outliers.csv', index=False)
