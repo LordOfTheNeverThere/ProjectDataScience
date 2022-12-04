@@ -2,8 +2,9 @@
 
 import pandas as pd
 from pandas.plotting import register_matplotlib_converters
-from matplotlib.pyplot import figure, savefig, show
-from ds_charts import bar_chart
+from matplotlib.pyplot import figure, savefig, show, subplots
+from ds_charts import bar_chart, get_variable_types
+import sklearn
 
 register_matplotlib_converters()
 
@@ -123,4 +124,39 @@ for index, newFeature in enumerate(newFeatures):
     data.insert(17 + index, newFeature ,newFeatures[newFeature]) ## Data with the new categories
 # %%
 data.to_csv('diabetic_data_ICD9Cats.csv')
-# %%
+
+# %% Scalling
+
+variableTypes = get_variable_types(data)
+numericVars = variableTypes['Numeric']
+booleanVars = variableTypes['Binary']
+symbolicVars = variableTypes['Symbolic']
+
+numericData = data[numericVars]
+booleanData = data[booleanVars]
+symbolicData = data[symbolicVars]
+
+# %% Scalling Z-Score
+
+scaler = sklearn.preprocessing.StandardScaler().fit(numericData) #Only numeric can be scalled
+scalledNumericData = pd.DataFrame(scaler.transformation(numericData), index=data.index, columns=numericVars)
+zScoreData = pd.concat([scalledNumericData, symbolicData, booleanData], axis=1)
+#zScoreData.to_csv('putAGoodNamezScore.csv')
+
+# %% Scalling MinMax
+
+scaler = sklearn.preprocessing.MinMaxScaler().fit(numericData)
+scalledNumericData = pd.DataFrame(scaler.transform(numericData), index=data.index, columns=numericVars)
+minMaxData = pd.concat([scalledNumericData, symbolicData, booleanData], axis=1)
+#minMaxData.to_csv('putAGoodNameMinMac.csv', index = False)
+
+# %% Plots
+
+ig, axs = subplots(1, 3, figsize=(20, 10), squeeze=False)
+axs[0, 0].set_title('Original data')
+data.boxplot(ax=axs[0, 0])
+axs[0, 1].set_title('Z-score normalization')
+zScoreData.boxplot(ax=axs[0, 1])
+axs[0, 2].set_title('MinMax normalization')
+minMaxData.boxplot(ax=axs[0, 2])
+show()
