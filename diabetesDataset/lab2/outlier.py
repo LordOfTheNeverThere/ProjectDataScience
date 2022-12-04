@@ -40,22 +40,6 @@ for var in numeric_vars:
 # df.to_csv(f'data/{file}_drop_outliers.csv', index=True)
 print('data after dropping outliers:', df.shape)
 
-# %%
-
-
-#replace fixed value
-if [] == numeric_vars:
-    raise ValueError('There are no numeric variables.')
-
-summary5 = data.describe(include='number')
-df = data.copy(deep=True)
-for var in numeric_vars:
-    top_threshold, bottom_threshold = determine_outlier_thresholds(summary5, var)
-    median = df[var].median()
-    df[var] = df[var].apply(lambda x: median if x > top_threshold or x < bottom_threshold else x)
-
-print('data after replacing outliers:', df.describe())
-# df.to_csv(f'data/{file}_replacing_outliers.csv', index=True)
 
 # %%
 

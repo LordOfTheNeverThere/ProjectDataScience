@@ -1,0 +1,5 @@
+0.5337571389719881 - accuracy MV NB drop
+0.5237965732934458 - accuracy MV KNN drop
+
+0.5391090730429086 - accuracy MV NB replace
+0.5272191287258434 - accuracy MV KNN replace
