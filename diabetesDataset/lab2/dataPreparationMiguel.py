@@ -7,6 +7,7 @@ from ds_charts import bar_chart, get_variable_types, plot_evaluation_results
 import sklearn
 import imblearn
 import numpy as np
+from sklearn.naive_bayes import GaussianNB
 
 register_matplotlib_converters()
 
@@ -71,7 +72,6 @@ def icd9Sorter(diseaseCodes):
 
         elif float(diseaseCode) < 1000:
             icd9Array[16] += 1
-    print(icd9Array)
     return icd9Array
         
 
@@ -127,11 +127,6 @@ for index, newFeature in enumerate(newFeatures):
 # %%
 data.to_csv('diabetic_data_ICD9Cats.csv')
 
-# %% Scalling
-data = pd.read_csv('../lab1/allEncoded_Diabetes_Data.csv')
-data.drop(['encounter_id', 'patient_nbr', 'Unnamed: 0'], axis=1, inplace=True) ## Dropping ids
-
-
 
 # %% Scalling Z-Score
 def zScoreScalling(data: pd.DataFrame) -> pd.DataFrame:
@@ -178,9 +173,9 @@ ig, axs = subplots(1, 3, figsize=(20, 10), squeeze=False)
 axs[0, 0].set_title('Original data')
 data.boxplot(ax=axs[0, 0])
 axs[0, 1].set_title('Z-score normalization')
-zScoreScalling(data).boxplot(ax=axs[0, 1])
+zScoreScalling(data)[0].boxplot(ax=axs[0, 1])
 axs[0, 2].set_title('MinMax normalization')
-minMaxScalling(minMaxScalling).boxplot(ax=axs[0, 2])
+minMaxScalling(data)[0].boxplot(ax=axs[0, 2])
 show()
 
 # %% Dataset balancing
@@ -242,10 +237,6 @@ def scallingEvaluator(data: pd.DataFrame, classLabel: str):
 
     data = data.copy()
     classifiersList = []
-    variableTypes = get_variable_types(data)
-    numericVars = variableTypes['Numeric']
-    booleanVars = variableTypes['Binary']
-    symbolicVars = variableTypes['Symbolic']
 
     RANDOM_STATE = 42   
     # Getting x and y
@@ -253,16 +244,21 @@ def scallingEvaluator(data: pd.DataFrame, classLabel: str):
     labels = pd.unique(yData)
     xData = data.drop(columns=[classLabel])
     xTrain, xTest, yTrain, yTest = sklearn.model_selection.train_test_split(xData, yData, train_size=0.7, random_state=RANDOM_STATE)
+    
+    variableTypes = get_variable_types(xTrain)
+    numericVars = variableTypes['Numeric']
+    booleanVars = variableTypes['Binary']
+    symbolicVars = variableTypes['Symbolic']
 
     # zScore
     xTrainZScore, scaler = zScoreScalling(xTrain)
     xTestZScore = pd.DataFrame(scaler.transform(
-        xTestZScore[numericVars]), index=xTest.index, columns=numericVars)
+        xTest[numericVars]), index=xTest.index, columns=numericVars)
     xTestZScore = pd.concat(
         [xTestZScore, xTest[symbolicVars], xTest[booleanVars]], axis=1)
         
     # Fitting the model to the training data
-    naiveBayesClassifier = sklearn.naive_bayes.GaussianNB()
+    naiveBayesClassifier = GaussianNB()
     naiveBayesClassifier.fit(xTrainZScore, yTrain)
     classifiersList.append((naiveBayesClassifier, 'zScoreNB', xTrainZScore, xTestZScore))
 
@@ -275,12 +271,12 @@ def scallingEvaluator(data: pd.DataFrame, classLabel: str):
 
     xTrainMinMax, scaler = minMaxScalling(xTrain)
     xTestMinMax = pd.DataFrame(scaler.transform(
-        xTestMinMax[numericVars]), index=xTest.index, columns=numericVars)
+        xTest[numericVars]), index=xTest.index, columns=numericVars)
     xTestMinMax = pd.concat(
         [xTestMinMax, xTest[symbolicVars], xTest[booleanVars]], axis=1)
 
     # Fitting the model to the training data
-    naiveBayesClassifier = sklearn.naive_bayes.GaussianNB()
+    naiveBayesClassifier = GaussianNB()
     naiveBayesClassifier.fit(xTrainMinMax, yTrain)
     classifiersList.append((naiveBayesClassifier, 'minMaxNB', xTrainMinMax, xTestMinMax))
 
@@ -290,7 +286,7 @@ def scallingEvaluator(data: pd.DataFrame, classLabel: str):
     classifiersList.append(
         (knnClassifier, 'minMaxKNN', xTrainMinMax, xTestMinMax))
 
-    for classifier, name, xTrain, yTrain in zip(classifiersList):
+    for classifier, name, xTrain, xTest in classifiersList:
 
         predictedTrainY = classifier.predict(xTrain) # overfitted
         predictedTestY = classifier.predict(xTest) # hopefully not overfitted
@@ -314,14 +310,14 @@ def balancingEvaluator(data: pd.DataFrame, classLabel: str):
         if name == 'SMOTE':
 
             xTrainSMOTE = smoteBalancing(xTrain, classLabel) 
-            classifier = sklearn.naive_bayes.GaussianNB()
+            classifier = GaussianNB()
             classifier.fit(xTrainSMOTE, yTrain)
 
             predictedTrainY = classifier.predict(xTrainSMOTE)  # overfitted
             predictedTestY = classifier.predict(xTest)  # hopefully not overfitted
             plot_evaluation_results(
                 labels, yTrain, predictedTrainY, yTest, predictedTestY)
-            savefig('images/scalling/{name}NBEval.png')
+            savefig('images/ballancing/{name}NBEval.png')
             show()
 
             classifier = sklearn.neighbors.KNeighborsClassifier(
@@ -332,20 +328,20 @@ def balancingEvaluator(data: pd.DataFrame, classLabel: str):
                 xTest)  # hopefully not overfitted
             plot_evaluation_results(
                 labels, yTrain, predictedTrainY, yTest, predictedTestY)
-            savefig('images/scalling/{name}KNNEval.png')
+            savefig('images/ballancing/{name}KNNEval.png')
             show()
 
         elif name == 'TomeksAndSMOTE':
 
             xTrainTomek = smoteTomeksBalancing(xTrain, classLabel)
-            classifier = sklearn.naive_bayes.GaussianNB()
+            classifier = GaussianNB()
             classifier.fit(xTrainTomek, yTrain)
 
             predictedTrainY = classifier.predict(xTrainTomek)  # overfitted
             predictedTestY = classifier.predict(xTest)  # hopefully not overfitted
             plot_evaluation_results(
                 labels, yTrain, predictedTrainY, yTest, predictedTestY)
-            savefig('images/scalling/{name}NBEval.png')
+            savefig('images/ballancing/{name}NBEval.png')
             show()
 
             classifier = sklearn.neighbors.KNeighborsClassifier(
@@ -356,20 +352,20 @@ def balancingEvaluator(data: pd.DataFrame, classLabel: str):
                 xTest)  # hopefully not overfitted
             plot_evaluation_results(
                 labels, yTrain, predictedTrainY, yTest, predictedTestY)
-            savefig('images/scalling/{name}KNNEval.png')
+            savefig('images/ballancing/{name}KNNEval.png')
             show()
         elif name == 'SmoothenClassWeights':
             weights = smoothClassWeights(xTrain, classLabel)
 
             xTrain = smoteTomeksBalancing(xTrain, classLabel)
-            classifier = sklearn.naive_bayes.GaussianNB(class_weights = weights)
+            classifier = GaussianNB(class_weights = weights)
             classifier.fit(xTrain, yTrain)
 
             predictedTrainY = classifier.predict(xTrain)  # overfitted
             predictedTestY = classifier.predict(xTest)  # hopefully not overfitted
             plot_evaluation_results(
                 labels, yTrain, predictedTrainY, yTest, predictedTestY)
-            savefig('images/scalling/{name}NBEval.png')
+            savefig('images/ballancing/{name}NBEval.png')
             show()
 
             classifier = sklearn.neighbors.KNeighborsClassifier(
@@ -380,5 +376,13 @@ def balancingEvaluator(data: pd.DataFrame, classLabel: str):
                 xTest)  # hopefully not overfitted
             plot_evaluation_results(
                 labels, yTrain, predictedTrainY, yTest, predictedTestY)
-            savefig('images/scalling/{name}KNNEval.png')
+            savefig('images/ballancing/{name}KNNEval.png')
             show()
+# %%
+data = pd.read_csv('truncate_outliers.csv')
+data.drop(['encounter_id', 'patient_nbr', 'Unnamed: 0.1', 'Unnamed: 0'],
+          axis=1, inplace=True)  # Dropping ids
+scallingEvaluator(data, 'readmitted')
+balancingEvaluator(data, 'readmitted')
+
+# %%
