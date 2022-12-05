@@ -158,7 +158,7 @@ def allEncoder(df):
     return data
 
 
-df_2 = allEncoder(df_2)
+df_3 = allEncoder(df_3)
 
 def icd9Sorter(diseaseCodes):
     
@@ -265,19 +265,19 @@ def diseaseEncoder(diagnosticsDf: pd.DataFrame) -> pd.DataFrame:
 
     return newFeaturesDataframe
 
-diagDf = df_2[['diag_1', 'diag_2', 'diag_3']]
-df_2.drop(['diag_1', 'diag_2', 'diag_3'], axis=1, inplace=True)
+diagDf = df_3[['diag_1', 'diag_2', 'diag_3']]
+df_3.drop(['diag_1', 'diag_2', 'diag_3'], axis=1, inplace=True)
 newFeatures = diseaseEncoder(diagDf)
 
 for index, newFeature in enumerate(newFeatures):
-    df_2.insert(17 + index, newFeature ,newFeatures[newFeature])
+    df_3.insert(17 + index, newFeature ,newFeatures[newFeature])
 
-df_2.to_csv('mv_drop_mv.csv')
+df_3.to_csv('mv_replace_mv.csv')
 
 mv = {}
 figure()
-for var in df_2:
-    nr = df_2[var].isna().sum()
+for var in df_3:
+    nr = df_3[var].isna().sum()
     if nr > 0:
         mv[var] = nr
 
@@ -290,7 +290,7 @@ import matplotlib.pyplot as plt
 import ds_charts as ds
 from sklearn.model_selection import train_test_split
 
-data = df_2
+data = df_3
 target = 'readmitted'
 
 y = data.pop(target).values
@@ -302,10 +302,10 @@ labels.sort()
 trnX, tstX, trnY, tstY = train_test_split(X, y, train_size=0.7, stratify=y)
 
 train = concat([DataFrame(trnX, columns=data.columns), DataFrame(trnY,columns=[target])], axis=1)
-train.to_csv('mv_drop_train.csv', index=False)
+train.to_csv('mv_replace_train.csv', index=False)
 
 test = concat([DataFrame(tstX, columns=data.columns), DataFrame(tstY,columns=[target])], axis=1)
-test.to_csv('mv_drop_test.csv', index=False)
+test.to_csv('mv_replace_test.csv', index=False)
 
 
 
@@ -314,13 +314,13 @@ from sklearn.naive_bayes import GaussianNB
 from numpy import ndarray
 from sklearn.metrics import confusion_matrix
 
-train: DataFrame = read_csv('mv_drop_train.csv')
+train: DataFrame = read_csv('mv_replace_train.csv')
 trnY: ndarray = train.pop(target).values
 trnX: ndarray = train.values
 labels = unique(trnY)
 labels.sort()
 
-test: DataFrame = read_csv('mv_drop_test.csv')
+test: DataFrame = read_csv('mv_replace_test.csv')
 tstY: ndarray = test.pop(target).values
 tstX: ndarray = test.values
 
@@ -339,12 +339,50 @@ print(cnf_mtx_trn)
 # %%
 from sklearn.metrics import ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score
+
 cm_display = ConfusionMatrixDisplay(confusion_matrix = cnf_mtx_trn, display_labels = [0, 1, 2])
 cm_display.plot()
-plt.show()
-savefig('images/mv_drop_nb_best_3param.png')
+plt.title('Accuracy: 0.54')
+savefig('images/mv_replace_nb_best_3param.png')
 
-# %%
-ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig('images/mv_replace_nb_best.png')
+from sklearn.metrics import accuracy_score
+accuracy_score(tstY, prd_tst)
+
+
+# %% KNN classification
+
+
+from numpy import ndarray
+from pandas import DataFrame, read_csv, unique
+from matplotlib.pyplot import figure, savefig, show
+from sklearn.neighbors import KNeighborsClassifier
+from ds_charts import plot_evaluation_results, multiple_line_chart, plot_overfitting_study
+from sklearn.metrics import accuracy_score
+
+eval_metric = accuracy_score
+nvalues = [11]
+dist = ['chebyshev']
+values = {}
+best = (0, '')
+last_best = 0
+for d in dist:
+    y_tst_values = []
+    for n in nvalues:
+        knn = KNeighborsClassifier(n_neighbors=n, metric=d)
+        knn.fit(trnX, trnY)
+        prd_tst_Y = knn.predict(tstX)
+        y_tst_values.append(eval_metric(tstY, prd_tst_Y))
+        if y_tst_values[-1] > last_best:
+            best = (n, d)
+            last_best = y_tst_values[-1]
+    values[d] = y_tst_values
+
+print(y_tst_values)
+cnf_mtx_trn = confusion_matrix(tstY, prd_tst_Y)
+cm_display = ConfusionMatrixDisplay(confusion_matrix = cnf_mtx_trn, display_labels = [0, 1, 2])
+cm_display.plot()
+plt.title('Accuracy: 0.53')
+savefig('images/mv_replace_knn_best_3param.png')
+
 # %%
