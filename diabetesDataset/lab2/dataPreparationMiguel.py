@@ -3,8 +3,11 @@
 import pandas as pd
 from pandas.plotting import register_matplotlib_converters
 from matplotlib.pyplot import figure, savefig, show, subplots
-from ds_charts import bar_chart, get_variable_types
+from ds_charts import bar_chart, get_variable_types, plot_evaluation_results
 import sklearn
+import imblearn
+import numpy as np
+from sklearn.naive_bayes import GaussianNB
 
 register_matplotlib_converters()
 
@@ -69,7 +72,6 @@ def icd9Sorter(diseaseCodes):
 
         elif float(diseaseCode) < 1000:
             icd9Array[16] += 1
-    print(icd9Array)
     return icd9Array
         
 
@@ -125,30 +127,45 @@ for index, newFeature in enumerate(newFeatures):
 # %%
 data.to_csv('diabetic_data_ICD9Cats.csv')
 
-# %% Scalling
-
-variableTypes = get_variable_types(data)
-numericVars = variableTypes['Numeric']
-booleanVars = variableTypes['Binary']
-symbolicVars = variableTypes['Symbolic']
-
-numericData = data[numericVars]
-booleanData = data[booleanVars]
-symbolicData = data[symbolicVars]
 
 # %% Scalling Z-Score
+def zScoreScalling(data: pd.DataFrame) -> pd.DataFrame:
+    
+    data = data.copy()
+    variableTypes = get_variable_types(data)
+    numericVars = variableTypes['Numeric']
+    booleanVars = variableTypes['Binary']
+    symbolicVars = variableTypes['Symbolic']
 
-scaler = sklearn.preprocessing.StandardScaler().fit(numericData) #Only numeric can be scalled
-scalledNumericData = pd.DataFrame(scaler.transformation(numericData), index=data.index, columns=numericVars)
-zScoreData = pd.concat([scalledNumericData, symbolicData, booleanData], axis=1)
-#zScoreData.to_csv('putAGoodNamezScore.csv')
+    numericData = data[numericVars]
+    booleanData = data[booleanVars]
+    symbolicData = data[symbolicVars]
+
+    scaler = sklearn.preprocessing.StandardScaler().fit(numericData) #Only numeric can be scalled
+    scalledNumericData = pd.DataFrame(scaler.transform(numericData), index=data.index, columns=numericVars)
+    zScoreData = pd.concat([scalledNumericData, symbolicData, booleanData], axis=1)
+
+    return zScoreData, scaler
 
 # %% Scalling MinMax
+def minMaxScalling(data : pd.DataFrame) -> pd.DataFrame:
 
-scaler = sklearn.preprocessing.MinMaxScaler().fit(numericData)
-scalledNumericData = pd.DataFrame(scaler.transform(numericData), index=data.index, columns=numericVars)
-minMaxData = pd.concat([scalledNumericData, symbolicData, booleanData], axis=1)
-#minMaxData.to_csv('putAGoodNameMinMac.csv', index = False)
+    
+    data = data.copy()
+    variableTypes = get_variable_types(data)
+    numericVars = variableTypes['Numeric']
+    booleanVars = variableTypes['Binary']
+    symbolicVars = variableTypes['Symbolic']
+
+    numericData = data[numericVars]
+    booleanData = data[booleanVars]
+    symbolicData = data[symbolicVars]
+
+    scaler = sklearn.preprocessing.MinMaxScaler().fit(numericData)
+    scalledNumericData = pd.DataFrame(scaler.transform(numericData), index=data.index, columns=numericVars)
+    minMaxData = pd.concat([scalledNumericData, symbolicData, booleanData], axis=1)
+    
+    return minMaxData, scaler
 
 # %% Plots
 
@@ -156,7 +173,216 @@ ig, axs = subplots(1, 3, figsize=(20, 10), squeeze=False)
 axs[0, 0].set_title('Original data')
 data.boxplot(ax=axs[0, 0])
 axs[0, 1].set_title('Z-score normalization')
-zScoreData.boxplot(ax=axs[0, 1])
+zScoreScalling(data)[0].boxplot(ax=axs[0, 1])
 axs[0, 2].set_title('MinMax normalization')
-minMaxData.boxplot(ax=axs[0, 2])
+minMaxScalling(data)[0].boxplot(ax=axs[0, 2])
 show()
+
+# %% Dataset balancing
+data = pd.read_csv('../lab1/allEncoded_Diabetes_Data.csv')
+
+# %% Dataset Balancing (SMOTE)
+def smoteBalancing(trainingData: pd.DataFrame, classLabel: str) -> pd.DataFrame:
+    trainingData = trainingData.copy()
+    RANDOM_STATE = 42
+    smote = imblearn.over_sampling.SMOTE(random_state=RANDOM_STATE)
+    yData = trainingData[classLabel]
+    xData = trainingData.drop(columns=[classLabel])
+    xData, yData = smote.fit_resample(xData, yData)
+    trainingData = pd.concat([xData, yData], axis=1)
+
+    return trainingData
+
+# %% Dataset Balacing (Smoothen Class Weights)
+
+def smoothClassWeights(data : pd.DataFrame, classLabel: str) -> dict :
+
+    trainingData = trainingData.copy()
+    labelsFreqs = data[classLabel].value_counts().to_dict()
+    total = np.sum(labelsFreqs.values())
+    labels = labelsFreqs.keys()
+    weights = dict()
+
+    for label in labels:
+        weights[label] = np.log((0.15*total)/float(labelsFreqs[label]))
+        weights[label] = weights[label] if weights[label] > 1 else 1
+    
+    return weights
+
+
+
+# %% Dataset Balancing (Tomek's Link + SMOTE)
+
+def smoteTomeksBalancing(trainingData: pd.DataFrame, classLabel: str) -> pd.DataFrame:
+
+    trainingData = trainingData.copy()
+    RANDOM_STATE = 42
+
+    tomeks = imblearn.under_sampling.TomekLinks()
+    smote = imblearn.over_sampling.SMOTE(random_state=RANDOM_STATE)
+
+    yData = trainingData[classLabel]
+    xData = trainingData.drop(columns=[classLabel])
+
+    xData, yData = tomeks.fit_resample(xData, yData)
+    xData, yData = smote.fit_resample(xData, yData)
+
+    trainingData = pd.concat([xData, yData], axis=1)
+
+    return trainingData
+
+# %% testing the scalling alternatives
+
+def scallingEvaluator(data: pd.DataFrame, classLabel: str):
+
+    data = data.copy()
+    classifiersList = []
+
+    RANDOM_STATE = 42   
+    # Getting x and y
+    yData = data[classLabel]
+    labels = pd.unique(yData)
+    xData = data.drop(columns=[classLabel])
+    xTrain, xTest, yTrain, yTest = sklearn.model_selection.train_test_split(xData, yData, train_size=0.7, random_state=RANDOM_STATE)
+    
+    variableTypes = get_variable_types(xTrain)
+    numericVars = variableTypes['Numeric']
+    booleanVars = variableTypes['Binary']
+    symbolicVars = variableTypes['Symbolic']
+
+    # zScore
+    xTrainZScore, scaler = zScoreScalling(xTrain)
+    xTestZScore = pd.DataFrame(scaler.transform(
+        xTest[numericVars]), index=xTest.index, columns=numericVars)
+    xTestZScore = pd.concat(
+        [xTestZScore, xTest[symbolicVars], xTest[booleanVars]], axis=1)
+        
+    # Fitting the model to the training data
+    naiveBayesClassifier = GaussianNB()
+    naiveBayesClassifier.fit(xTrainZScore, yTrain)
+    classifiersList.append((naiveBayesClassifier, 'zScoreNB', xTrainZScore, xTestZScore))
+
+    knnClassifier = sklearn.neighbors.KNeighborsClassifier(
+        n_neighbors=50, metric='manhattan')
+    knnClassifier.fit(xTrainZScore, yTrain)
+    classifiersList.append((knnClassifier, 'zScoreKNN', xTrainZScore, xTestZScore))
+
+    # Min max
+
+    xTrainMinMax, scaler = minMaxScalling(xTrain)
+    xTestMinMax = pd.DataFrame(scaler.transform(
+        xTest[numericVars]), index=xTest.index, columns=numericVars)
+    xTestMinMax = pd.concat(
+        [xTestMinMax, xTest[symbolicVars], xTest[booleanVars]], axis=1)
+
+    # Fitting the model to the training data
+    naiveBayesClassifier = GaussianNB()
+    naiveBayesClassifier.fit(xTrainMinMax, yTrain)
+    classifiersList.append((naiveBayesClassifier, 'minMaxNB', xTrainMinMax, xTestMinMax))
+
+    knnClassifier = sklearn.neighbors.KNeighborsClassifier(
+        n_neighbors=50, metric='manhattan')
+    knnClassifier.fit(xTrainMinMax, yTrain)
+    classifiersList.append(
+        (knnClassifier, 'minMaxKNN', xTrainMinMax, xTestMinMax))
+
+    for classifier, name, xTrain, xTest in classifiersList:
+
+        predictedTrainY = classifier.predict(xTrain) # overfitted
+        predictedTestY = classifier.predict(xTest) # hopefully not overfitted
+        plot_evaluation_results(labels, yTrain, predictedTrainY, yTest, predictedTestY)
+        savefig('images/scalling/{name}Eval.png')
+        show()
+    
+
+def balancingEvaluator(data: pd.DataFrame, classLabel: str):
+
+    RANDOM_STATE = 42
+    # Getting x and y
+    yData = data[classLabel]
+    labels = pd.unique(yData)
+    xData = data.drop(columns=[classLabel])
+    xTrain, xTest, yTrain, yTest = sklearn.model_selection.train_test_split(
+        xData, yData, train_size=0.7, random_state=RANDOM_STATE)
+    
+    for name in ['SMOTE', 'TomeksAndSMOTE', 'SmoothenClassWeights']:
+
+        if name == 'SMOTE':
+
+            xTrainSMOTE = smoteBalancing(xTrain, classLabel) 
+            classifier = GaussianNB()
+            classifier.fit(xTrainSMOTE, yTrain)
+
+            predictedTrainY = classifier.predict(xTrainSMOTE)  # overfitted
+            predictedTestY = classifier.predict(xTest)  # hopefully not overfitted
+            plot_evaluation_results(
+                labels, yTrain, predictedTrainY, yTest, predictedTestY)
+            savefig('images/ballancing/{name}NBEval.png')
+            show()
+
+            classifier = sklearn.neighbors.KNeighborsClassifier(
+                n_neighbors=50, metric='manhattan')
+            classifier.fit(xTrainSMOTE, yTrain)
+            predictedTrainY = classifier.predict(xTrainSMOTE)  # overfitted
+            predictedTestY = classifier.predict(
+                xTest)  # hopefully not overfitted
+            plot_evaluation_results(
+                labels, yTrain, predictedTrainY, yTest, predictedTestY)
+            savefig('images/ballancing/{name}KNNEval.png')
+            show()
+
+        elif name == 'TomeksAndSMOTE':
+
+            xTrainTomek = smoteTomeksBalancing(xTrain, classLabel)
+            classifier = GaussianNB()
+            classifier.fit(xTrainTomek, yTrain)
+
+            predictedTrainY = classifier.predict(xTrainTomek)  # overfitted
+            predictedTestY = classifier.predict(xTest)  # hopefully not overfitted
+            plot_evaluation_results(
+                labels, yTrain, predictedTrainY, yTest, predictedTestY)
+            savefig('images/ballancing/{name}NBEval.png')
+            show()
+
+            classifier = sklearn.neighbors.KNeighborsClassifier(
+                n_neighbors=50, metric='manhattan')
+            classifier.fit(xTrainTomek, yTrain)
+            predictedTrainY = classifier.predict(xTrainTomek)  # overfitted
+            predictedTestY = classifier.predict(
+                xTest)  # hopefully not overfitted
+            plot_evaluation_results(
+                labels, yTrain, predictedTrainY, yTest, predictedTestY)
+            savefig('images/ballancing/{name}KNNEval.png')
+            show()
+        elif name == 'SmoothenClassWeights':
+            weights = smoothClassWeights(xTrain, classLabel)
+
+            xTrain = smoteTomeksBalancing(xTrain, classLabel)
+            classifier = GaussianNB(class_weights = weights)
+            classifier.fit(xTrain, yTrain)
+
+            predictedTrainY = classifier.predict(xTrain)  # overfitted
+            predictedTestY = classifier.predict(xTest)  # hopefully not overfitted
+            plot_evaluation_results(
+                labels, yTrain, predictedTrainY, yTest, predictedTestY)
+            savefig('images/ballancing/{name}NBEval.png')
+            show()
+
+            classifier = sklearn.neighbors.KNeighborsClassifier(
+                n_neighbors=50, metric='manhattan', class_weights = weights)
+            classifier.fit(xTrain, yTrain)
+            predictedTrainY = classifier.predict(xTrain)  # overfitted
+            predictedTestY = classifier.predict(
+                xTest)  # hopefully not overfitted
+            plot_evaluation_results(
+                labels, yTrain, predictedTrainY, yTest, predictedTestY)
+            savefig('images/ballancing/{name}KNNEval.png')
+            show()
+# %%
+data = pd.read_csv('truncate_outliers.csv')
+data.drop(['encounter_id', 'patient_nbr', 'Unnamed: 0.1', 'Unnamed: 0'],
+          axis=1, inplace=True)  # Dropping ids
+scallingEvaluator(data, 'readmitted')
+balancingEvaluator(data, 'readmitted')
+
+# %%

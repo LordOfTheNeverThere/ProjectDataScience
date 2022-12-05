@@ -19,6 +19,9 @@ for path in list:
     data = read_csv(f'{file}.csv', na_values='?')
     data.describe()
 
+    if(file == "../drought"):
+        del data["fips"]
+
     # Determinate Outliers
 
     OUTLIER_PARAM: int = 1.5 # define the number of stdev to use or the IQR scale (usually 1.5)
