@@ -1,0 +1,5 @@
+- Escolhemos encoding das datas Cyclical pois tem a informação EPOCH e a mensal cíclica, se mais tarde decirmos mudar é mais é só remover uma das colunas.
+
+- Tiramos a coluna dos fips pois tem informação irrelevante (já temos lat e lon)
+
+- Para outliers, escolhemos stdev com 5 sigma apenas aplicado a algumas var, pois percebemos que algumas destas pareciam contínuas nos boxplots, pelo que não faria sentido estar a cortar muita informação. Compromisso no soil data tho. Depois escolhemos drop pois como escolhemos um ceiling alto de n X stdev, o número de linhas dropadas é apenas uma pequena fração do total (<8%), é adequada a forma de lidar com isto. ok done onto next one
