@@ -13,10 +13,12 @@ import os
 os.chdir('../Data/OutliersTreat')
 list = os.listdir()
 #list=[]
-list.append('../drought.csv')
+# list.append('../drought.csv')
 
 # for path in list:
 #     file=os.path.splitext(path)[0]
+
+file = "datesCyclical_stdev_drop_outliers"
 print(file)
 
 register_matplotlib_converters()
