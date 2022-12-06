@@ -1,0 +1,10 @@
+Set2
+KNN Analysis:
+- 1st approach provides better results
+
+NB Analysis:
+- results are identical
+
+Decision:
+Min-Max
+
