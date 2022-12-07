@@ -4,7 +4,7 @@ from pandas.plotting import register_matplotlib_converters
 
 
 register_matplotlib_converters()
-data_ = read_csv('mv_replace_mv.csv')
+data = read_csv('mv_replace_mv.csv')
 data.shape
 
 # %%
@@ -12,9 +12,9 @@ from pandas import DataFrame
 from ds_charts import get_variable_types
 
 
-# drop values
+# median values
 OUTLIER_PARAM: int = 2 # define the number of stdev to use or the IQR scale (usually 1.5)
-OPTION = 'iqr'  # or 'stdev'
+OPTION = 'stdev'  # or 'stdev'
 
 def determine_outlier_thresholds(summary5: DataFrame, var: str):
     if 'iqr' == OPTION:
@@ -45,7 +45,7 @@ df.to_csv('replace_outliers.csv', index=True)
 import pandas as pd
 from ds_charts import get_variable_types
 OUTLIER_PARAM: int = 2 # define the number of stdev to use or the IQR scale (usually 1.5)
-OPTION = 'iqr'  # or 'stdev'
+OPTION = 'stdev'  # or 'stdev'
 numeric_vars = get_variable_types(data)['Numeric']
 def determine_outlier_thresholds(summary5: pd.DataFrame, var: str):
     if 'iqr' == OPTION:
@@ -92,7 +92,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from ds_charts import plot_evaluation_results, multiple_line_chart, plot_overfitting_study
 from sklearn.metrics import accuracy_score
 
-data = data_
+
 target = 'readmitted'
 
 y = data.pop(target).values
@@ -104,20 +104,20 @@ labels.sort()
 trnX, tstX, trnY, tstY = train_test_split(X, y, train_size=0.7, stratify=y)
 
 train = concat([DataFrame(trnX, columns=data.columns), DataFrame(trnY,columns=[target])], axis=1)
-train.to_csv('outlier_replace4_train.csv', index=False)
+train.to_csv('outlier_replace1_train.csv', index=False)
 
 test = concat([DataFrame(tstX, columns=data.columns), DataFrame(tstY,columns=[target])], axis=1)
-test.to_csv('outlier_replace4_test.csv', index=False)
+test.to_csv('outlier_replace1_test.csv', index=False)
 
 
 
-train: DataFrame = read_csv('outlier_replace4_train.csv')
+train: DataFrame = read_csv('outlier_replace1_train.csv')
 trnY: ndarray = train.pop(target).values
 trnX: ndarray = train.values
 labels = unique(trnY)
 labels.sort()
 
-test: DataFrame = read_csv('outlier_replace4_test.csv')
+test: DataFrame = read_csv('outlier_replace1_test.csv')
 tstY: ndarray = test.pop(target).values
 tstX: ndarray = test.values
 
@@ -128,43 +128,21 @@ prd_tst = clf.predict(tstX)
 
 cnf_mtx_trn = confusion_matrix(tstY, prd_tst)
 
+ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
+savefig('images/outlier_replace1_nb.png')
 
 
-
-cm_display = ConfusionMatrixDisplay(confusion_matrix = cnf_mtx_trn, display_labels = [0, 1, 2])
-cm_display.plot()
-plt.title('Accuracy: 0.54')
 # savefig('images/outlier_replace3_nb.png')
 
-from sklearn.metrics import accuracy_score
-print(accuracy_score(tstY, prd_tst))
 
 
+clf = knn = KNeighborsClassifier(n_neighbors=11, metric='chebyshev')
+clf.fit(trnX, trnY)
+prd_trn = clf.predict(trnX)
+prd_tst = clf.predict(tstX)
 
-eval_metric = accuracy_score
-nvalues = [11]
-dist = ['chebyshev']
-values = {}
-best = (0, '')
-last_best = 0
-for d in dist:
-    y_tst_values = []
-    for n in nvalues:
-        knn = KNeighborsClassifier(n_neighbors=n, metric=d)
-        knn.fit(trnX, trnY)
-        prd_tst_Y = knn.predict(tstX)
-        y_tst_values.append(eval_metric(tstY, prd_tst_Y))
-        if y_tst_values[-1] > last_best:
-            best = (n, d)
-            last_best = y_tst_values[-1]
-    values[d] = y_tst_values
-
-print(y_tst_values)
-cnf_mtx_trn = confusion_matrix(tstY, prd_tst_Y)
-cm_display = ConfusionMatrixDisplay(confusion_matrix = cnf_mtx_trn, display_labels = [0, 1, 2])
-cm_display.plot()
-plt.title('Accuracy: 0.53')
-# savefig('images/outlier_replace3_knn.png')
+ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
+savefig('images/outlier_replace1_knn.png')
 
 
 # %%
