@@ -328,26 +328,22 @@ clf = GaussianNB()
 clf.fit(trnX, trnY)
 prd_trn = clf.predict(trnX)
 prd_tst = clf.predict(tstX)
-print(prd_tst==tstY)
+
 cnf_mtx_trn = confusion_matrix(tstY, prd_tst)
 print(cnf_mtx_trn)
-# ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-# savefig('images/mv_drop_nb_best.png')
+
 # show()
 
 
 # %%
 from sklearn.metrics import ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import ds_charts
+from ds_charts import plot_evaluation_results
 
-cm_display = ConfusionMatrixDisplay(confusion_matrix = cnf_mtx_trn, display_labels = [0, 1, 2])
-cm_display.plot()
-plt.title('Accuracy: 0.54')
-savefig('images/mv_replace_nb_best_3param.png')
-
-from sklearn.metrics import accuracy_score
-accuracy_score(tstY, prd_tst)
+plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
+savefig('images/mv_replace_nb.png')
 
 
 # %% KNN classification
@@ -360,29 +356,12 @@ from sklearn.neighbors import KNeighborsClassifier
 from ds_charts import plot_evaluation_results, multiple_line_chart, plot_overfitting_study
 from sklearn.metrics import accuracy_score
 
-eval_metric = accuracy_score
-nvalues = [11]
-dist = ['chebyshev']
-values = {}
-best = (0, '')
-last_best = 0
-for d in dist:
-    y_tst_values = []
-    for n in nvalues:
-        knn = KNeighborsClassifier(n_neighbors=n, metric=d)
-        knn.fit(trnX, trnY)
-        prd_tst_Y = knn.predict(tstX)
-        y_tst_values.append(eval_metric(tstY, prd_tst_Y))
-        if y_tst_values[-1] > last_best:
-            best = (n, d)
-            last_best = y_tst_values[-1]
-    values[d] = y_tst_values
+clf = knn = KNeighborsClassifier(n_neighbors=11, metric='chebyshev')
+clf.fit(trnX, trnY)
+prd_trn = clf.predict(trnX)
+prd_tst = clf.predict(tstX)
 
-print(y_tst_values)
-cnf_mtx_trn = confusion_matrix(tstY, prd_tst_Y)
-cm_display = ConfusionMatrixDisplay(confusion_matrix = cnf_mtx_trn, display_labels = [0, 1, 2])
-cm_display.plot()
-plt.title('Accuracy: 0.53')
-savefig('images/mv_replace_knn_best_3param.png')
+ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
+savefig('images/mv_replace_knn.png')
 
 # %%

@@ -115,19 +115,19 @@ def multiple_bar_chart(xvalues: list, yvalues: dict, ax: Axes = None, title: str
         i += 1
     ax.legend(legend, fontsize='xx-small', title_fontsize='xx-small')
 
-
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 def plot_evaluation_results(labels: ndarray, trn_y, prd_trn, tst_y, prd_tst):
     cnf_mtx_trn = confusion_matrix(trn_y, prd_trn, labels=labels)
-    tn_trn, fp_trn, fn_trn, tp_trn = cnf_mtx_trn.ravel()
+    #tn_trn, fp_trn, fn_trn, tp_trn = cnf_mtx_trn.ravel()
     cnf_mtx_tst = confusion_matrix(tst_y, prd_tst, labels=labels)
-    tn_tst, fp_tst, fn_tst, tp_tst = cnf_mtx_tst.ravel()
+    #tn_tst, fp_tst, fn_tst, tp_tst = cnf_mtx_tst.ravel()
 
     evaluation = {
-        'Accuracy': [(tn_trn + tp_trn) / (tn_trn + tp_trn + fp_trn + fn_trn), (tn_tst + tp_tst) / (tn_tst + tp_tst + fp_tst + fn_tst)],
-        'Recall': [tp_trn / (tp_trn + fn_trn), tp_tst / (tp_tst + fn_tst)],
-        'Specificity': [tn_trn / (tn_trn + fp_trn), tn_tst / (tn_tst + fp_tst)],
-        'Precision': [tp_trn / (tp_trn + fp_trn), tp_tst / (tp_tst + fp_tst)]}
-
+        'Accuracy': [accuracy_score(tst_y, prd_tst),accuracy_score(trn_y, prd_trn)],
+        'Precision': [precision_score(tst_y, prd_tst, average='macro'),precision_score(trn_y, prd_trn, average='macro')],
+    'Recall': [recall_score(tst_y, prd_tst, average='macro'), recall_score(trn_y, prd_trn, average='macro')],
+        'F1-score': [f1_score(tst_y, prd_tst, average='macro'), f1_score(trn_y, prd_trn, average='macro')]
+        }
     _, axs = subplots(1, 2, figsize=(2 * HEIGHT, HEIGHT))
     multiple_bar_chart(['Train', 'Test'], evaluation, ax=axs[0], title="Model's performance over Train and Test sets", percentage=True)
     plot_confusion_matrix(cnf_mtx_tst, labels, ax=axs[1], title='Test')
