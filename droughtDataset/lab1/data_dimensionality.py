@@ -8,7 +8,7 @@ from ds_charts import bar_chart
 register_matplotlib_converters()
 
 # kaggleOGData = pd.read_csv('../kaggleDataset.csv')
-data = pd.read_csv('../Data/drought.csv', na_values='-1')
+data = pd.read_csv('../Data/drought.csv', na_values='?')
 data['date'] = pd.to_datetime(data['date'], format = '%d/%m/%Y')
 data.shape
 
@@ -86,7 +86,7 @@ show()
 
 
 #%% Correlation Analysis
-data = data[variable_types['Numeric']]
+data = data[variable_types['Numeric'] + ["class"]]
 corr_mtx = abs(data.corr())
 print(corr_mtx)
 

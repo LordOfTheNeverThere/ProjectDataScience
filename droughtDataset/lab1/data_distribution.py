@@ -8,7 +8,7 @@ from ds_charts import bar_chart
 register_matplotlib_converters()
 
 # kaggleOGData = pd.read_csv('../kaggleDataset.csv')
-data = pd.read_csv('../drought.csv', na_values='-1')
+data = pd.read_csv('../Data/drought.csv', na_values='-1')
 data['date'] = pd.to_datetime(data['date'], format = '%d/%m/%Y')
 data.shape
 
@@ -63,7 +63,7 @@ show()
 from matplotlib.pyplot import savefig, show, subplots
 from ds_charts import get_variable_types, choose_grid, HEIGHT
 
-numeric_vars = get_variable_types(data)['Binary']
+numeric_vars = get_variable_types(data)['Numeric']
 if [] == numeric_vars:
     raise ValueError('There are no numeric variables.')
 rows, cols = choose_grid(len(numeric_vars))
@@ -73,7 +73,7 @@ for n in range(len(numeric_vars)):
     axs[i, j].set_title('Boxplot for %s'%numeric_vars[n])
     axs[i, j].boxplot(data[numeric_vars[n]].dropna().values)
     i, j = (i + 1, 0) if (n+1) % cols == 0 else (i, j + 1)
-savefig('images/single_boxplots_binary.png')
+savefig('images/single_boxplots.png')
 show()
 
 
