@@ -1,0 +1,9 @@
+Apply the 3 balancing methods to the train data-set;
+
+Find out the best possible model:
+
+KNN
+    -try different distance metrics, including ones not on the ds_code;
+
+Niles Bayes
+    -Vary the distribution and see;
