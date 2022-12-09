@@ -4,7 +4,7 @@ from ds_charts import bar_chart
 
 # READING
 
-filename = '../Data/drought_scaled.csv'
+filename = '../Data/TrainTest/drought_prepared_train.csv'
 file = "drought_scaled"
 original = read_csv(filename, sep=',', decimal='.')
 
