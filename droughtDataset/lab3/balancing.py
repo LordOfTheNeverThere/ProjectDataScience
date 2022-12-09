@@ -76,7 +76,7 @@ print('Drought=', negative_class, ':', len(df_negatives))
 print('Proportion:', round(len(df_pos_sample) / len(df_negatives), 2), ': 1')
 
 # SMOTE
-print("\n SMOTE \n")
+print("\nSMOTE \n")
 
 from pandas import Series
 from imblearn.over_sampling import SMOTE
@@ -96,10 +96,10 @@ print('No Drought=', positive_class, ':', smote_target_count[positive_class])
 print('Drought=', negative_class, ':', smote_target_count[negative_class])
 print('Proportion:', round(smote_target_count[positive_class] / smote_target_count[negative_class], 2), ': 1')
 
-from matplotlib.pyplot import figure, show
+from matplotlib.pyplot import figure, show, savefig
 from ds_charts import multiple_bar_chart
 
 figure()
 multiple_bar_chart(["Drought", "No Drought"], values, title='Target', xlabel='frequency', ylabel='Class balance')
-show()
 savefig(f'images/Balancing/{file}_smote.png')
+show()
