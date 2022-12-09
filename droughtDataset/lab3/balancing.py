@@ -22,7 +22,7 @@ for n in range(1):
     axs[i, j].set_ylabel("nr records")
     axs[i, j].hist(original["class"].dropna().values, 'auto')
     i, j = (i + 1, 0) if (n+1) % cols == 0 else (i, j + 1)
-savefig('images/Balancing/{file}_histogram.png')
+savefig(f'images/Balancing/{file}_histogram.png')
 show()
 
 # DATA BALANCE
@@ -39,6 +39,6 @@ values = {'Original': [target_count[positive_class], target_count[negative_class
 
 figure()
 bar_chart(["Drought", "No Drought"], target_count.values, title='Class balance')
-savefig(f'images/Balancing_{file}_balance.png')
+savefig(f'images/Balancing_{file}_data_balance.png')
 show()
 
