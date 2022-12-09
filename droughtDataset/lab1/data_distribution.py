@@ -186,7 +186,7 @@ i, j = 0, 0
 for n in range(4, 19):
     print(n)
     save = "images/dist/histogram_numeric_distribution" + str(n) + ".png"
-    fig, axs = subplots(1, 1, figsize=(1*HEIGHT, 1*HEIGHT), squeeze=False)
+    fig, axs = subplots(1, 1, figsize=(1*HEIGHT, 1*HEIGHT), squeeze=Falsgite)
     histogram_with_distributions(axs[i, j], data[numeric_vars[n]].dropna(), numeric_vars[n])
     savefig(save)
 # show()
