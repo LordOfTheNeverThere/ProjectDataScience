@@ -216,7 +216,7 @@ def minMaxScalling(data : pd.DataFrame) -> pd.DataFrame:
 
 
 # %% Plots
-data = pd.read_csv('truncate_outliers.csv')
+data = pd.read_csv('replace_outliers.csv')
 data.drop(['encounter_id', 'patient_nbr',
           'Unnamed: 0', 'Unnamed: 0.1'], axis=1, inplace=True)  # Dropping ids
 
@@ -230,7 +230,7 @@ minMaxScalling(data)[0].boxplot(ax=axs[0, 2], rot=90)
 show()
 
 # %% Dataset balancing
-data = pd.read_csv('truncate_outliers.csv')
+data = pd.read_csv('replace_outliers.csv')
 
 # %% Dataset Balancing (SMOTE)
 
@@ -431,7 +431,7 @@ def balancingEvaluator(data: pd.DataFrame, classLabel: str, options: list = ['SM
         #     savefig(f'images/ballancing/{name}KNNEval.png')
         #     show()
 # %%
-data = pd.read_csv('truncate_outliers.csv')
+data = pd.read_csv('replace_outliers.csv')
 
 
 
