@@ -1,4 +1,4 @@
-Apply the 3 balancing methods to the train data-set;
+Apply the 3 balancing methods to the train data-set (already scaled);
 
 Find out the best possible model:
 
