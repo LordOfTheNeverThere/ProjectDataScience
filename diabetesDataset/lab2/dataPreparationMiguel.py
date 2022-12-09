@@ -132,6 +132,29 @@ data.to_csv('diabetic_data_ICD9Cats.csv')
 def zScoreScalling(data: pd.DataFrame) -> pd.DataFrame:
     
     data = data.copy()
+
+    # Remove alredy well behaved dimensions
+    gender = data['gender']
+    readmitted = data['readmitted']
+    data.drop(columns=['gender', 'readmitted'], inplace=True)
+
+    in_first_med = data.columns.get_loc('max_glu_serum')
+    changeIndex = data.columns.get_loc('change')
+    lastIndex = data.columns.get_loc('race_Other')
+    in_last_med = data.columns.get_loc('metformin-pioglitazone')
+    firstPatologyIndex = data.columns.get_loc('infectious\parasiticPatologies')
+    lastPatologyIndex = data.columns.get_loc('externalCauses')
+    drugCols = data.columns[in_first_med: in_last_med + 1]
+    patologiesCols = data.columns[firstPatologyIndex: lastPatologyIndex + 1]
+    terminalCols = data.columns[changeIndex: lastIndex + 1]
+    drugData = data[drugCols]
+    patologyData = data[patologiesCols]
+    terminalData = data[terminalCols]
+
+    data.drop(columns=drugCols, inplace=True)
+    data.drop(columns=patologiesCols, inplace=True)
+    data.drop(columns=terminalCols, inplace=True)
+
     variableTypes = get_variable_types(data)
     numericVars = variableTypes['Numeric']
     booleanVars = variableTypes['Binary']
@@ -143,15 +166,39 @@ def zScoreScalling(data: pd.DataFrame) -> pd.DataFrame:
 
     scaler = sklearn.preprocessing.StandardScaler().fit(numericData) #Only numeric can be scalled
     scalledNumericData = pd.DataFrame(scaler.transform(numericData), index=data.index, columns=numericVars)
-    zScoreData = pd.concat([scalledNumericData, symbolicData, booleanData], axis=1)
+    zScoreData = pd.concat([gender, scalledNumericData, symbolicData,
+                           booleanData, patologyData, drugData, terminalData, readmitted], axis=1)
 
     return zScoreData, scaler
 
 # %% Scalling MinMax
 def minMaxScalling(data : pd.DataFrame) -> pd.DataFrame:
+    data = data.copy()
+
+    # Remove alredy well behaved dimensions
+    gender = data['gender']
+    readmitted = data['readmitted']
+    data.drop(columns=['gender', 'readmitted'], inplace= True)
+
+    in_first_med = data.columns.get_loc('max_glu_serum')
+    changeIndex = data.columns.get_loc('change')
+    lastIndex = data.columns.get_loc('race_Other')
+    in_last_med = data.columns.get_loc('metformin-pioglitazone')
+    firstPatologyIndex = data.columns.get_loc('infectious\parasiticPatologies')
+    lastPatologyIndex = data.columns.get_loc('externalCauses')
+    drugCols = data.columns[in_first_med: in_last_med + 1]
+    patologiesCols = data.columns[firstPatologyIndex: lastPatologyIndex + 1]
+    terminalCols = data.columns[changeIndex: lastIndex + 1]
+    drugData = data[drugCols]
+    patologyData = data[patologiesCols]
+    terminalData = data[terminalCols]
 
     
-    data = data.copy()
+    data.drop(columns = drugCols, inplace=True)
+    data.drop(columns = patologiesCols, inplace=True)
+    data.drop(columns = terminalCols, inplace=True)
+    
+
     variableTypes = get_variable_types(data)
     numericVars = variableTypes['Numeric']
     booleanVars = variableTypes['Binary']
@@ -163,16 +210,17 @@ def minMaxScalling(data : pd.DataFrame) -> pd.DataFrame:
 
     scaler = sklearn.preprocessing.MinMaxScaler().fit(numericData)
     scalledNumericData = pd.DataFrame(scaler.transform(numericData), index=data.index, columns=numericVars)
-    minMaxData = pd.concat([scalledNumericData, symbolicData, booleanData], axis=1)
-    
+    minMaxData = pd.concat([gender, scalledNumericData, symbolicData, booleanData, patologyData, drugData, terminalData, readmitted], axis=1)
+
     return minMaxData, scaler
 
 
 # %% Plots
-data = pd.read_csv('../lab1/allEncoded_Diabetes_Data.csv')
+data = pd.read_csv('truncate_outliers.csv')
 data.drop(['encounter_id', 'patient_nbr',
-          'Unnamed: 0'], axis=1, inplace=True)  # Dropping ids
-ig, axs = subplots(1, 3, figsize=(20, 40), squeeze=False)
+          'Unnamed: 0', 'Unnamed: 0.1'], axis=1, inplace=True)  # Dropping ids
+
+ig, axs = subplots(1, 3, figsize=(40, 10), squeeze=False)
 axs[0, 0].set_title('Original data')
 data.boxplot(ax=axs[0, 0], rot=90)
 axs[0, 1].set_title('Z-score normalization')
@@ -182,7 +230,7 @@ minMaxScalling(data)[0].boxplot(ax=axs[0, 2], rot=90)
 show()
 
 # %% Dataset balancing
-data = pd.read_csv('../lab1/allEncoded_Diabetes_Data.csv')
+data = pd.read_csv('truncate_outliers.csv')
 
 # %% Dataset Balancing (SMOTE)
 
@@ -384,10 +432,12 @@ def balancingEvaluator(data: pd.DataFrame, classLabel: str, options: list = ['SM
         #     show()
 # %%
 data = pd.read_csv('truncate_outliers.csv')
-data['readmitted'] = data['readmitted'].apply(lambda label: label if label == 0 else 1 if label == 2 else 1)
+
+
+
 data.drop(['encounter_id', 'patient_nbr', 'Unnamed: 0.1', 'Unnamed: 0'],
           axis=1, inplace=True)  # Dropping ids
 scallingEvaluator(data, 'readmitted')
-#balancingEvaluator(data, 'readmitted', options=['SmoothenClassWeights'])
+balancingEvaluator(data, 'readmitted', options=['SmoothenClassWeights'])
 
 # %%
