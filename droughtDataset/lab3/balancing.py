@@ -37,7 +37,7 @@ print('Drought=', negative_class, ':', target_count[negative_class])
 print('Proportion:', round(target_count[positive_class] / target_count[negative_class], 2), ': 1')
 values = {'Original': [target_count[positive_class], target_count[negative_class]]}
 
-# POSITIVE CLASS 
+# POSITIVE CLASS = NO DROUGHT
 
 figure()
 bar_chart(["Drought", "No Drought"], target_count.values, title='Class balance')
@@ -100,6 +100,6 @@ from matplotlib.pyplot import figure, show
 from ds_charts import multiple_bar_chart
 
 figure()
-multiple_bar_chart([positive_class, negative_class], values, title='Target', xlabel='frequency', ylabel='Class balance')
+multiple_bar_chart(["Drought", "No Drought"], values, title='Target', xlabel='frequency', ylabel='Class balance')
 show()
 savefig(f'images/Balancing/{file}_smote.png')
