@@ -6,7 +6,8 @@ from sklearn.naive_bayes import GaussianNB
 from ds_charts import plot_evaluation_results, bar_chart
 from sklearn.model_selection import train_test_split
 
-data = read_csv('replace_outliers.csv')
+data = read_csv('minMaxedData.csv')
+
 data = data.drop(columns=['Unnamed: 0.1','Unnamed: 0'])
 target = 'readmitted'
 
@@ -23,14 +24,13 @@ from sklearn.metrics import accuracy_score
 
 estimators = {'GaussianNB': GaussianNB(),
               'MultinomialNB': MultinomialNB(),
-              'BernoulliNB': BernoulliNB()
-              #'CategoricalNB': CategoricalNB() ##### é suposto conseguir usar este?
+              'BernoulliNB': BernoulliNB(),
+            #   'CategoricalNB': CategoricalNB() ##### é suposto conseguir usar este?
               }
 
 xvalues = []
 yvalues = []
 for clf in estimators:
-    print(1)
     xvalues.append(clf)
     estimators[clf].fit(trnX, trnY)
     prdY = estimators[clf].predict(tstX)
@@ -38,6 +38,6 @@ for clf in estimators:
 
 figure()
 bar_chart(xvalues, yvalues, title='Comparison of Naive Bayes Models', ylabel='accuracy', percentage=True)
-savefig('images/nb_study.png')
+savefig('images/nb_study_2.png')
 show()
 # %%
