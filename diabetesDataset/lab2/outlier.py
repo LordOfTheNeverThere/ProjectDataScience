@@ -8,8 +8,10 @@ data = read_csv('mv_replace_mv.csv')
 data.shape
 data['readmitted'].unique()
 data = data.drop(columns='Unnamed: 0')
-data = data.drop(columns=['encounter_id','patient_nbr','admission_type_id',
-       'discharge_disposition_id', 'admission_source_id', ])
+
+numeric_vars = data[['time_in_hospital', 'num_lab_procedures',
+ 'num_procedures', 'num_medications', 'number_outpatient',
+ 'number_emergency', 'number_inpatient', 'number_diagnoses']]
 
 # %% drop
 
@@ -144,20 +146,20 @@ labels.sort()
 trnX, tstX, trnY, tstY = train_test_split(X, y, train_size=0.7, stratify=y)
 
 train = concat([DataFrame(trnX, columns=data.columns), DataFrame(trnY,columns=[target])], axis=1)
-train.to_csv('outlier_replace1_train.csv', index=False)
+train.to_csv('outlier_replace2_train.csv', index=False)
 
 test = concat([DataFrame(tstX, columns=data.columns), DataFrame(tstY,columns=[target])], axis=1)
-test.to_csv('outlier_replace1_test.csv', index=False)
+test.to_csv('outlier_replace2_test.csv', index=False)
 
 
 
-train: DataFrame = read_csv('outlier_replace1_train.csv')
+train: DataFrame = read_csv('outlier_replace2_train.csv')
 trnY: ndarray = train.pop(target).values
 trnX: ndarray = train.values
 labels = unique(trnY)
 labels.sort()
 
-test: DataFrame = read_csv('outlier_replace1_test.csv')
+test: DataFrame = read_csv('outlier_replace2_test.csv')
 tstY: ndarray = test.pop(target).values
 tstX: ndarray = test.values
 
@@ -169,7 +171,7 @@ prd_tst = clf.predict(tstX)
 cnf_mtx_trn = confusion_matrix(tstY, prd_tst)
 
 ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig('images/outlier_replace1_nb.png')
+savefig('images/outlier_replace2_nb.png')
 
 
 # savefig('images/outlier_replace3_nb.png')
@@ -182,7 +184,7 @@ prd_trn = clf.predict(trnX)
 prd_tst = clf.predict(tstX)
 
 ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig('images/outlier_replace1_knn.png')
+savefig('images/outlier_replace2_knn.png')
 
 
 # %%
