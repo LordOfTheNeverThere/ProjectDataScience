@@ -426,4 +426,9 @@ data = pd.read_csv('replace_outliers.csv')
 data, _ = zScoreScalling(data)
 data.to_csv('zScoredData.csv')
 
+# %% Get MinMax scalled data
+data = pd.read_csv('replace_outliers.csv')
+data, _ = minMaxScalling(data)
+data.to_csv('minMaxedData.csv')
+
 # %%
