@@ -25,7 +25,7 @@ from sklearn.metrics import accuracy_score
 estimators = {'GaussianNB': GaussianNB(),
               'MultinomialNB': MultinomialNB(),
               'BernoulliNB': BernoulliNB(),
-            #   'CategoricalNB': CategoricalNB() ##### é suposto conseguir usar este?
+              # 'CategoricalNB': CategoricalNB() ##### é suposto conseguir usar este?
               }
 
 xvalues = []
