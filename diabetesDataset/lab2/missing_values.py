@@ -290,7 +290,7 @@ import matplotlib.pyplot as plt
 import ds_charts as ds
 from sklearn.model_selection import train_test_split
 
-data = df_3
+data = df_2
 target = 'readmitted'
 
 y = data.pop(target).values
@@ -302,10 +302,10 @@ labels.sort()
 trnX, tstX, trnY, tstY = train_test_split(X, y, train_size=0.7, stratify=y)
 
 train = concat([DataFrame(trnX, columns=data.columns), DataFrame(trnY,columns=[target])], axis=1)
-train.to_csv('mv_replace_train.csv', index=False)
+train.to_csv('mv_drop_train.csv', index=False)
 
 test = concat([DataFrame(tstX, columns=data.columns), DataFrame(tstY,columns=[target])], axis=1)
-test.to_csv('mv_replace_test.csv', index=False)
+test.to_csv('mv_drop_test.csv', index=False)
 
 
 
@@ -314,13 +314,13 @@ from sklearn.naive_bayes import GaussianNB
 from numpy import ndarray
 from sklearn.metrics import confusion_matrix
 
-train: DataFrame = read_csv('mv_replace_train.csv')
+train: DataFrame = read_csv('mv_drop_train.csv')
 trnY: ndarray = train.pop(target).values
 trnX: ndarray = train.values
 labels = unique(trnY)
 labels.sort()
 
-test: DataFrame = read_csv('mv_replace_test.csv')
+test: DataFrame = read_csv('mv_drop_test.csv')
 tstY: ndarray = test.pop(target).values
 tstX: ndarray = test.values
 
@@ -343,7 +343,7 @@ import ds_charts
 from ds_charts import plot_evaluation_results
 
 plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig('images/mv_replace_nb.png')
+savefig('images/mv_drop_nb.png')
 
 
 # %% KNN classification
@@ -362,6 +362,6 @@ prd_trn = clf.predict(trnX)
 prd_tst = clf.predict(tstX)
 
 ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig('images/mv_replace_knn.png')
+savefig('images/mv_drop_knn.png')
 
 # %%
