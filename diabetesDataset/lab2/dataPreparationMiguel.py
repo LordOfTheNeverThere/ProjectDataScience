@@ -412,23 +412,24 @@ def balancingEvaluator(data: pd.DataFrame, classLabel: str, options: list = ['SM
         #     savefig(f'images/ballancing/{name}KNNEval.png')
         #     show()
 # %%
-data = pd.read_csv('replace_outliers.csv')
+data = pd.read_csv('mv_replace_mv.csv')
 
 
 
 data.drop(['Unnamed: 0'],
           axis=1, inplace=True)  # Dropping ids
 scallingEvaluator(data, 'readmitted')
-balancingEvaluator(data, 'readmitted', options=['SmoothenClassWeights'])
+balancingEvaluator(data, 'readmitted')
 
 # %% Get Best Set Scalling (zScore)
-data = pd.read_csv('replace_outliers.csv')
+data = pd.read_csv('mv_replace_mv.csv')
 data, _ = zScoreScalling(data)
 data.to_csv('zScoredData.csv')
 
 # %% Get MinMax scalled data
-data = pd.read_csv('replace_outliers.csv')
+data = pd.read_csv('mv_replace_mv.csv')
 data, _ = minMaxScalling(data)
 data.to_csv('minMaxedData.csv')
 
-# %%
+# %% 
+## Best balancing technique is Tomek's Link + SMOTE
