@@ -6,6 +6,46 @@ from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 data = read_csv('mv_replace_mv.csv')
 data.shape
+data['readmitted'].unique()
+data = data.drop(columns='Unnamed: 0')
+
+numeric_vars = data[['time_in_hospital', 'num_lab_procedures',
+ 'num_procedures', 'num_medications', 'number_outpatient',
+ 'number_emergency', 'number_inpatient', 'number_diagnoses']]
+
+# %% drop
+
+from pandas import DataFrame
+from ds_charts import get_variable_types
+
+OUTLIER_PARAM: int = 2 # define the number of stdev to use or the IQR scale (usually 1.5)
+OPTION = 'stdev'  # or 'stdev'
+
+def determine_outlier_thresholds(summary5: DataFrame, var: str):
+    if 'iqr' == OPTION:
+        iqr = OUTLIER_PARAM * (summary5[var]['75%'] - summary5[var]['25%'])
+        top_threshold = summary5[var]['75%']  + iqr
+        bottom_threshold = summary5[var]['25%']  - iqr
+    else:  # OPTION == 'stdev'
+        std = OUTLIER_PARAM * summary5[var]['std']
+        top_threshold = summary5[var]['mean'] + std
+        bottom_threshold = summary5[var]['mean'] - std
+    return top_threshold, bottom_threshold
+
+numeric_vars = data[['time_in_hospital', 'num_lab_procedures',
+ 'num_procedures', 'num_medications', 'number_outpatient',
+ 'number_emergency', 'number_inpatient', 'number_diagnoses']]
+
+print('Original data:', data.shape)
+summary5 = data.describe(include='number')
+df = data.copy(deep=True)
+for var in numeric_vars:
+    top_threshold, bottom_threshold = determine_outlier_thresholds(summary5, var)
+    outliers = df[(df[var] > top_threshold) | (df[var] < bottom_threshold)]
+    df.drop(outliers.index, axis=0, inplace=True)
+# df.to_csv(f'data/{file}_drop_outliers.csv', index=True)
+print('data after dropping outliers:', df.shape)
+
 
 # %%
 from pandas import DataFrame
@@ -27,9 +67,11 @@ def determine_outlier_thresholds(summary5: DataFrame, var: str):
         bottom_threshold = summary5[var]['mean'] - std
     return top_threshold, bottom_threshold
 
-numeric_vars = get_variable_types(data)['Numeric']
-if [] == numeric_vars:
-    raise ValueError('There are no numeric variables.')
+
+numeric_vars = data[['time_in_hospital', 'num_lab_procedures',
+ 'num_procedures', 'num_medications', 'number_outpatient',
+ 'number_emergency', 'number_inpatient', 'number_diagnoses']]
+
 
 summary5 = data.describe(include='number')
 df = data.copy(deep=True)
@@ -46,7 +88,7 @@ import pandas as pd
 from ds_charts import get_variable_types
 OUTLIER_PARAM: int = 2 # define the number of stdev to use or the IQR scale (usually 1.5)
 OPTION = 'stdev'  # or 'stdev'
-numeric_vars = get_variable_types(data)['Numeric']
+
 def determine_outlier_thresholds(summary5: pd.DataFrame, var: str):
     if 'iqr' == OPTION:
         iqr = OUTLIER_PARAM * (summary5[var]['75%'] - summary5[var]['25%'])
@@ -58,9 +100,9 @@ def determine_outlier_thresholds(summary5: pd.DataFrame, var: str):
         bottom_threshold = summary5[var]['mean'] - std
     return top_threshold, bottom_threshold
 
-# truncation
-if [] == numeric_vars:
-    raise ValueError('There are no numeric variables.')
+numeric_vars = data[['time_in_hospital', 'num_lab_procedures',
+ 'num_procedures', 'num_medications', 'number_outpatient',
+ 'number_emergency', 'number_inpatient', 'number_diagnoses']]
 
 summary5 = data.describe(include='number')
 df = data.copy(deep=True)
@@ -104,20 +146,20 @@ labels.sort()
 trnX, tstX, trnY, tstY = train_test_split(X, y, train_size=0.7, stratify=y)
 
 train = concat([DataFrame(trnX, columns=data.columns), DataFrame(trnY,columns=[target])], axis=1)
-train.to_csv('outlier_replace1_train.csv', index=False)
+train.to_csv('outlier_replace2_train.csv', index=False)
 
 test = concat([DataFrame(tstX, columns=data.columns), DataFrame(tstY,columns=[target])], axis=1)
-test.to_csv('outlier_replace1_test.csv', index=False)
+test.to_csv('outlier_replace2_test.csv', index=False)
 
 
 
-train: DataFrame = read_csv('outlier_replace1_train.csv')
+train: DataFrame = read_csv('outlier_replace2_train.csv')
 trnY: ndarray = train.pop(target).values
 trnX: ndarray = train.values
 labels = unique(trnY)
 labels.sort()
 
-test: DataFrame = read_csv('outlier_replace1_test.csv')
+test: DataFrame = read_csv('outlier_replace2_test.csv')
 tstY: ndarray = test.pop(target).values
 tstX: ndarray = test.values
 
@@ -129,7 +171,7 @@ prd_tst = clf.predict(tstX)
 cnf_mtx_trn = confusion_matrix(tstY, prd_tst)
 
 ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig('images/outlier_replace1_nb.png')
+savefig('images/outlier_replace2_nb.png')
 
 
 # savefig('images/outlier_replace3_nb.png')
@@ -142,7 +184,7 @@ prd_trn = clf.predict(trnX)
 prd_tst = clf.predict(tstX)
 
 ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig('images/outlier_replace1_knn.png')
+savefig('images/outlier_replace2_knn.png')
 
 
 # %%

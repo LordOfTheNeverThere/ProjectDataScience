@@ -5,17 +5,19 @@ from pandas import read_csv, concat, unique, DataFrame
 import matplotlib.pyplot as plt
 import ds_charts as ds
 from sklearn.model_selection import train_test_split
-
-
-import os
-os.chdir('../Data/Scaled')
-
 from numpy import ndarray
 from pandas import DataFrame, read_csv, unique
 from matplotlib.pyplot import figure, savefig, show
 from sklearn.neighbors import KNeighborsClassifier
 from ds_charts import plot_evaluation_results, multiple_line_chart, plot_overfitting_study
 from sklearn.metrics import accuracy_score
+
+import os
+os.chdir('../Data/Balancing')
+list=[]
+
+for path in list:
+    file=os.path.splitext(path)[0]
 
 file_tag = 'drought'
 filename = 'datesCyclical_stdev_drop_outliers_scaled_minmax'
@@ -33,7 +35,7 @@ tstY: ndarray = test.pop(target).values
 tstX: ndarray = test.values
 
 eval_metric = accuracy_score
-nvalues = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+nvalues = [1, 3, 5, 10, 15, 20, 30, 50, 75, 100]
 dist = ['manhattan', 'euclidean', 'chebyshev']
 values = {}
 best = (0, '')
