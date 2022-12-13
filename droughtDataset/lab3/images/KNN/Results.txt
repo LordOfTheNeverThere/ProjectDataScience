@@ -1,0 +1,8 @@
+drought_scaled_over
+Best results with 1 neighbors and chebyshev
+
+drought_scaled_under
+Best results with 1 neighbors and euclidean
+
+drought_scaled_smote
+Best results with 1 neighbors and manhattan
