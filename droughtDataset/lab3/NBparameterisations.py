@@ -81,6 +81,11 @@ for path in list:
         prdY = estimators[clf].predict(tstX)
         yvalues.append(accuracy_score(tstY, prdY))
 
+        # prd_trn = estimators[clf].predict(trnX)
+        # prd_tst = estimators[clf].predict(tstX)
+        # plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
+        # savefig(f'../../lab3/images/NB/{clf}_{file_tag}_nb_study.png')
+
     figure()
     bar_chart(xvalues, yvalues, title='Comparison of Naive Bayes Models', ylabel='accuracy', percentage=True)
     savefig(f'../../lab3/images/NB/{file_tag}_nb_study.png')
