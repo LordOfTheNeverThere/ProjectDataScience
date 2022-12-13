@@ -1,10 +1,16 @@
 # separate the target variable from the rest of the data
 
+from pandas import DataFrame, read_csv, unique
+from matplotlib.pyplot import figure, savefig, show
+from ds_charts import plot_evaluation_results, bar_chart
+from numpy import ndarray
 import numpy as np
 from pandas import read_csv, concat, unique, DataFrame
 import matplotlib.pyplot as plt
 import ds_charts as ds
 from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, CategoricalNB
+from sklearn.metrics import accuracy_score
 
 # file_tag = 'drought_prepared'
 # data: DataFrame = read_csv(f'../Data/{file_tag}.csv')
@@ -36,67 +42,51 @@ from sklearn.model_selection import train_test_split
 
 # NB
 
-file_tag = 'drought_scaled'
-filename = 'drought_scaled'
-target = 'class'
+import os
+os.chdir('../Data/Balancing')
+list = os.listdir()
 
-train: DataFrame = read_csv(f'../Data/Balancing/{filename}_train.csv')
-trnY: ndarray = train.pop(target).values
-trnX: ndarray = train.values
-labels = unique(trnY)
-labels.sort()
+for path in list:
+    file=os.path.splitext(path)[0]
+    print(file)
 
-test: DataFrame = read_csv(f'../Data/Balancing/{filename}_test.csv')
-tstY: ndarray = test.pop(target).values
-tstX: ndarray = test.values
+    file_tag = file
+    filename = file
+    target = 'class'
 
-clf = GaussianNB()
-clf.fit(trnX, trnY)
-prd_trn = clf.predict(trnX)
-prd_tst = clf.predict(tstX)
-plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig('images/drought_balanced_nb_best.png')
-show()
+    train: DataFrame = read_csv(f'{filename}.csv')
+    trnY: ndarray = train.pop(target).values
+    trnX: ndarray = train.values
+    labels = unique(trnY)
+    labels.sort()
 
-# accuracy
+    test: DataFrame = read_csv(f'../TrainTest/drought_prepared_test.csv')
+    tstY: ndarray = test.pop(target).values
+    tstX: ndarray = test.values
 
-from sklearn.naive_bayes import GaussianNB
+    # classifier 
 
-clf = GaussianNB()
-clf.fit(trnX, trnY)
-clf.score(tstX, tstY)
-
-# confusion matrix
-
-from numpy import ndarray
-from sklearn.metrics import confusion_matrix
-
-labels: ndarray = unique(y)
-labels.sort()
-prdY: ndarray = clf.predict(tstX)
-cnf_mtx_tst: ndarray = confusion_matrix(tstY, prdY, labels=labels)
-cnf_mtx_tst
-
-# accuracy of different parameterisations
-
-from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, CategoricalNB
-from sklearn.metrics import accuracy_score
-
-estimators = {'GaussianNB': GaussianNB(),
+    estimators = {'GaussianNB': GaussianNB(),
               'MultinomialNB': MultinomialNB(),
               'BernoulliNB': BernoulliNB()
               #'CategoricalNB': CategoricalNB
               }
 
-xvalues = []
-yvalues = []
-for clf in estimators:
-    xvalues.append(clf)
-    estimators[clf].fit(trnX, trnY)
-    prdY = estimators[clf].predict(tstX)
-    yvalues.append(accuracy_score(tstY, prdY))
+    xvalues = []
+    yvalues = []
 
-figure()
-bar_chart(xvalues, yvalues, title='Comparison of Naive Bayes Models', ylabel='accuracy', percentage=True)
-savefig(f'images/{file_tag}_nb_study.png')
-show()
+    for clf in estimators:
+        xvalues.append(clf)
+        estimators[clf].fit(trnX, trnY)
+        prdY = estimators[clf].predict(tstX)
+        yvalues.append(accuracy_score(tstY, prdY))
+
+        # prd_trn = estimators[clf].predict(trnX)
+        # prd_tst = estimators[clf].predict(tstX)
+        # plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
+        # savefig(f'../../lab3/images/NB/{clf}_{file_tag}_nb_study.png')
+
+    figure()
+    bar_chart(xvalues, yvalues, title='Comparison of Naive Bayes Models', ylabel='accuracy', percentage=True)
+    savefig(f'../../lab3/images/NB/{file_tag}_nb_study.png')
+    show()
