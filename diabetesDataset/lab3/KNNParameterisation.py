@@ -16,17 +16,17 @@ y = data['readmitted']
 X =  data.drop(columns=['readmitted', 'Unnamed: 0'])
 
 
-xTrain, xTest, yTrain, yTest = sklearn.model_selection.train_test_split(X, y, train_size=0.6, random_state=42)
-xTrain, xVal, yTrain, yVal = sklearn.model_selection.train_test_split(
-    xTrain, yTrain, train_size=0.5, random_state=42)
+xTrain, xTest, yTrain, yTest = sklearn.model_selection.train_test_split(X, y, train_size=0.7, random_state=42)
+xTest, xVal, yTest, yVal = sklearn.model_selection.train_test_split(
+    xTest, yTest, train_size=0.3333333333333333333, random_state=42)
 
 labels = unique(yTrain)
 labels.sort()
 # %% GridSearch
 
 evalMetric = accuracy_score
-nvalues = np.arange(175,1001,25)
-dist = np.arange(50, 1001, 50)  # Add more distance metrics
+nvalues = np.arange(175,200, 1)
+dist = [10]  # Add more distance metrics
 values = {}
 best = (0, '')
 lastBest = 0
@@ -44,7 +44,7 @@ for d in dist:
 
 figure()
 multiple_line_chart(nvalues, values, title='KNN variants', xlabel='n', ylabel=str(accuracy_score), percentage=True)
-savefig('images/{file_tag}_knn_study.png')
+savefig('images/final_knn_study.png')
 show()
 print('Best results with %d neighbors and %s'%(best[0], best[1]))
 
@@ -58,6 +58,6 @@ clf.fit(xTrain, yTrain)
 predictedYTrain = clf.predict(xTrain)
 predictedYTest = clf.predict(xTest)
 plot_evaluation_results(labels, yTrain, predictedYTrain, yTest, predictedYTest)
-savefig('images/{file_tag}_knn_best.png')
+savefig('images/final_knn_best.png')
 show()
 # %%
