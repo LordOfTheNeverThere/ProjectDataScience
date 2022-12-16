@@ -1,8 +1,8 @@
 drought_scaled_over
-Best results with 1 neighbors and chebyshev
+Best results with 35 with manhattan
 
 drought_scaled_under
-Best results with 1 neighbors and euclidean
+Best results with 30 with manhattan
 
 drought_scaled_smote
-Best results with 1 neighbors and manhattan
+Best results with 35 with manhattans
