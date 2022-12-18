@@ -135,7 +135,11 @@ def zScoreScalling(data: pd.DataFrame, scaler = None) -> pd.DataFrame:
 
     # Remove alredy well behaved dimensions
     gender = data['gender']
-    data.drop(columns=['gender'], inplace=True)
+    admissionTypeId = data['admission_type_id']
+    dischargeDispositionId = data['discharge_disposition_id']
+    admissionSourceId = data['admission_source_id']
+    data.drop(columns=['gender', 'admission_type_id',
+              'discharge_disposition_id', 'admission_source_id'], inplace=True)
 
     in_first_med = data.columns.get_loc('max_glu_serum')
     changeIndex = data.columns.get_loc('change')
@@ -162,7 +166,7 @@ def zScoreScalling(data: pd.DataFrame, scaler = None) -> pd.DataFrame:
         
         scaler = sklearn.preprocessing.StandardScaler().fit(numericData) #Only numeric can be scalled
     scalledNumericData = pd.DataFrame(scaler.transform(numericData), index=data.index, columns=numericVars)
-    zScoreData = pd.concat([gender, scalledNumericData, symbolicData,
+    zScoreData = pd.concat([gender, admissionTypeId, dischargeDispositionId, admissionSourceId, scalledNumericData, symbolicData,
                            booleanData, drugPatologiesData, terminalData], axis=1)
 
     return zScoreData, scaler
@@ -173,7 +177,11 @@ def minMaxScalling(data : pd.DataFrame, scaler = None) -> pd.DataFrame:
 
     # Remove alredy well behaved dimensions
     gender = data['gender']
-    data.drop(columns=['gender'], inplace= True)
+    admissionTypeId = data['admission_type_id']
+    dischargeDispositionId = data['discharge_disposition_id']
+    admissionSourceId = data['admission_source_id']
+    data.drop(columns=['gender', 'admission_type_id',
+              'discharge_disposition_id', 'admission_source_id'], inplace=True)
 
     in_first_med = data.columns.get_loc('max_glu_serum')
     changeIndex = data.columns.get_loc('change')
@@ -200,7 +208,7 @@ def minMaxScalling(data : pd.DataFrame, scaler = None) -> pd.DataFrame:
         scaler = sklearn.preprocessing.MinMaxScaler().fit(numericData)
 
     scalledNumericData = pd.DataFrame(scaler.transform(numericData), index=data.index, columns=numericVars)
-    minMaxData = pd.concat([gender, scalledNumericData, symbolicData,
+    minMaxData = pd.concat([gender, admissionTypeId, dischargeDispositionId, admissionSourceId, scalledNumericData, symbolicData,
                            booleanData, drugPatologiesData, terminalData], axis=1)
 
     return minMaxData, scaler
@@ -413,16 +421,18 @@ def balancingEvaluator(data: pd.DataFrame, classLabel: str, options: list = ['SM
         #     show()
 # %%
 data = pd.read_csv('mv_replace_mv.csv')
+# %%
 
 
-
-data.drop(['Unnamed: 0'],
+data.drop(['Unnamed: 0', 'encounter_id', 'patient_nbr'],
           axis=1, inplace=True)  # Dropping ids
 scallingEvaluator(data, 'readmitted')
 balancingEvaluator(data, 'readmitted')
 
 # %% Get Best Set Scalling (zScore)
 data = pd.read_csv('mv_replace_mv.csv')
+data.drop(['Unnamed: 0', 'encounter_id', 'patient_nbr'],
+          axis=1, inplace=True)  # Dropping ids
 data, _ = zScoreScalling(data)
 data.to_csv('zScoredData.csv')
 
