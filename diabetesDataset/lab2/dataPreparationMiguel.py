@@ -445,5 +445,30 @@ data.to_csv('minMaxedData.csv', index = False)
 
 # %% 
 ## Best balancing technique is Tomek's Link + SMOTE
+# Aplying Balancing
 data = pd.read_csv('minMaxedData.csv')
+
+# Separate y from X
+y = data['readmitted']
+X = data.drop(columns=['readmitted'])
+
+#Get train Set (70%)
+xTrain, xTest, yTrain, yTest = sklearn.model_selection.train_test_split(
+    X, y, train_size=0.7, random_state=42)
+
+# Get Test (20%) and Val set (10%)
+xTest, xVal, yTest, yVal = sklearn.model_selection.train_test_split(
+    xTest, yTest, train_size=0.3333333333333333333, random_state=42)
+
+## Join x and Y for each set so that we don't create too many csv files
+
+trainSet = pd.concat([xTrain, yTrain], axis = 1 )
+valSet = pd.concat([xVal, yVal], axis = 1 )
+testSet = pd.concat([xTest, yTest], axis=1)
+
+# add index = false as param so that we don't get unnameds
+# Save sets
+trainSet.to_csv('minMaxedTrainData.csv', index=False)
+valSet.to_csv('minMaxedValData.csv', index=False)
+testSet.to_csv('minMaxedTestData.csv', index=False)
 # %%
