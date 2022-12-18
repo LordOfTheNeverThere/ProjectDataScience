@@ -8,21 +8,21 @@ from ds_charts import plot_evaluation_results, multiple_line_chart
 from sklearn.metrics import accuracy_score
 import numpy as np
 
-data = read_csv('zScoredData.csv')
-# data = data.sample(n=round(0.01*(len(data.index))))
 target = 'readmitted'
-
-y = data.pop(target).values
-X = data.values
-labels: np.ndarray = unique(y)
+train: DataFrame = read_csv('minMaxedTrainData.csv')
+trnY: ndarray = train.pop(target).values
+trnX: ndarray = train.values
+labels = unique(trnY)
 labels.sort()
 
-trnX, tstX, trnY, tstY = train_test_split(X, y, train_size=0.8, stratify = y)
+test: DataFrame = read_csv('minMaxedValData.csv')
+valY: ndarray = test.pop(target).values
+valX: ndarray = test.values
 
 # %%
 
 min_impurity_decrease = [0.01, 0.005, 0.0025, 0.001, 0.0005]
-max_depths = [2, 5, 10, 15, 20, 25]
+max_depths = [2, 5, 10, 15, 20, 25, 30]
 criteria = ['entropy', 'gini']
 best = ('',  0, 0.0)
 last_best = 0
@@ -31,6 +31,7 @@ best_model = None
 figure()
 fig, axs = subplots(1, 2, figsize=(16, 4), squeeze=False)
 for k in range(len(criteria)):
+    print(k/len(criteria))
     f = criteria[k]
     values = {}
     for d in max_depths:
@@ -38,8 +39,8 @@ for k in range(len(criteria)):
         for imp in min_impurity_decrease:
             tree = DecisionTreeClassifier(max_depth=d, criterion=f, min_impurity_decrease=imp)
             tree.fit(trnX, trnY)
-            prdY = tree.predict(tstX)
-            yvalues.append(accuracy_score(tstY, prdY))
+            prdY = tree.predict(valX)
+            yvalues.append(accuracy_score(valY, prdY))
             if yvalues[-1] > last_best:
                 best = (f, d, imp)
                 last_best = yvalues[-1]
@@ -48,28 +49,34 @@ for k in range(len(criteria)):
         values[d] = yvalues
     multiple_line_chart(min_impurity_decrease, values, ax=axs[0, k], title=f'Decision Trees with {f} criteria',
                            xlabel='min_impurity_decrease', ylabel='accuracy', percentage=True)
-savefig('images/decisiontree/dt_study.png')
+savefig('images/decisiontree/dt_study_test.png')
 print('Best results achieved with %s criteria, depth=%d and min_impurity_decrease=%1.2f ==> accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
 
 
 #%%  #best params tree
-d = 10
-f = 'entropy'
-imp = 0.0005
+d = best[1]
+f = best[0]
+imp = best[2]
+
+test: DataFrame = read_csv('minMaxedTestData.csv')
+tstY: ndarray = test.pop(target).values
+tstX: ndarray = test.values
+
+
 figure()
 
 tree = DecisionTreeClassifier(max_depth=d, criterion=f, min_impurity_decrease=imp)
 tree.fit(trnX, trnY)
 prdY = tree.predict(tstX)
 plot_tree(tree)
-savefig('images/decisiontree/best_tree.png')
+savefig('images/decisiontree/best_tree_test.png', dpi = 500)
 
 #%%
 
 prd_trn = best_model.predict(trnX)
 prd_tst = best_model.predict(tstX)
 plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig('images/decisiontree/dt_best.png')
+savefig('images/decisiontree/dt_best_test.png')
 show()
 
 # %%
@@ -79,7 +86,7 @@ from ds_charts import horizontal_bar_chart
 from matplotlib.pyplot import Axes
 
 
-variables = data.columns
+variables = train.columns
 importances = best_model.feature_importances_
 indices = argsort(importances)[::-1]
 elems = []
@@ -91,7 +98,7 @@ for f in range(len(variables)):
 
 figure()
 horizontal_bar_chart(elems, imp_values, error=None, title='Decision Tree Features importance', xlabel='importance', ylabel='variables')
-savefig('images/decisiontree/dt_ranking.png')
+savefig('images/decisiontree/dt_ranking_test.png')
 
 
 #%%
@@ -111,5 +118,5 @@ for d in max_depths:
     y_tst_values.append(eval_metric(tstY, prd_tst_Y))
     y_trn_values.append(eval_metric(trnY, prd_trn_Y))
 plot_overfitting_study(max_depths, y_trn_values, y_tst_values, name=f'DT=imp{imp}_{f}', xlabel='max_depth', ylabel=str(eval_metric))
-savefig('images/decisiontree/overfitting')
+savefig('images/decisiontree/overfitting_test')
 # %%
