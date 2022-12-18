@@ -9,7 +9,6 @@ from ds_charts import set_elements, plot_evaluation_results, multiple_line_chart
 from sklearn.metrics import accuracy_score
 import sklearn
 import numpy as np
-from ds_charts import overfittingStudyImage
 import pandas as pd
 
 # %% Load File Tag
@@ -18,8 +17,7 @@ file_tag = 'dummy'
 
 # %% Load Datasets
 
-data: DataFrame = read_csv('zScoredData.csv')
-data = data.head(1000) # DELETE THIS
+data: DataFrame = read_csv('minMaxedData.csv')
 y = data['readmitted']
 X = data.drop(columns=['readmitted', 'Unnamed: 0', 'Unnamed: 0.1', 'encounter_id'])
 

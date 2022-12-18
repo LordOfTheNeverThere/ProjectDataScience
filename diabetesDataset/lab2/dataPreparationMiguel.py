@@ -434,12 +434,16 @@ data = pd.read_csv('mv_replace_mv.csv')
 data.drop(['Unnamed: 0', 'encounter_id', 'patient_nbr'],
           axis=1, inplace=True)  # Dropping ids
 data, _ = zScoreScalling(data)
-data.to_csv('zScoredData.csv')
+data.to_csv('zScoredData.csv', index = False)
 
 # %% Get Best Set Scalling (zScore)
 data = pd.read_csv('mv_replace_mv.csv')
+data.drop(['Unnamed: 0', 'encounter_id', 'patient_nbr'],
+          axis=1, inplace=True)  # Dropping ids
 data, _ = minMaxScalling(data)
-data.to_csv('minMaxedData.csv')
+data.to_csv('minMaxedData.csv', index = False)
 
 # %% 
 ## Best balancing technique is Tomek's Link + SMOTE
+data = pd.read_csv('minMaxedData.csv')
+# %%
