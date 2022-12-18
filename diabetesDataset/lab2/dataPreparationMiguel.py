@@ -429,14 +429,14 @@ data.drop(['Unnamed: 0', 'encounter_id', 'patient_nbr'],
 scallingEvaluator(data, 'readmitted')
 balancingEvaluator(data, 'readmitted')
 
-# %% Get Best Set Scalling (zScore)
+# %% Get zScored Data
 data = pd.read_csv('mv_replace_mv.csv')
 data.drop(['Unnamed: 0', 'encounter_id', 'patient_nbr'],
           axis=1, inplace=True)  # Dropping ids
 data, _ = zScoreScalling(data)
 data.to_csv('zScoredData.csv')
 
-# %% Get MinMax scalled data
+# %% Get Best Set Scalling (zScore)
 data = pd.read_csv('mv_replace_mv.csv')
 data, _ = minMaxScalling(data)
 data.to_csv('minMaxedData.csv')
