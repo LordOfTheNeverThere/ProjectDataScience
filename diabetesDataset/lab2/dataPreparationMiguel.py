@@ -265,21 +265,17 @@ def smoothClassWeights(data : pd.DataFrame, classLabel: str) -> dict :
 
 # %% Dataset Balancing (Tomek's Link + SMOTE)
 
-def smoteTomeksBalancing(xTrain: pd.DataFrame, yTrain: pd.DataFrame, classLabel: str) -> pd.DataFrame:
-    trainingData = pd.concat([xTrain, yTrain], axis=1)
-
-    RANDOM_STATE = 42
+def smoteTomeksBalancing(xTrain: pd.DataFrame, yTrain: pd.DataFrame) -> pd.DataFrame:
+    RANDOM_STATE = 64
 
     tomeks = imblearn.under_sampling.TomekLinks()
     smote = imblearn.over_sampling.SMOTE(random_state=RANDOM_STATE)
 
-    yData = trainingData[classLabel]
-    xData = trainingData.drop(columns=[classLabel])
 
-    xData, yData = tomeks.fit_resample(xData, yData)
-    xData, yData = smote.fit_resample(xData, yData)
+    xTrain, yTrain = tomeks.fit_resample(xTrain, yTrain)
+    xTrain, yTrain = smote.fit_resample(xTrain, yTrain)
 
-    return xData, yData
+    return xTrain, yTrain
 
 # %% testing the scalling alternatives
 
@@ -459,6 +455,10 @@ xTrain, xTest, yTrain, yTest = sklearn.model_selection.train_test_split(
 # Get Test (20%) and Val set (10%)
 xTest, xVal, yTest, yVal = sklearn.model_selection.train_test_split(
     xTest, yTest, train_size=0.3333333333333333333, random_state=42)
+
+## Balancing Training Data
+
+xTrain, yTrain = smoteTomeksBalancing(xTrain=xTrain, yTrain=yTrain)
 
 ## Join x and Y for each set so that we don't create too many csv files
 
