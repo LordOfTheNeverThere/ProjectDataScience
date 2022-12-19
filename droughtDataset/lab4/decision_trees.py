@@ -84,7 +84,7 @@ from sklearn import tree
 prd_trn = best_model.predict(trnX)
 prd_tst = best_model.predict(tstX)
 plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig(f'images/DT/{file_tag}_dt_best.png')
+savefig(f'images/DT/DT_best_results_Set2.png')
 #show()
 
 #importance of each variable in the discrimination
