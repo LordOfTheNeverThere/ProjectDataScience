@@ -123,11 +123,11 @@ def plot_evaluation_results(labels: ndarray, trn_y, prd_trn, tst_y, prd_tst):
     #tn_tst, fp_tst, fn_tst, tp_tst = cnf_mtx_tst.ravel()
 
     evaluation = {
-        'Accuracy': [accuracy_score(tst_y, prd_tst),accuracy_score(trn_y, prd_trn)],
-        'Precision': [precision_score(tst_y, prd_tst, average='macro'),precision_score(trn_y, prd_trn, average='macro')],
-    'Recall': [recall_score(tst_y, prd_tst, average='macro'), recall_score(trn_y, prd_trn, average='macro')],
-        'F1-score': [f1_score(tst_y, prd_tst, average='macro'), f1_score(trn_y, prd_trn, average='macro')]
-        }
+        'Accuracy': [accuracy_score(trn_y, prd_trn), accuracy_score(tst_y, prd_tst)],
+        'Precision': [precision_score(trn_y, prd_trn, average='macro'), precision_score(tst_y, prd_tst, average='macro')],
+        'Recall': [recall_score(trn_y, prd_trn, average='macro'), recall_score(tst_y, prd_tst, average='macro')],
+        'F1-score': [f1_score(trn_y, prd_trn, average='macro'), f1_score(tst_y, prd_tst, average='macro')]
+    }
     _, axs = subplots(1, 2, figsize=(2 * HEIGHT, HEIGHT))
     multiple_bar_chart(['Train', 'Test'], evaluation, ax=axs[0], title="Model's performance over Train and Test sets", percentage=True)
     plot_confusion_matrix(cnf_mtx_tst, labels, ax=axs[1], title='Test')

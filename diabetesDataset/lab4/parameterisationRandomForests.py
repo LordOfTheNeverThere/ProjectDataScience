@@ -12,20 +12,18 @@ import numpy as np
 import pandas as pd
 
 # %% Load File Tag
-file_tag = 'dummy'
+file_tag = 'v1.0'
 
 
 # %% Load Datasets
 
-data: DataFrame = read_csv('minMaxedData.csv')
-y = data['readmitted']
-X = data.drop(columns=['readmitted', 'Unnamed: 0', 'Unnamed: 0.1', 'encounter_id'])
+trainSet: DataFrame = read_csv('minMaxedTrainData.csv')
+valSet: DataFrame = read_csv('minMaxedValData.csv')
+testSet: DataFrame = read_csv('minMaxedTestData.csv')
 
+yTrain, yVal, yTest = trainSet['readmitted'], valSet['readmitted'], testSet['readmitted']
+xTrain, xVal, xTest = trainSet.drop(columns=['readmitted']), valSet.drop(columns=['readmitted']), testSet.drop(columns=['readmitted'])
 
-xTrain, xTest, yTrain, yTest = sklearn.model_selection.train_test_split(
-    X, y, train_size=0.7, random_state=42)
-xTest, xVal, yTest, yVal = sklearn.model_selection.train_test_split(
-    xTest, yTest, train_size=0.3333333333333333333, random_state=42)
 
 labels = unique(yTrain)
 labels.sort()
@@ -75,7 +73,7 @@ for k in range(len(max_depths)):
                 best_model = rf
 
         axis = set_elements(
-            ax=axsOverfitting[k, maxFeatureIndex], title='MaxNumOfFeatures = ' + str(f) + ', MaxDepth = '+ str(k), xlabel=eval_metric, ylabel='NumOfEstimators')
+            ax=axsOverfitting[k, maxFeatureIndex], title='MaxNumOfFeatures = ' + str(f) + ', MaxDepth = '+ str(d), xlabel=eval_metric, ylabel='NumOfEstimators')
         axis.plot(n_estimators, yTrainMetrics, color = 'orange', linewidth=2, markersize=12, label= 'Train')
         axis.plot(n_estimators, yvalues, color='blue', linewidth=2, markersize=12, label= 'Validation')
         axis.set_ylim((0,1))
