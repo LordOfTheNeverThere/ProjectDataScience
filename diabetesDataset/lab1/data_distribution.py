@@ -172,7 +172,7 @@ def histogram_with_distributions(ax: Axes, series: Series, var: str):
     multiple_line_chart(values, distributions, ax=ax, title='Best fit for %s'%var, xlabel=var, ylabel='')
 
 numeric_vars = get_variable_types(data)['Numeric']
-numeric_vars = numeric_vars[1:5]
+numeric_vars = numeric_vars[9:12]
 rows, cols = choose_grid(len(numeric_vars))
 if [] == numeric_vars:
     raise ValueError('There are no numeric variables.')
@@ -183,7 +183,7 @@ for n in range(len(numeric_vars)):
     print(n/len(numeric_vars)*100)
     histogram_with_distributions(axs[i, j], data[numeric_vars[n]].dropna(), numeric_vars[n])
     i, j = (i + 1, 0) if (n+1) % cols == 0 else (i, j + 1)
-savefig('images/distribution/histogram_numeric_distribution_2_teste.png') 
+savefig('images/distribution/histogram_numeric_distribution_4_teste.png') 
 
 
 # %%
