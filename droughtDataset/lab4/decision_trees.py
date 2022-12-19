@@ -49,7 +49,7 @@ for k in range(len(criteria)):
         values[d] = yvalues
     multiple_line_chart(min_impurity_decrease, values, ax=axs[0, k], title=f'Decision Trees with {f} Criteria',
                            xlabel='min_impurity_decrease', ylabel='Accuracy', percentage=True)
-savefig(f'images/{file_tag}_dt_study.png')
+savefig(f'images/DecisionTrees/{file_tag}_dt_study.png')
 #show()
 print('Best results achieved with %s criteria, depth=%d and min_impurity_decrease=%1.2f ==> accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
 
@@ -58,17 +58,17 @@ print('Best results achieved with %s criteria, depth=%d and min_impurity_decreas
 # from sklearn.tree import export_graphviz
 # from matplotlib.pyplot import imread, imshow, axis
 
-# file_tree = 'images/best_tree.png'
+# file_tree = 'images/DecisionTrees/best_tree.png'
 
-# dot_data = export_graphviz(best_model, out_file='images/best_tree.dot', filled=True, rounded=True, special_characters=True)
+# dot_data = export_graphviz(best_model, out_file='images/DecisionTrees/best_tree.dot', filled=True, rounded=True, special_characters=True)
 # # Convert to png
 # from subprocess import call
-# call(['dot', '-Tpng', 'images/best_tree.dot', '-o', file_tree, '-Gdpi=600'])
+# call(['dot', '-Tpng', 'images/DecisionTrees/best_tree.dot', '-o', file_tree, '-Gdpi=600'])
 
 # figure(figsize = (14, 18))
 # imshow(imread(file_tree))
 # axis('off')
-# savefig(f'images/{file_tag}_dt_best.png')
+# savefig(f'images/DecisionTrees/{file_tag}_dt_best.png')
 # show()
 
 #show the learned tree (light)
@@ -77,14 +77,14 @@ from sklearn import tree
 
 labels = [str(value) for value in labels]
 tree.plot_tree(best_model, feature_names=train.columns, class_names=labels)
-savefig(f'images/{file_tag}_dt_best_tree.png')
+savefig(f'images/DecisionTrees/{file_tag}_dt_best_tree.png')
 
 #see the parameters and the performance of the model
 
 prd_trn = best_model.predict(trnX)
 prd_tst = best_model.predict(tstX)
 plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig(f'images/{file_tag}_dt_best.png')
+savefig(f'images/DecisionTrees/{file_tag}_dt_best.png')
 #show()
 
 #importance of each variable in the discrimination
@@ -105,7 +105,7 @@ for f in range(len(variables)):
 
 figure()
 horizontal_bar_chart(elems, imp_values, error=None, title='Decision Tree Features importance', xlabel='importance', ylabel='variables')
-savefig(f'images/{file_tag}_dt_variable_ranking.png')
+savefig(f'images/DecisionTrees/{file_tag}_dt_variable_ranking.png')
 #show()
 
 #overfitting study
@@ -126,5 +126,5 @@ for d in max_depths:
     y_tst_values.append(eval_metric(tstY, prd_tst_Y))
     y_trn_values.append(eval_metric(trnY, prd_trn_Y))
 plot_overfitting_study(max_depths, y_trn_values, y_tst_values, name=f'DT=imp{imp}_{f}', xlabel='max_depth', ylabel=str(eval_metric))
-savefig(f'images/{file_tag}_overfitting.png')
+savefig(f'images/DecisionTrees/{file_tag}_overfitting.png')
 #show()
