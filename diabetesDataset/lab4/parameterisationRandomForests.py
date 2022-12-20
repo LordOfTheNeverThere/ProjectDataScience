@@ -3,7 +3,7 @@ from numpy import std, argsort
 from numpy import ndarray
 from pandas import DataFrame, read_csv, unique
 import matplotlib as plt
-from matplotlib.pyplot import figure, subplots, savefig, show, plot
+from matplotlib.pyplot import figure, subplots, savefig, show, tight_layout
 from sklearn.ensemble import RandomForestClassifier
 from ds_charts import set_elements, plot_evaluation_results, multiple_line_chart, horizontal_bar_chart, HEIGHT
 from sklearn.metrics import accuracy_score
@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 # %% Load File Tag
-file_tag = 'v1.0'
+file_tag = 'v1.2'
 
 
 # %% Load Datasets
@@ -29,9 +29,9 @@ labels = unique(yTrain)
 labels.sort()
 
 # %% Grid Search
-n_estimators = [5, 10, 25, 50, 75, 100, 200, 300, 400]
-max_depths = [5, 10, 25]
-max_features = [.25, .5, .75, 1]
+n_estimators = [175, 200, 225]
+max_depths = [25, 35, 45]
+max_features = [0.2, .25, 0.3]
 best = ('', 0, 0)
 last_best = 0
 best_model = None
@@ -121,9 +121,11 @@ for f in range(len(variables)):
     elems += [variables[indices[f]]]
     print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
 
-figure()
+figure(figsize=(4, 8))
+
 horizontal_bar_chart(elems, importances[indices], stdevs[indices],
                      title='Random Forest Features importance', xlabel='importance', ylabel='variables')
 savefig(f'images/{file_tag}_rf_ranking.png')
+tight_layout(pad=0.1, w_pad=0.1, h_pad=0.1)
 
 # %%
