@@ -22,10 +22,10 @@ test: DataFrame = read_csv(f'../Data/TrainTest/drought_prepared_test.csv')
 tstY: ndarray = test.pop(target).values
 tstX: ndarray = test.values
 
-min_impurity_decrease = [0.01, 0.005, 0.0025, 0.001, 0.0005]
-max_depths = [2, 5, 10, 15, 20, 25]
+min_impurity_decrease = [0.0025, 0.001, 0.0005, 0.0001, 0.00005, 0.00001]
+max_depths = [5, 10, 15, 20, 25, 30, 35]
 criteria = ['entropy', 'gini']
-best = ('',  0, 0.0)
+best = ('',  0, 0.00000)
 last_best = 0
 best_model = None
 
@@ -49,64 +49,63 @@ for k in range(len(criteria)):
         values[d] = yvalues
     multiple_line_chart(min_impurity_decrease, values, ax=axs[0, k], title=f'Decision Trees with {f} Criteria',
                            xlabel='min_impurity_decrease', ylabel='Accuracy', percentage=True)
-savefig(f'images/DT/{file_tag}_dt_study.png')
+savefig(f'images/DecisionTrees/DT_approaches_Set2.png')
 #show()
-print('Best results achieved with %s criteria, depth=%d and min_impurity_decrease=%1.2f ==> accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
+print('Best results achieved with %s criteria, depth=%d and min_impurity_decrease=%1.5f ==> accuracy=%1.5f'%(best[0], best[1], best[2], last_best))
 
 #show the learned tree (heavy)
 
 # from sklearn.tree import export_graphviz
 # from matplotlib.pyplot import imread, imshow, axis
 
-# file_tree = 'images/DT/best_tree.png'
+# file_tree = 'images/DecisionTrees/best_tree.png'
 
-# dot_data = export_graphviz(best_model, out_file='images/DT/best_tree.dot', filled=True, rounded=True, special_characters=True)
+# dot_data = export_graphviz(best_model, out_file='images/DecisionTrees/best_tree.dot', filled=True, rounded=True, special_characters=True)
 # # Convert to png
 # from subprocess import call
-# call(['dot', '-Tpng', 'images/DT/best_tree.dot', '-o', file_tree, '-Gdpi=600'])
+# call(['dot', '-Tpng', 'images/DecisionTrees/best_tree.dot', '-o', file_tree, '-Gdpi=600'])
 
 # figure(figsize = (14, 18))
 # imshow(imread(file_tree))
 # axis('off')
-# savefig(f'images/DT/{file_tag}_dt_best.png')
-# show()
+#show()
 
 #show the learned tree (light)
 
 from sklearn import tree
 
-# labels = [str(value) for value in labels]
-# tree.plot_tree(best_model, feature_names=train.columns, class_names=labels)
-# savefig(f'images/DT/{file_tag}_dt_best_tree.png')
+#labels = [str(value) for value in labels]
+#tree.plot_tree(best_model, feature_names=train.columns, class_names=labels)
+#savefig(f'images/DecisionTrees/DT_best_tree_C_Set2.png')
 
 #see the parameters and the performance of the model
 
 prd_trn = best_model.predict(trnX)
 prd_tst = best_model.predict(tstX)
 plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig(f'images/DT/DT_best_results_Set2.png')
+savefig(f'images/DecisionTrees/DT_best_results_Set2.png')
 #show()
 
 #importance of each variable in the discrimination
 
-from numpy import argsort, arange
-from ds_charts import horizontal_bar_chart
-from matplotlib.pyplot import Axes
+# from numpy import argsort, arange
+# from ds_charts import horizontal_bar_chart
+# from matplotlib.pyplot import Axes
 
-variables = train.columns
-importances = best_model.feature_importances_
-indices = argsort(importances)[::-1]
-elems = []
-imp_values = []
-for f in range(len(variables)):
-    elems += [variables[indices[f]]]
-    imp_values += [importances[indices[f]]]
-    print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
+# variables = train.columns
+# importances = best_model.feature_importances_
+# indices = argsort(importances)[::-1]
+# elems = []
+# imp_values = []
+# for f in range(len(variables)):
+#     elems += [variables[indices[f]]]
+#     imp_values += [importances[indices[f]]]
+#     print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
 
-figure()
-horizontal_bar_chart(elems, imp_values, error=None, title='Decision Tree Features importance', xlabel='importance', ylabel='variables')
-savefig(f'images/DT/{file_tag}_dt_variable_ranking.png')
-#show()
+# figure()
+# horizontal_bar_chart(elems, imp_values, error=None, title='Decision Tree Features importance', xlabel='importance', ylabel='variables')
+# savefig(f'images/DecisionTrees/DT_variable_ranking_Set2.png')
+# show()
 
 #overfitting study
 
@@ -125,6 +124,6 @@ for d in max_depths:
     prd_trn_Y = tree.predict(trnX)
     y_tst_values.append(eval_metric(tstY, prd_tst_Y))
     y_trn_values.append(eval_metric(trnY, prd_trn_Y))
-plot_overfitting_study(max_depths, y_trn_values, y_tst_values, name=f'DT=imp{imp}_{f}', xlabel='max_depth', ylabel=str(eval_metric))
-savefig(f'images/DT/{file_tag}_overfitting.png')
+plot_overfitting_study(max_depths, y_trn_values, y_tst_values, name=f'DT=imp{imp}_{f}', xlabel='max_depth', ylabel='accuracy')
+savefig(f'images/DecisionTrees/DT_overfitting_Set2.png')
 #show()
