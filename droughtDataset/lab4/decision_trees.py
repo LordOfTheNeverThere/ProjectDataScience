@@ -83,29 +83,29 @@ from sklearn import tree
 prd_trn = best_model.predict(trnX)
 prd_tst = best_model.predict(tstX)
 plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig(f'images/DecisionTrees/DT_best_results_Set2.png')
+savefig(f'images/DT/DT_best_results_Set2.png')
 #show()
 
 #importance of each variable in the discrimination
 
-# from numpy import argsort, arange
-# from ds_charts import horizontal_bar_chart
-# from matplotlib.pyplot import Axes
+from numpy import argsort, arange
+from ds_charts import horizontal_bar_chart
+from matplotlib.pyplot import Axes
 
-# variables = train.columns
-# importances = best_model.feature_importances_
-# indices = argsort(importances)[::-1]
-# elems = []
-# imp_values = []
-# for f in range(len(variables)):
-#     elems += [variables[indices[f]]]
-#     imp_values += [importances[indices[f]]]
-#     print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
+variables = train.columns
+importances = best_model.feature_importances_
+indices = argsort(importances)[::-1]
+elems = []
+imp_values = []
+for f in range(len(variables)):
+    elems += [variables[indices[f]]]
+    imp_values += [importances[indices[f]]]
+    print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
 
-# figure()
-# horizontal_bar_chart(elems, imp_values, error=None, title='Decision Tree Features importance', xlabel='importance', ylabel='variables')
-# savefig(f'images/DecisionTrees/DT_variable_ranking_Set2.png')
-# show()
+figure()
+horizontal_bar_chart(elems, imp_values, error=None, title='Decision Tree Features importance', xlabel='importance', ylabel='variables')
+savefig(f'images/DT/{file_tag}_dt_variable_ranking.png')
+#show()
 
 #overfitting study
 
@@ -124,6 +124,6 @@ for d in max_depths:
     prd_trn_Y = tree.predict(trnX)
     y_tst_values.append(eval_metric(tstY, prd_tst_Y))
     y_trn_values.append(eval_metric(trnY, prd_trn_Y))
-plot_overfitting_study(max_depths, y_trn_values, y_tst_values, name=f'DT=imp{imp}_{f}', xlabel='max_depth', ylabel='accuracy')
-savefig(f'images/DecisionTrees/DT_overfitting_Set2.png')
+plot_overfitting_study(max_depths, y_trn_values, y_tst_values, name=f'DT=imp{imp}_{f}', xlabel='max_depth', ylabel=str(eval_metric))
+savefig(f'images/DT/{file_tag}_overfitting.png')
 #show()
