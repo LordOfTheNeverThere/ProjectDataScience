@@ -60,3 +60,28 @@ plot_evaluation_results(labels, yTrain, predictedYTrain, yTest, predictedYTest)
 savefig('images/balanced1_knn_best.png')
 show()
 # %%
+
+from matplotlib.pyplot import figure, savefig
+
+def plot_overfitting_study(xvalues, prd_trn, prd_tst, name, xlabel, ylabel):
+    evals = {'Train': prd_trn, 'Test': prd_tst}
+    figure()
+    multiple_line_chart(xvalues, evals, ax = None, title=f'Overfitting {name}', xlabel=xlabel, ylabel=ylabel, percentage=True)
+    savefig('images/overfitting_study_knn.png')
+
+d = 'euclidean'
+eval_metric = accuracy_score
+y_tst_values = []
+y_trn_values = []
+nvalues = [5, 7, 9, 11, 13, 15, 17]
+for n in nvalues:
+    print(n)
+    knn = KNeighborsClassifier(n_neighbors=n, p=10)
+    knn.fit(xTrain, yTrain)
+    prd_tst_Y = knn.predict(xTest)
+    prd_trn_Y = knn.predict(xTrain)
+    y_tst_values.append(eval_metric(yTest, prd_tst_Y))
+    y_trn_values.append(eval_metric(yTrain, prd_trn_Y))
+plot_overfitting_study(nvalues, y_trn_values, y_tst_values, name=f'KNN_K={n}_{d}', xlabel='K', ylabel=str(eval_metric))
+
+# %%

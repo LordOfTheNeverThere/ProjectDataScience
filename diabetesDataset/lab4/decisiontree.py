@@ -1,7 +1,7 @@
 # %%
 from numpy import ndarray
 from pandas import DataFrame, read_csv, unique
-from matplotlib.pyplot import figure, subplots, savefig, show
+from matplotlib.pyplot import figure, subplots, savefig, show, tight_layout
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from ds_charts import plot_evaluation_results, multiple_line_chart
@@ -57,10 +57,11 @@ print('Best results achieved with %s criteria, depth=%d and min_impurity_decreas
 d = best[1]
 f = best[0]
 imp = best[2]
-
+import matplotlib
 test: DataFrame = read_csv('minMaxedTestData.csv')
 tstY: ndarray = test.pop(target).values
 tstX: ndarray = test.values
+from matplotlib.pyplot import figure, subplots, savefig, show, tight_layout
 
 
 figure()
@@ -70,6 +71,29 @@ tree.fit(trnX, trnY)
 prdY = tree.predict(tstX)
 plot_tree(tree)
 savefig('images/decisiontree/best_tree_test.png', dpi = 500)
+tight_layout(pad=0.2, w_pad=0.2, h_pad=0.2)
+
+
+
+# %%
+
+from sklearn.tree import export_graphviz
+from matplotlib.pyplot import imread, imshow, axis
+
+file_tree = 'images/decisiontree/best_tree.png'
+
+dot_data = export_graphviz(best_model, out_file='images/decisiontree/best_tree.dot', filled=True, rounded=True, special_characters=True)
+# Convert to png
+
+# Convert to png
+from subprocess import call
+call(['dot', '-Tpng', 'images/best_tree.dot', '-o', file_tree, '-Gdpi=600'])
+
+figure(figsize = (14, 18))
+imshow(imread(file_tree))
+axis('off')
+show()
+
 
 #%%
 
@@ -99,6 +123,7 @@ for f in range(len(variables)):
 figure()
 horizontal_bar_chart(elems, imp_values, error=None, title='Decision Tree Features importance', xlabel='importance', ylabel='variables')
 savefig('images/decisiontree/dt_ranking_test.png')
+tight_layout(pad=0.1, w_pad=0.1, h_pad=0.1)
 
 
 #%%
