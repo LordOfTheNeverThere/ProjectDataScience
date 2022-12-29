@@ -69,6 +69,7 @@ eval_metric = accuracy_score
 y_tst_values = []
 y_trn_values = []
 for n in max_iter:
+    print(n)
     mlp = MLPClassifier(activation='logistic', solver='sgd', learning_rate=lr_type, learning_rate_init=lr, max_iter=n, verbose=False)
     mlp.fit(trnX, trnY)
     prd_tst_Y = mlp.predict(tstX)
