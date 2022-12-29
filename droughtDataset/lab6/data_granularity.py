@@ -16,7 +16,7 @@ figure(figsize=(3*HEIGHT, HEIGHT))
 plot_series(day_df, title='Granularity: Day', x_label='timestamp', y_label='values')
 xticks(rotation = 45)
 ## falta legenda
-savefig('images/profiling/set2_granularity_granularity_day.png')
+savefig('images/profiling/set2_granularity_day.png')
 show()
 
 #### granularity: week
@@ -28,7 +28,7 @@ figure(figsize=(3*HEIGHT, HEIGHT))
 plot_series(week_df, title='Granularity: Week', x_label='timestamp', y_label='values')
 xticks(rotation = 45)
 ## falta legenda
-savefig('images/profiling/set2_granularity_granularity_week.png')
+savefig('images/profiling/set2_granularity_week.png')
 show()
 
 #### granularity: month
@@ -40,7 +40,7 @@ figure(figsize=(3*HEIGHT, HEIGHT))
 plot_series(month_df, title='Granularity: Month', x_label='timestamp', y_label='values')
 xticks(rotation = 45)
 ## falta legenda
-savefig('images/profiling/set2_granularity_granularity_month.png')
+savefig('images/profiling/set2_granularity_month.png')
 show()
 
 #### granularity: quarter
@@ -52,7 +52,7 @@ figure(figsize=(3*HEIGHT, HEIGHT))
 plot_series(quarter_df, title='Granularity: Quarter', x_label='timestamp', y_label='values')
 xticks(rotation = 45)
 ## falta legenda
-savefig('images/profiling/set2_granularity_granularity_quarter.png')
+savefig('images/profiling/set2_granularity_quarter.png')
 show()
 
 #### granularity: year
@@ -64,5 +64,5 @@ figure(figsize=(3*HEIGHT, HEIGHT))
 plot_series(year_df, title='Granularity: Year', x_label='timestamp', y_label='values')
 xticks(rotation = 45)
 ## falta legenda
-savefig('images/profiling/set2_granularity_granularity_year.png')
+savefig('images/profiling/set2_granularity_year.png')
 show()
