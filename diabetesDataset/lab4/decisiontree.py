@@ -49,8 +49,8 @@ for k in range(len(criteria)):
         values[d] = yvalues
     multiple_line_chart(min_impurity_decrease, values, ax=axs[0, k], title=f'Decision Trees with {f} criteria',
                            xlabel='min_impurity_decrease', ylabel='accuracy', percentage=True)
-savefig('images/decisiontree/dt_study_test.png')
-print('Best results achieved with %s criteria, depth=%d and min_impurity_decrease=%1.2f ==> accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
+# savefig('images/decisiontree/dt_study_test.png')
+print('Best results achieved with %s criteria, depth=%d and min_impurity_decrease=%1.5f ==> accuracy=%1.5f'%(best[0], best[1], best[2], last_best))
 
 
 #%%  #best params tree
