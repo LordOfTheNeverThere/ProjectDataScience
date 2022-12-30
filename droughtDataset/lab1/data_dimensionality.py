@@ -83,7 +83,7 @@ bar_chart(list(mv.keys()), list(mv.values()), title='Nr of missing values per va
 savefig('images/mv.png')
 show()
 
-
+variable_types['Numeric'].append("class")
 
 #%% Correlation Analysis
 data = data[variable_types['Numeric']]
@@ -96,7 +96,7 @@ from seaborn import heatmap
 
 fig = figure(figsize=[48, 48])
 
-heatmap(abs(corr_mtx), xticklabels=corr_mtx.columns, yticklabels=corr_mtx.columns, annot=True, cmap='Greys')
+heatmap(abs(corr_mtx), xticklabels=corr_mtx.columns, yticklabels=corr_mtx.columns, annot=True, cmap='Reds')
 title('Correlation analysis')
 savefig(f'images/correlation_analysis.png')
 show()
