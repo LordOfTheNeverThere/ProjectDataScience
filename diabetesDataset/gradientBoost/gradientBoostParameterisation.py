@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 # %% Load File Tag
-file_tag = 'v0.1'
+file_tag = 'v1.0_min_samples=True'
 
 
 # %% Load Datasets
@@ -21,7 +21,8 @@ trainSet: DataFrame = read_csv('minMaxedTrainData.csv')
 valSet: DataFrame = read_csv('minMaxedValData.csv')
 testSet: DataFrame = read_csv('minMaxedTestData.csv')
 
-yTrain, yVal, yTest = trainSet['readmitted'].head(1000), valSet['readmitted'], testSet['readmitted']
+
+yTrain, yVal, yTest = trainSet['readmitted'], valSet['readmitted'], testSet['readmitted']
 xTrain, xVal, xTest = trainSet.drop(columns=['readmitted']), valSet.drop(
     columns=['readmitted']), testSet.drop(columns=['readmitted'])
 
@@ -30,9 +31,9 @@ labels = unique(yTrain)
 labels.sort()
 
 # %% Grid Search
-n_estimators = [5, 400]
-max_depths = [5, 35, 25]
-learning_rate = [0.1, 0.9]
+n_estimators = [100, 200, 400, 500]
+max_depths = [8, 24, 58, 78, 86]
+learning_rate = [0.1, 0.5, 0.9]
 best = ('', 0, 0)
 last_best = 0
 best_model = None
@@ -62,7 +63,7 @@ for k in range(len(max_depths)):
 
         for n in n_estimators:
             gb = GradientBoostingClassifier(
-                n_estimators=n, max_depth=d, learning_rate=f)
+                n_estimators=n, max_depth=d, learning_rate=f, min_samples_split=250, min_samples_leaf=250)
             gb.fit(xTrain, yTrain)
             prdY = gb.predict(xVal)
             prdYTrain = gb.predict(xTrain)
@@ -74,7 +75,7 @@ for k in range(len(max_depths)):
                 best_model = gb
 
         axis = set_elements(
-            ax=axsOverfitting[k, maxFeatureIndex], title='MaxNumOfFeatures = ' + str(f) + ', MaxDepth = ' + str(d), xlabel=eval_metric, ylabel='NumOfEstimators')
+            ax=axsOverfitting[k, maxFeatureIndex], title='LearningRate = ' + str(f) + ', MaxDepth = ' + str(d), ylabel=eval_metric, xlabel='NumOfEstimators')
         axis.plot(n_estimators, yTrainMetrics, color='orange',
                   linewidth=2, markersize=12, label='Train')
         axis.plot(n_estimators, yvalues, color='blue',
@@ -83,13 +84,14 @@ for k in range(len(max_depths)):
         axis.legend(loc="lower right")
 
         values[f] = yvalues
+    figOverfitting.savefig(f'images/{file_tag}_gb_overfittingStudy.png')
 
     multiple_line_chart(n_estimators, values, ax=axs[0, k], title=f'Gradient Boosting with max_depth={d}',
                         xlabel='nr estimators', ylabel='accuracy', percentage=True)
 
 fig.savefig(f'images/{file_tag}_gb_study.png')
 show()
-print('Best results with depth=%d, learning rate=%1.2f and %d estimators, with accuracy=%1.2f' %
+print('Best results with depth=%d, learning rate=%1.2f and %d estimators, with accuracy=%1.2f with min_samples_split and min_samples_leaf equal to 250, in order to avoid overfitting' %
       (best[0], best[1], best[2], last_best))
 
 # %% Best Model params
@@ -105,16 +107,15 @@ show()
 train = xTrain
 variables = train.columns
 importances = best_model.feature_importances_
-stdevs = std(
-    [tree.feature_importances_ for tree in best_model.estimators_], axis=0)
 indices = argsort(importances)[::-1]
+stdevs = std(
+    [tree[0].feature_importances_ for tree in best_model.estimators_], axis=0)
 elems = []
 for f in range(len(variables)):
     elems += [variables[indices[f]]]
     print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
 
 figure(figsize=(4, 8))
-
 horizontal_bar_chart(elems, importances[indices], stdevs[indices],
                      title='Gradient Boosting Features importance', xlabel='importance', ylabel='variables')
 savefig(f'images/{file_tag}_gb_ranking.png')
