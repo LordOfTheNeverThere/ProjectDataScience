@@ -99,12 +99,15 @@ import matplotlib.pyplot as plt
 
 from ds_charts import plot_overfitting_study
 
-lr_type = 'adaptive' # try other lr types
+lr_type = 'constant' # try other lr types
 lr = 0.9 # try other lr values
 eval_metric = accuracy_score
 y_tst_values = []
 y_trn_values = []
+
+max_iter = [100, 300, 500, 750, 1000, 2500, 5000]
 for n in max_iter:
+    print(n)
     mlp = MLPClassifier(activation='logistic', solver='sgd', learning_rate=lr_type, learning_rate_init=lr, max_iter=n, verbose=False)
     mlp.fit(trnX, trnY)
     prd_tst_Y = mlp.predict(tstX)
@@ -112,4 +115,6 @@ for n in max_iter:
     y_tst_values.append(eval_metric(tstY, prd_tst_Y))
     y_trn_values.append(eval_metric(trnY, prd_trn_Y))
 plot_overfitting_study(max_iter, y_trn_values, y_tst_values, name=f'NN_lr_type={lr_type}_lr={lr}', xlabel='nr episodes', ylabel=str(eval_metric))
-savefig('images/mlp_overfitting_adpt_9.png')
+savefig('images/mlp_overfitting_cons_9.png')
+
+# %%
