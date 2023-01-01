@@ -14,7 +14,8 @@ from matplotlib.dates import _reset_epoch_test_example, set_epoch, AutoDateLocat
 import matplotlib.font_manager as fm
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.tree import export_graphviz
-from sklearn.metrics import confusion_matrix, plot_roc_curve
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import RocCurveDisplay as plot_roc_curve
 
 import config as cfg
 
