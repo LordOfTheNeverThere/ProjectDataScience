@@ -3,61 +3,117 @@ from matplotlib.pyplot import figure, xticks, show
 from ts_functions import plot_series, HEIGHT
 from matplotlib.pyplot import figure, savefig, show
 
-## fazer para as outras granularidades!!!!!
+## everything is done for day, week, month, quarter, year
 
 data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col='date', sep=',', decimal='.', parse_dates=True, infer_datetime_format=True)
 
-##### 5-number summary
-## hour data
-
+#### prepare data
 from matplotlib.pyplot import subplots
-
+# day
+day_df = data.copy().groupby(data.index.date).mean()
+# week
 index = data.index.to_period('W')
 week_df = data.copy().groupby(index).sum()
 week_df['timestamp'] = index.drop_duplicates().to_timestamp()
 week_df.set_index('timestamp', drop=True, inplace=True)
-_, axs = subplots(1, 2, figsize=(2*HEIGHT, HEIGHT/2))
+# month
+index = data.index.to_period('M')
+month_df = data.copy().groupby(index).mean()
+month_df['timestamp'] = index.drop_duplicates().to_timestamp()
+month_df.set_index('timestamp', drop=True, inplace=True)
+# quarter
+index = data.index.to_period('Q')
+quarter_df = data.copy().groupby(index).mean()
+quarter_df['timestamp'] = index.drop_duplicates().to_timestamp()
+quarter_df.set_index('timestamp', drop=True, inplace=True)
+# year
+index = data.index.to_period('Y')
+year_df = data.copy().groupby(index).mean()
+year_df['timestamp'] = index.drop_duplicates().to_timestamp()
+year_df.set_index('timestamp', drop=True, inplace=True)
+
+##### 5-number summary
+## day data
+_, axs = subplots(1, 5, figsize=(11*HEIGHT, HEIGHT/2))
 axs[0].grid(False)
 axs[0].set_axis_off()
-axs[0].set_title('HOURLY', fontweight="bold")
-axs[0].text(0, 0, str(data.describe()))
-
+axs[0].set_title('DAILY', fontweight="bold")
+axs[0].text(0, 0, str(day_df.describe()))
 ## week data
-
 axs[1].grid(False)
 axs[1].set_axis_off()
 axs[1].set_title('WEEKLY', fontweight="bold")
 axs[1].text(0, 0, str(week_df.describe()))
+## month data
+axs[2].grid(False)
+axs[2].set_axis_off()
+axs[2].set_title('MONTHLY', fontweight="bold")
+axs[2].text(0, 0, str(month_df.describe()))
+## quarter data
+axs[3].grid(False)
+axs[3].set_axis_off()
+axs[3].set_title('QUARTERLY', fontweight="bold")
+axs[3].text(0, 0, str(quarter_df.describe()))
+## year data
+axs[4].grid(False)
+axs[4].set_axis_off()
+axs[4].set_title('YEARLY', fontweight="bold")
+axs[4].text(0, 0, str(year_df.describe()))
 savefig('images/profiling/set2_distribution_summary.png')
-show()
-
-_, axs = subplots(1, 2, figsize=(2*HEIGHT, HEIGHT))
+## falta adicionar os títulos
+#show()
+#### boxplots 
+_, axs = subplots(1, 5, figsize=(5*HEIGHT, HEIGHT/2))
 data.boxplot(ax=axs[0])
 week_df.boxplot(ax=axs[1])
 savefig('images/profiling/set2_distribution_boxplots.png')
 ## falta adicionar os títulos
-show()
+#show()
 
 ##### variables distribution
-## hour data
-
-bins = (10, 25, 50)
-_, axs = subplots(1, len(bins), figsize=(len(bins)*HEIGHT, HEIGHT))
+bins = (5, 10, 25, 50)
+## day data
+_, axs = subplots(1, len(bins), figsize=(len(bins)*HEIGHT, HEIGHT/2))
 for j in range(len(bins)):
-    axs[j].set_title('Histogram for hourly values %d bins'%bins[j])
+    axs[j].set_title('%d bins daily values'%bins[j])
     axs[j].set_xlabel('values')
     axs[j].set_ylabel('Nr records')
-    axs[j].hist(data.values, bins=bins[j])
-savefig('images/profiling/set2_distribution_variables_hour.png')
-show()
-
+    axs[j].hist(day_df.values, bins=bins[j])
+savefig('images/profiling/set2_distribution_variables_day.png')
+#show()
 ## week data
-
-_, axs = subplots(1, len(bins), figsize=(len(bins)*HEIGHT, HEIGHT))
+_, axs = subplots(1, len(bins), figsize=(len(bins)*HEIGHT, HEIGHT/2))
 for j in range(len(bins)):
-    axs[j].set_title('Histogram for weekly values %d bins'%bins[j])
+    axs[j].set_title('%d bins weekly values'%bins[j])
     axs[j].set_xlabel('values')
     axs[j].set_ylabel('Nr records')
     axs[j].hist(week_df.values, bins=bins[j])
 savefig('images/profiling/set2_distribution_variables_week.png')
-show()
+#show()
+## month data
+_, axs = subplots(1, len(bins), figsize=(len(bins)*HEIGHT, HEIGHT/2))
+for j in range(len(bins)):
+    axs[j].set_title('%d bins monthly values'%bins[j])
+    axs[j].set_xlabel('values')
+    axs[j].set_ylabel('Nr records')
+    axs[j].hist(month_df.values, bins=bins[j])
+savefig('images/profiling/set2_distribution_variables_month.png')
+#show()
+## quarter data
+_, axs = subplots(1, len(bins), figsize=(len(bins)*HEIGHT, HEIGHT/2))
+for j in range(len(bins)):
+    axs[j].set_title('%d bins quarterly values'%bins[j])
+    axs[j].set_xlabel('values')
+    axs[j].set_ylabel('Nr records')
+    axs[j].hist(quarter_df.values, bins=bins[j])
+savefig('images/profiling/set2_distribution_variables_quarter.png')
+#show()
+## year data
+_, axs = subplots(1, len(bins), figsize=(len(bins)*HEIGHT, HEIGHT/2))
+for j in range(len(bins)):
+    axs[j].set_title('%d bins yearly values'%bins[j])
+    axs[j].set_xlabel('values')
+    axs[j].set_ylabel('Nr records')
+    axs[j].hist(year_df.values, bins=bins[j])
+savefig('images/profiling/set2_distribution_variables_year.png')
+##show()

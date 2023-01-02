@@ -4,6 +4,7 @@ from ts_functions import plot_series, HEIGHT
 from matplotlib.pyplot import figure, savefig, show
 
 ## timestamp -> date
+## everything is done for day, week, month, quarter, year
 
 data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col='date', sep=',', decimal='.', parse_dates=True, infer_datetime_format=True)
 print("Nr. Records = ", data.shape[0])
