@@ -2,9 +2,9 @@
 
 from numpy import ndarray
 from pandas import DataFrame, read_csv, unique
-from matplotlib.pyplot import figure, savefig, show
+from matplotlib.pyplot import figure, savefig, show, subplots
 from sklearn.neighbors import KNeighborsClassifier
-from ds_charts import plot_evaluation_results, multiple_line_chart, plot_overfitting_study
+from ds_charts import plot_evaluation_results, multiple_line_chart, HEIGHT, set_elements
 from sklearn.metrics import accuracy_score
 import sklearn
 import numpy as np
@@ -24,28 +24,46 @@ labels.sort()
 # %% GridSearch
 
 evalMetric = accuracy_score
-nvalues = [1, 3, 9, 13, 15, 20, 25, 35, 50, 65, 85, 110, 140, 160, 200]
-dist = [1, 2, 10, 100, 1000]
+nvalues = [1, 3, 5, 10, 15, 25]
+dist = [1, 2, 10, 1000]
 values = {}
 best = (0, '')
 lastBest = 0
-# for d in dist:
-#     yValValues = []
-#     for n in nvalues:
-#         knn = KNeighborsClassifier(n_neighbors=n, p=d)
-#         knn.fit(xTrain, yTrain)
-#         predictedYVal = knn.predict(xVal)
-#         yValValues.append(evalMetric(yVal, predictedYVal))
-#         if yValValues[-1] > lastBest:
-#             best = (n, d)
-#             lastBest = yValValues[-1]
-#     values[d] = yValValues
 
-# figure()
-# multiple_line_chart(nvalues, values, title='KNN variants', xlabel='n', ylabel=str(accuracy_score), percentage=True)
-# savefig('images/balanced1_knn_study.png')
-# show()
-# print('Best results with %d neighbors and %s'%(best[0], best[1]))
+figure()
+
+overfittingCols = len(dist)
+
+figOverfitting, axsOverfitting = subplots(1, overfittingCols, figsize=(
+    len(nvalues)*HEIGHT, HEIGHT), squeeze=False)
+
+for distanceIndex, d in enumerate(dist):
+    yValValues = []
+    yTrainMetrics = []
+    for n in nvalues:
+        knn = KNeighborsClassifier(n_neighbors=n, p=d)
+        knn.fit(xTrain, yTrain)
+        predictedYVal = knn.predict(xVal)
+        yValValues.append(evalMetric(yVal, predictedYVal))
+        prdYTrain = knn.predict(xTrain)
+        yTrainMetrics.append(evalMetric(yTrain, prdYTrain))
+        if yValValues[-1] > lastBest:
+            best = (n, d)
+            lastBest = yValValues[-1]
+    values[d] = yValValues
+    axis = set_elements(
+        ax=axsOverfitting[0, distanceIndex], title='Distance power = ' + str(d), xlabel=evalMetric, ylabel='NumOfNearestNeighbors')
+    axis.plot(nvalues, yTrainMetrics, color = 'orange', linewidth=2, markersize=12, label= 'Train')
+    axis.plot(nvalues, yValValues, color='blue',
+              linewidth=2, markersize=12, label='Validation')
+    axis.set_ylim((0,1))
+    axis.legend(loc="lower right")
+
+figure()
+multiple_line_chart(nvalues, values, title='KNN variants', xlabel='n', ylabel=str(accuracy_score), percentage=True)
+savefig('images/balanced1_knn_study.png')
+show()
+print('Best results with %d neighbors and %s'%(best[0], best[1]))
 
 
 
