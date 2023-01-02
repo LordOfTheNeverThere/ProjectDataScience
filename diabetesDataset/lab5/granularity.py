@@ -1,4 +1,6 @@
 #%% Imports
+from pandas import Series
+from numpy import ones
 from pandas import read_csv
 import matplotlib
 from matplotlib.pyplot import figure, xticks, show
@@ -85,3 +87,63 @@ xticks(rotation = 45)
 show()
 # %%
 ## Interesting granularities are hourly, weekly, monthly
+
+# %% Stationary Studies Glucose
+
+
+dt_series = Series(data['Glucose'])
+
+mean_line = Series(ones(len(dt_series.values)) *
+                   dt_series.mean(), index=dt_series.index)
+series = {'Glucose': dt_series, 'mean': mean_line}
+figure(figsize=(3*HEIGHT, HEIGHT))
+plot_series(series, x_label='timestamp', y_label='consumption',
+            title='Stationary study', show_std=True)
+show()
+
+
+BINS = 10
+line = []
+n = len(dt_series)
+for i in range(BINS):
+    b = dt_series[i*n//BINS:(i+1)*n//BINS]
+    mean = [b.mean()] * (n//BINS)
+    line += mean
+line += [line[-1]] * (n - len(line))
+mean_line = Series(line, index=dt_series.index)
+series = {'Glucose': dt_series, 'mean': mean_line}
+figure(figsize=(3*HEIGHT, HEIGHT))
+plot_series(series, x_label='time', y_label='consumptions',
+            title='Stationary study', show_std=True)
+show()
+
+# %% '' Insulin
+
+
+dt_series = Series(data['Insulin'])
+
+mean_line = Series(ones(len(dt_series.values)) *
+                   dt_series.mean(), index=dt_series.index)
+series = {'Insulin': dt_series, 'mean': mean_line}
+figure(figsize=(3*HEIGHT, HEIGHT))
+plot_series(series, x_label='timestamp', y_label='consumption',
+            title='Stationary study', show_std=True)
+show()
+
+
+BINS = 10
+line = []
+n = len(dt_series)
+for i in range(BINS):
+    b = dt_series[i*n//BINS:(i+1)*n//BINS]
+    mean = [b.mean()] * (n//BINS)
+    line += mean
+line += [line[-1]] * (n - len(line))
+mean_line = Series(line, index=dt_series.index)
+series = {'Insulin': dt_series, 'mean': mean_line}
+figure(figsize=(3*HEIGHT, HEIGHT))
+plot_series(series, x_label='time', y_label='consumptions',
+            title='Stationary study', show_std=True)
+show()
+
+# %%
