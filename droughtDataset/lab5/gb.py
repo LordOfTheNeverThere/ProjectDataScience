@@ -21,9 +21,9 @@ test: DataFrame = read_csv(f'../Data/TrainTest/drought_prepared_test.csv')
 tstY: ndarray = test.pop(target).values
 tstX: ndarray = test.values
 
-n_estimators = [5, 10, 25, 50, 75, 100, 200, 300, 400]
-max_depths = [5, 10, 25]
-learning_rate = [.1, .5, .9]
+n_estimators = [5, 10, 25, 50, 75, 100, 200, 300, 400] # x in overfitting
+max_depths = [5, 10, 15, 25] # added 15
+learning_rate = [.1, .3, .5, .7, .9] # added .3, .7
 best = ('', 0, 0)
 last_best = 0
 best_model = None
@@ -60,9 +60,9 @@ best_model = None
 # savefig(f'images/gb/{file_tag}_gb_best.png')
 # show()
 
-#### importance of each variable in the global model
+# ### importance of each variable in the global model
 
-from numpy import std, argsort
+# from numpy import std, argsort
 
 # variables = train.columns
 # importances = best_model.feature_importances_
@@ -74,21 +74,22 @@ from numpy import std, argsort
 #     print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
 
 # figure()
-# horizontal_bar_chart(elems, importances[indices], stdevs[indices], title='Gradient Boosting Features importance', xlabel='importance', ylabel='variables')
+# horizontal_bar_chart(elems, importances[indices], stdevs[indices], title='Gradient Boosting Features Importance', xlabel='importance', ylabel='variables')
 # savefig(f'images/gb/{file_tag}_gb_ranking.png')
 
 #### overfitting
 
 from ds_charts import plot_overfitting_study
 
-lr = 0.7
-max_depth = 10
+lr = 0.1
+max_depth = 15 #
 eval_metric = accuracy_score
 y_tst_values = []
 y_trn_values = []
-# max_depth=d
+d=15 #
 for n in n_estimators:
-    gb = GradientBoostingClassifier(n_estimators=n, max_depth=25, learning_rate=lr)
+    print(n)
+    gb = GradientBoostingClassifier(n_estimators=n, max_depth=d, learning_rate=lr)
     gb.fit(trnX, trnY)
     prd_tst_Y = gb.predict(tstX)
     prd_trn_Y = gb.predict(trnX)
