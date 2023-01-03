@@ -15,6 +15,12 @@ show()
 
 
 # %% missing values
+import pandas as pd
+data = read_csv('../glucose.csv', na_values='')
+
+data['Date'] = pd.to_datetime(data['Date'], format = "%d/%m/%Y %H:%M")
+data = data.set_index('Date')
+
 
 mv = {}
 for var in data_multi:
@@ -22,7 +28,29 @@ for var in data_multi:
     if nr > 0:
         mv[var] = nr
 print(mv)
-print(data_multi.columns)
+
+data.head()
+
+def missing_values_handle(dataframe):
+    hours = dataframe.index.hour.unique()
+    df1 = dataframe.copy()
+    medians = []
+
+    for x in hours:
+        medians.append(df1[df1.index.hour == x]['Insulin'].mean())
+    
+    df1['Insulin'] = df1['Insulin'].fillna(-1)
+
+    for x in range(len(hours)):
+        if sum(df1['Insulin'] == -1) != 0:
+            df1.loc[(df1.index.hour == hours[x]) & (df1['Insulin'] == -1), 'Insulin'] = medians[x]
+            
+
+    return df1
+
+data = missing_values_handle(data)
+
+data.to_csv('mv_glocose.csv')
 
 
 # %% scaling
