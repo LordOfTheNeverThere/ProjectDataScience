@@ -24,7 +24,17 @@ xticks(rotation = 45)
 figure(figsize=(5*HEIGHT, HEIGHT))
 plot_series(data['Glucose'], x_label='timestamp', y_label='Glucose', title='Glucose Hourly Data')
 xticks(rotation = 45)
+
+
+figure(figsize=(5*HEIGHT, HEIGHT))
+plot_series(data['Insulin'], x_label='timestamp',
+            y_label='Insulin', title='Insulin Hourly Data')
+plot_series(data['Glucose'], x_label='timestamp',
+            y_label='Glucose', title='Glucose Hourly Data')
+xticks(rotation=45)
 show()
+
+
 # %% Daily Distro
 day_df = data.copy().groupby(data.index.date).mean()
 day_df.to_csv('dailyGlucose.csv')
@@ -37,6 +47,14 @@ xticks(rotation = 45)
 figure(figsize=(5*HEIGHT, HEIGHT))
 plot_series(day_df['Glucose'], x_label='timestamp', y_label='Glucose', title='Glucose Daily Data' )
 xticks(rotation = 45)
+
+
+figure(figsize=(5*HEIGHT, HEIGHT))
+plot_series(day_df['Insulin'], x_label='timestamp',
+            y_label='Insulin', title='Insulin Daily Data')
+plot_series(day_df['Glucose'], x_label='timestamp',
+            y_label='Glucose', title='Glucose Daily Data')
+xticks(rotation=45)
 show()
 # %% Weekly Distro
 
@@ -53,6 +71,14 @@ xticks(rotation = 45)
 figure(figsize=(5*HEIGHT, HEIGHT))
 plot_series(week_df['Glucose'], x_label='timestamp', y_label='Glucose', title='Glucose Weekly Data' )
 xticks(rotation = 45)
+
+
+figure(figsize=(5*HEIGHT, HEIGHT))
+plot_series(week_df['Insulin'], x_label='timestamp',
+            y_label='Insulin', title='Insulin Weekly Data')
+plot_series(week_df['Glucose'], x_label='timestamp',
+            y_label='Glucose', title='Glucose Weekly Data')
+xticks(rotation=45)
 show()
 # %% Montly Distro
 
@@ -69,6 +95,15 @@ xticks(rotation = 45)
 figure(figsize=(5*HEIGHT, HEIGHT))
 plot_series(monthly['Glucose'], x_label='timestamp', y_label='Glucose', title='Glucose Monthly Data' )
 xticks(rotation = 45)
+
+figure(figsize=(5*HEIGHT, HEIGHT))
+plot_series(monthly['Insulin'], x_label='timestamp',
+            y_label='Insulin', title='Insulin Monthly Data')
+plot_series(monthly['Glucose'], x_label='timestamp',
+            y_label='Glucose', title='Glucose Monthly Data')
+xticks(rotation=45)
+
+
 show()
 # %% Quarterly Distro
 
@@ -85,6 +120,14 @@ xticks(rotation = 45)
 figure(figsize=(5*HEIGHT, HEIGHT))
 plot_series(quarter_df['Glucose'], x_label='timestamp', y_label='Glucose', title='Glucose Quarterly Data' )
 xticks(rotation = 45)
+
+figure(figsize=(5*HEIGHT, HEIGHT))
+plot_series(quarter_df['Insulin'], x_label='timestamp',
+            y_label='Insulin', title='Insulin Quarterly Data')
+plot_series(quarter_df['Glucose'], x_label='timestamp',
+            y_label='Glucose', title='Glucose Quarterly Data')
+xticks(rotation=45)
+
 show()
 # %%
 ## Interesting granularities are hourly, weekly, monthly
