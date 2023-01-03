@@ -27,6 +27,7 @@ xticks(rotation = 45)
 show()
 # %% Daily Distro
 day_df = data.copy().groupby(data.index.date).mean()
+day_df.to_csv('dailyGlucose.csv')
 
 
 figure(figsize=(5*HEIGHT, HEIGHT))
