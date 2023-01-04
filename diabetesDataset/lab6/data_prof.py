@@ -1,22 +1,27 @@
 # %%
-from pandas import read_csv
+from pandas import read_csv, to_datetime
 from matplotlib.pyplot import figure, xticks, show, title, tight_layout, savefig
 from ts_functions import plot_series, HEIGHT
 
-data = read_csv('glucose.csv', index_col='Date', sep=',', parse_dates=True, infer_datetime_format=True)
+data = read_csv('glucose.csv')
+
+
+data['Date'] = to_datetime(data['Date'], format = "%d/%m/%Y %H:%M")
+data = data.set_index('Date')
+
 print("Nr. Records = ", data.shape[0])
 print("First timestamp", data.index[0])
 print("Last timestamp", data.index[-1])
 figure(figsize=(3*HEIGHT, HEIGHT))
 plot_series(data, x_label='date', y_label='value', title='Glucose')
 xticks(rotation = 45)
-show()
 
 # %% boxplots - for the most atomic series
 
 data.boxplot(rot=90)
 title("Global Boxplot")
 tight_layout()
+savefig('images/profiling/boxplots.png')
 # %%  hourly, weekly, monthly
 
 
@@ -51,8 +56,7 @@ _, axs = subplots(1, 3, figsize=(2*HEIGHT, HEIGHT))
 data.boxplot(ax=axs[0]) #first
 week_df.boxplot(ax=axs[1]) #second
 month_df.boxplot(ax=axs[2]) #second
-show()
-
+savefig('images/profiling/boxplots_h_w_m.png')
 # %% histograms - for each of granularity ; this example is hourly - update titles and legend
 import matplotlib.pyplot as plt
 bins = (10, 25, 50)
@@ -64,5 +68,5 @@ for j in range(len(bins)):
     axs[j].hist(data.values, bins=bins[j], label=['insulin', 'glucose'])
     axs[j].legend()
 
-
+savefig('images/profiling/histograms.png')
 # %%
