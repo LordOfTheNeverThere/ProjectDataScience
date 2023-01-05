@@ -50,13 +50,15 @@ axs[2].grid(False)
 axs[2].set_axis_off()
 axs[2].set_title('MONTHLY', fontweight="bold")
 axs[2].text(0, 0, str(month_df.describe()))
-show()
+tight_layout()
+savefig('images/profiling/boxplots_header.png')
 
 _, axs = subplots(1, 3, figsize=(2*HEIGHT, HEIGHT))
 data.boxplot(ax=axs[0]) #first
 week_df.boxplot(ax=axs[1]) #second
 month_df.boxplot(ax=axs[2]) #second
 savefig('images/profiling/boxplots_h_w_m.png')
+tight_layout()
 # %% histograms - for each of granularity ; this example is hourly - update titles and legend
 import matplotlib.pyplot as plt
 bins = (10, 25, 50)

@@ -61,7 +61,7 @@ trnX, tstX, trnY, tstY = split_temporal_data(data_multi, target_multi, trn_pct=0
 #     plot_series(agg_multi_df[target_multi], title=f'{target_multi} - {g} values', x_label='timestamp', y_label='value')
 #     #plot_series(agg_multi_df['lights'])
 #     xticks(rotation = 45)
-#     savefig(f'images/transformation/set2_train_aggregation_{g}.png')
+#     savefig(f'images/aggregation/set2_train_aggregation_{g}.png')
 #     show()
 
 #### CLASSIFIER
@@ -101,7 +101,14 @@ for g in granularity:
     print(g)
     print(eval_results)
 
+<<<<<<< HEAD
     plot_evaluation_results(train["QV2M"].values, prd_trn, test["QV2M"].values, prd_tst, f'images/transformation/{file_tag}_{g}_persistence_eval.png')
     savefig(f'images/transformation/set2_train_aggregation_{g}_results.png')
     plot_forecasting_series(train["QV2M"], test["QV2M"], prd_trn, prd_tst, f'images/transformation/{file_tag}_{g}_persistence_plots.png', x_label=index_col, y_label=target, figname = f"Persistence Results Aggregation {g}")
     savefig(f'images/transformation/set2_train_aggregation_{g}_plots.png')
+=======
+    plot_evaluation_results(train["QV2M"].values, prd_trn, test["QV2M"].values, prd_tst, f'images/aggregation/{file_tag}_{g}_persistence_eval.png')
+    savefig(f'images/aggregation/set2_train_aggregation_{g}_results.png',title = f"Persistence Results Aggregation {g}")
+    plot_forecasting_series(train["QV2M"], test["QV2M"], prd_trn, prd_tst, f'images/aggregation/{file_tag}_{g}_persistence_plots.png', x_label=index_col, y_label=target, title = f"Persistence Results Aggregation {g}")
+    savefig(f'images/aggregation/set2_train_aggregation_{g}_plots.png')
+>>>>>>> 7d9ebe12ca58f1ead872180f139bb03e8bd030f0
