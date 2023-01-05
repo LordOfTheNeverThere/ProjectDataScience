@@ -6,6 +6,7 @@ from ds_charts import plot_evaluation_results, multiple_line_chart
 from matplotlib.pyplot import subplots, Axes, gca
 import matplotlib.dates as mdates
 import config as cfg
+from sklearn.base import RegressorMixin
 from pandas import concat, Series
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from ds_charts import multiple_bar_chart
@@ -19,12 +20,13 @@ import matplotlib.pyplot as plt
 import ds_charts as ds
 from sklearn.model_selection import train_test_split
 
-data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col='date', sep=',', decimal='.', parse_dates=True, infer_datetime_format=True)
+data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col='date', sep=',', decimal='.', parse_dates=True, dayfirst=True)
 index_multi = 'date'
 target_multi = 'QV2M'
 target = 'QV2M'
 file_tag="dtimeseries"
 data_multi = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col=index_multi, parse_dates=True, dayfirst=True)
+index_col = 'date'
 
 #### aggregation
 
@@ -50,13 +52,40 @@ for j in range(len(granularity)):
 #### FAZER OS TRAINING SETS
 
 trnX, tstX, trnY, tstY = split_temporal_data(data_multi, target_multi, trn_pct=0.70)
+data = data_multi('QV2M', axis = 1) # see
+data = data_multi.iloc[9:,:] # see
 train, test = split_dataframe(data, trn_pct=0.70)
 
 train.to_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_train.csv', index=False)
 test.to_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_test.csv', index=False)
 
-for j in range(len(PREDICTION_MEASURES)):
-    plot_evaluation_results(trn_y = trnY, 'MSE', tst_y = tstY, 'MSE', 'images/eval_MSE.png')
-    plot_forecasting_series(train, test, 'MSE', 'MSE', f'images/forecasting_series_MSE.png', x_label='time', y_label = '')
+measure = 'R2' #we have 3 options
+flag_pct = False
+eval_results = {}
 
-#### persistance model?
+class PersistenceRegressor (RegressorMixin):
+    def __init__(self):
+        super().__init__()
+        self.last = 0
+
+    def fit(self, X: DataFrame):
+        self.last = X.iloc[-1,0]
+        print(self.last)
+
+    def predict(self, X: DataFrame):
+        prd = X.shift().values
+        prd[0] = self.last
+        return prd
+
+fr_mod = PersistenceRegressor()
+fr_mod.fit(train)
+prd_trn = fr_mod.predict(train)
+prd_tst = fr_mod.predict(test)
+
+eval_results['Persistence'] = PREDICTION_MEASURES[measure](test.values, prd_tst)
+print(eval_results)
+
+plot_evaluation_results(train.values, prd_trn, test.values, prd_tst, f'images/transformation/{file_tag}_persistence_eval.png')
+savefig('images/transformation/set2_data_smoothing_results.png')
+plot_forecasting_series(train, test, prd_trn, prd_tst, f'images/transformation/{file_tag}_persistence_plots.png', x_label=index_col, y_label=target)
+savefig(f'images/transformation/set2_data_smoothing_plots.png')
