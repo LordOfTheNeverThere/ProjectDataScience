@@ -30,6 +30,16 @@ file_tag="dtimeseries"
 data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col='date', sep=',', decimal='.', parse_dates=True, dayfirst=True)
 data_multi = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col=index_multi, parse_dates=True, dayfirst=True)
 
+#### FAZER OS TRAINING SETS
+
+trnX, tstX, trnY, tstY = split_temporal_data(data_multi, target_multi, trn_pct=0.70)
+#data = data_multi('QV2M', axis = 1) # see
+#data = data_multi.iloc[9:,:] # see
+train, test = split_dataframe(data, trn_pct=0.70)
+
+train.to_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_train.csv', index=False)
+test.to_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_test.csv', index=False)
+
 #### AGGREGATION
 
 def aggregate_by(data: Series, index_var: str, period: str):
@@ -44,22 +54,14 @@ def aggregate_by(data: Series, index_var: str, period: str):
 granularity = ('D', 'W', 'M', 'Q', 'Y')
 for j in range(len(granularity)):
     figure(figsize=(3*HEIGHT, HEIGHT))
-    agg_multi_df = aggregate_by(data_multi, index_multi, granularity[j])
+    agg_multi_df = aggregate_by(train, index_multi, granularity[j]) #### train
     plot_series(agg_multi_df[target_multi], title=f'{target_multi} - {granularity[j]} values', x_label='timestamp', y_label='value')
     #plot_series(agg_multi_df['lights'])
     xticks(rotation = 45)
-    savefig(f'images/transformation/set2_data_aggregation_{granularity[j]}.png')
+    savefig(f'images/transformation/set2_train_aggregation_{granularity[j]}.png')
     #show()
 
-#### FAZER OS TRAINING SETS
-
-trnX, tstX, trnY, tstY = split_temporal_data(data_multi, target_multi, trn_pct=0.70)
-#data = data_multi('QV2M', axis = 1) # see
-#data = data_multi.iloc[9:,:] # see
-train, test = split_dataframe(data, trn_pct=0.70)
-
-train.to_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_train.csv', index=False)
-test.to_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_test.csv', index=False)
+#### CLASSIFIER
 
 measure = 'R2' #we have 3 options
 flag_pct = False
@@ -88,6 +90,6 @@ eval_results['Persistence'] = PREDICTION_MEASURES[measure](test.values, prd_tst)
 print(eval_results)
 
 plot_evaluation_results(train.values, prd_trn, test.values, prd_tst, f'images/transformation/{file_tag}_persistence_eval.png')
-savefig('images/transformation/set2_data_smoothing_results.png')
+savefig('images/transformation/set2_train_aggregation_results.png')
 plot_forecasting_series(train, test, prd_trn, prd_tst, f'images/transformation/{file_tag}_persistence_plots.png', x_label=index_col, y_label=target)
-savefig(f'images/transformation/set2_data_smoothing_plots.png')
+savefig(f'images/transformation/set2_train_aggregation_plots.png')
