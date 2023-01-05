@@ -11,13 +11,16 @@ print("Nr. Records = ", data.shape[0])
 print("First timestamp", data.index[0])
 print("Last timestamp", data.index[-1])
 
+# data = data["QV2M"]
+
+
 #### granularity: day
 day_df = data.copy().groupby(data.index.date).mean()
 figure(figsize=(3*HEIGHT, HEIGHT))
-plot_series(day_df, title='Granularity: Day', x_label='timestamp', y_label='values')
+plot_series(day_df["QV2M"], title='Granularity: Day', x_label='timestamp', y_label='values')
 xticks(rotation = 45)
 ## falta legenda
-savefig('images/profiling/set2_granularity_day.png')
+savefig('images/profiling/set2_granularity_QV2M_day.png')
 show()
 
 #### granularity: week
@@ -26,10 +29,10 @@ week_df = data.copy().groupby(index).mean()
 week_df['timestamp'] = index.drop_duplicates().to_timestamp()
 week_df.set_index('timestamp', drop=True, inplace=True)
 figure(figsize=(3*HEIGHT, HEIGHT))
-plot_series(week_df, title='Granularity: Week', x_label='timestamp', y_label='values')
+plot_series(week_df["QV2M"], title='Granularity: Week', x_label='timestamp', y_label='values')
 xticks(rotation = 45)
 ## falta legenda
-savefig('images/profiling/set2_granularity_week.png')
+savefig('images/profiling/set2_granularity_QV2M_week.png')
 show()
 
 #### granularity: month
@@ -38,10 +41,10 @@ month_df = data.copy().groupby(index).mean()
 month_df['timestamp'] = index.drop_duplicates().to_timestamp()
 month_df.set_index('timestamp', drop=True, inplace=True)
 figure(figsize=(3*HEIGHT, HEIGHT))
-plot_series(month_df, title='Granularity: Month', x_label='timestamp', y_label='values')
+plot_series(month_df["QV2M"], title='Granularity: Month', x_label='timestamp', y_label='values')
 xticks(rotation = 45)
 ## falta legenda
-savefig('images/profiling/set2_granularity_month.png')
+savefig('images/profiling/set2_granularity_QV2M_month.png')
 show()
 
 #### granularity: quarter
@@ -50,10 +53,10 @@ quarter_df = data.copy().groupby(index).mean()
 quarter_df['timestamp'] = index.drop_duplicates().to_timestamp()
 quarter_df.set_index('timestamp', drop=True, inplace=True)
 figure(figsize=(3*HEIGHT, HEIGHT))
-plot_series(quarter_df, title='Granularity: Quarter', x_label='timestamp', y_label='values')
+plot_series(quarter_df["QV2M"], title='Granularity: Quarter', x_label='timestamp', y_label='values')
 xticks(rotation = 45)
 ## falta legenda
-savefig('images/profiling/set2_granularity_quarter.png')
+savefig('images/profiling/set2_granularity_QV2M_quarter.png')
 show()
 
 #### granularity: year
@@ -62,8 +65,8 @@ year_df = data.copy().groupby(index).mean()
 year_df['timestamp'] = index.drop_duplicates().to_timestamp()
 year_df.set_index('timestamp', drop=True, inplace=True)
 figure(figsize=(3*HEIGHT, HEIGHT))
-plot_series(year_df, title='Granularity: Year', x_label='timestamp', y_label='values')
+plot_series(year_df["QV2M"], title='Granularity: Year', x_label='timestamp', y_label='values')
 xticks(rotation = 45)
 ## falta legenda
-savefig('images/profiling/set2_granularity_year.png')
+savefig('images/profiling/set2_granularity_QV2M_year.png')
 show()
