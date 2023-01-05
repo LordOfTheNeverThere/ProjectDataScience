@@ -27,69 +27,81 @@ index_multi = 'date'
 target = 'QV2M'
 target_multi = 'QV2M'
 file_tag="dtimeseries"
-data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col='date', sep=',', decimal='.', parse_dates=True, dayfirst=True)
+data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col="date", sep=',', decimal='.', parse_dates=True, dayfirst=True)
 data_multi = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col=index_multi, parse_dates=True, dayfirst=True)
 
 #### FAZER OS TRAINING SETS
 
 trnX, tstX, trnY, tstY = split_temporal_data(data_multi, target_multi, trn_pct=0.70)
-#data = data_multi('QV2M', axis = 1) # see
-#data = data_multi.iloc[9:,:] # see
-train, test = split_dataframe(data, trn_pct=0.70)
+# #data = data_multi('QV2M', axis = 1) # see
+# #data = data_multi.iloc[9:,:] # see
+# train, test = split_dataframe(data, trn_pct=0.70)
+#
+# train.to_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_train.csv', index=False)
+# test.to_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_test.csv', index=False)
 
-train.to_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_train.csv', index=False)
-test.to_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_test.csv', index=False)
-
-#### AGGREGATION
-
-def aggregate_by(data: Series, index_var: str, period: str):
-    index = data.index.to_period(period)
-    agg_df = data.copy().groupby(index).mean()
-    agg_df[index_var] = index.drop_duplicates().to_timestamp()
-    agg_df.set_index(index_var, drop=True, inplace=True)
-    return agg_df
-
-## MULTIVARIED SERIES
-
-granularity = ('D', 'W', 'M', 'Q', 'Y')
-for j in range(len(granularity)):
-    figure(figsize=(3*HEIGHT, HEIGHT))
-    agg_multi_df = aggregate_by(train, index_multi, granularity[j]) #### train
-    plot_series(agg_multi_df[target_multi], title=f'{target_multi} - {granularity[j]} values', x_label='timestamp', y_label='value')
-    #plot_series(agg_multi_df['lights'])
-    xticks(rotation = 45)
-    savefig(f'images/transformation/set2_train_aggregation_{granularity[j]}.png')
-    #show()
+# #### AGGREGATION
+#
+# train = read_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_train.csv', index_col="date", sep=',', decimal='.', parse_dates=True, dayfirst=True)
+#
+# def aggregate_by(data: Series, index_var: str, period: str):
+#     index = data.index.to_period(period)
+#     agg_df = data.copy().groupby(index).mean()
+#     agg_df[index_var] = index.drop_duplicates().to_timestamp()
+#     agg_df.set_index(index_var, drop=True, inplace=True)
+#     return agg_df
+#
+# ## MULTIVARIED SERIES
+#
+# granularity = ('D', 'W', 'M', 'Q', 'Y')
+# for g in granularity:
+#     figure(figsize=(3*HEIGHT, HEIGHT))
+#     agg_multi_df = aggregate_by(train, index_multi, g)
+#     agg_multi_df.to_csv(f'../Data/TimeSeries/Aggregation/{file_tag}_Aggregation_{g}.csv', index=True)
+#     plot_series(agg_multi_df[target_multi], title=f'{target_multi} - {g} values', x_label='timestamp', y_label='value')
+#     #plot_series(agg_multi_df['lights'])
+#     xticks(rotation = 45)
+#     savefig(f'images/transformation/set2_train_aggregation_{g}.png')
+#     show()
 
 #### CLASSIFIER
-
 measure = 'R2' #we have 3 options
 flag_pct = False
 eval_results = {}
 
 class PersistenceRegressor (RegressorMixin):
-    def __init__(self):
-        super().__init__()
-        self.last = 0
+        def __init__(self):
+            super().__init__()
+            self.last = 0
 
-    def fit(self, X: DataFrame):
-        self.last = X.iloc[-1,0]
-        print(self.last)
+        def fit(self, X: DataFrame):
+            self.last = X.iloc[-1,0]
+            print(self.last)
 
-    def predict(self, X: DataFrame):
-        prd = X.shift().values
-        prd[0] = self.last
-        return prd
+        def predict(self, X: DataFrame):
+            prd = X.shift().values
+            prd[0] = self.last
+            return prd
 
-fr_mod = PersistenceRegressor()
-fr_mod.fit(train)
-prd_trn = fr_mod.predict(train)
-prd_tst = fr_mod.predict(test)
+test = read_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_test.csv', index_col="date", sep=',', decimal='.', parse_dates=True, dayfirst=True)
 
-eval_results['Persistence'] = PREDICTION_MEASURES[measure](test.values, prd_tst)
-print(eval_results)
 
-plot_evaluation_results(train.values, prd_trn, test.values, prd_tst, f'images/transformation/{file_tag}_persistence_eval.png')
-savefig('images/transformation/set2_train_aggregation_results.png')
-plot_forecasting_series(train, test, prd_trn, prd_tst, f'images/transformation/{file_tag}_persistence_plots.png', x_label=index_col, y_label=target)
-savefig(f'images/transformation/set2_train_aggregation_plots.png')
+granularity = ('D', 'W', 'M', 'Q', 'Y')
+
+for g in granularity:
+    train = read_csv(f'../Data/TimeSeries/Aggregation/{file_tag}_Aggregation_{g}.csv', index_col="date", sep=',', decimal='.', parse_dates=True, dayfirst=True)
+
+    fr_mod = PersistenceRegressor()
+    fr_mod.fit(train)
+    prd_trn = fr_mod.predict(train["QV2M"])
+    prd_tst = fr_mod.predict(test["QV2M"])
+
+    eval_results['Persistence'] = PREDICTION_MEASURES[measure](test["QV2M"].values, prd_tst)
+
+    print(g)
+    print(eval_results)
+
+    plot_evaluation_results(train["QV2M"].values, prd_trn, test["QV2M"].values, prd_tst, f'images/transformation/{file_tag}_{g}_persistence_eval.png')
+    savefig(f'images/transformation/set2_train_aggregation_{g}_results.png',title = f"Persistence Results Aggregation {g}")
+    plot_forecasting_series(train["QV2M"], test["QV2M"], prd_trn, prd_tst, f'images/transformation/{file_tag}_{g}_persistence_plots.png', x_label=index_col, y_label=target, title = f"Persistence Results Aggregation {g}")
+    savefig(f'images/transformation/set2_train_aggregation_{g}_plots.png')
