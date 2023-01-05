@@ -14,15 +14,14 @@ from matplotlib.dates import _reset_epoch_test_example, set_epoch, AutoDateLocat
 import matplotlib.font_manager as fm
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.tree import export_graphviz
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import RocCurveDisplay as plot_roc_curve
+from sklearn.metrics import confusion_matrix, plot_roc_curve
 
 import config as cfg
 
 
 
-FONT_TEXT = fm.FontProperties(size=8)
-TEXT_MARGIN = 0.05
+FONT_TEXT = fm.FontProperties(size=5)
+TEXT_MARGIN = 0.15
 
 _reset_epoch_test_example()
 set_epoch('0000-12-31T00:00:00')  # old epoch (pre MPL 3.3)
@@ -59,9 +58,9 @@ def set_locators(xvalues: list, ax: Axes = None, rotation: bool=False):
         return None
     elif isinstance(xvalues[0], str):
         if rotation:
-            ax.set_xticklabels(xvalues, rotation=90, fontsize='small', ha='center')
+            ax.set_xticklabels(xvalues, rotation=90, fontsize='x-small', ha='center')
         else:
-            ax.set_xticklabels(xvalues, fontsize='small', ha='center')
+            ax.set_xticklabels(xvalues, fontsize='x-small', ha='center')
         return None
     else:
         ax.set_xlim(xvalues[0], xvalues[-1])
@@ -93,7 +92,8 @@ def bar_chart(xvalues: list, yvalues: list, ax: Axes = None, title: str = '', xl
     set_locators(xvalues, ax=ax, rotation=rotation)
     ax.bar(xvalues, yvalues, edgecolor=cfg.LINE_COLOR, color=cfg.FILL_COLOR, tick_label=xvalues)
     for i in range(len(yvalues)):
-        ax.text(i, yvalues[i] + TEXT_MARGIN, f'{yvalues[i]:.2f}', ha='center', fontproperties=FONT_TEXT)
+        ax.text(i, yvalues[i] + TEXT_MARGIN, f'{yvalues[i]}', ha='center', fontproperties=FONT_TEXT)
+       # ax.text(i, yvalues[i] + TEXT_MARGIN, f'{yvalues[i]:.2f}', ha='center', fontproperties=FONT_TEXT)
 
 
 def multiple_bar_chart(xvalues: list, yvalues: dict, ax: Axes = None, title: str = '', xlabel: str = '', ylabel: str = '', percentage: bool = False, unit=1):
@@ -104,10 +104,10 @@ def multiple_bar_chart(xvalues: list, yvalues: dict, ax: Axes = None, title: str
     width = 0.8 / nseries
     pos_center = pos_group + (nseries-1)*width/2
     ax.set_xticks(pos_center)
-    ax.set_xticklabels(xvalues)
+    ax.set_xticklabels(xvalues, rotation=40)
     i = 0
     legend = []
-    format_str = '%.2f' if unit == 1 else '%.0f'
+    format_str = '%.1f' if unit == 1 else '%.0f'
     for metric in yvalues:
         bar = ax.bar(pos_group, yvalues[metric], width=width, edgecolor=cfg.LINE_COLOR, color=cfg.ACTIVE_COLORS[i])
         ax.bar_label(bar, padding=3, fmt=format_str, fontsize='xx-small')
@@ -116,19 +116,19 @@ def multiple_bar_chart(xvalues: list, yvalues: dict, ax: Axes = None, title: str
         i += 1
     ax.legend(legend, fontsize='xx-small', title_fontsize='xx-small')
 
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
 def plot_evaluation_results(labels: ndarray, trn_y, prd_trn, tst_y, prd_tst):
     cnf_mtx_trn = confusion_matrix(trn_y, prd_trn, labels=labels)
-    #tn_trn, fp_trn, fn_trn, tp_trn = cnf_mtx_trn.ravel()
+    tn_trn, fp_trn, fn_trn, tp_trn = cnf_mtx_trn.ravel()
     cnf_mtx_tst = confusion_matrix(tst_y, prd_tst, labels=labels)
-    #tn_tst, fp_tst, fn_tst, tp_tst = cnf_mtx_tst.ravel()
+    tn_tst, fp_tst, fn_tst, tp_tst = cnf_mtx_tst.ravel()
 
     evaluation = {
-        'Accuracy': [accuracy_score(trn_y, prd_trn), accuracy_score(tst_y, prd_tst)],
-        'Precision': [precision_score(trn_y, prd_trn, average='macro'), precision_score(tst_y, prd_tst, average='macro')],
-        'Recall': [recall_score(trn_y, prd_trn, average='macro'), recall_score(tst_y, prd_tst, average='macro')],
-        'F1-score': [f1_score(trn_y, prd_trn, average='macro'), f1_score(tst_y, prd_tst, average='macro')]
-    }
+        'Accuracy': [(tn_trn + tp_trn) / (tn_trn + tp_trn + fp_trn + fn_trn), (tn_tst + tp_tst) / (tn_tst + tp_tst + fp_tst + fn_tst)],
+        'Recall': [tp_trn / (tp_trn + fn_trn), tp_tst / (tp_tst + fn_tst)],
+        'Specificity': [tn_trn / (tn_trn + fp_trn), tn_tst / (tn_tst + fp_tst)],
+        'Precision': [tp_trn / (tp_trn + fp_trn), tp_tst / (tp_tst + fp_tst)]}
+
     _, axs = subplots(1, 2, figsize=(2 * HEIGHT, HEIGHT))
     multiple_bar_chart(['Train', 'Test'], evaluation, ax=axs[0], title="Model's performance over Train and Test sets", percentage=True)
     plot_confusion_matrix(cnf_mtx_tst, labels, ax=axs[1], title='Test')
@@ -235,7 +235,7 @@ def get_variable_types(df: DataFrame) -> dict:
         'Symbolic': []
     }
     for c in df.columns:
-        print(df[c].dtype)
+        # print(df[c].dtype)
         uniques = df[c].dropna(inplace=False).unique()
         if len(uniques) == 2:
             variable_types['Binary'].append(c)

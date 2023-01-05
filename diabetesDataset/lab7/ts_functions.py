@@ -99,7 +99,7 @@ def plot_forecasting_series(trn, tst, prd_trn, prd_tst, figname: str, x_label: s
     ax.legend(prop={'size': 5})
 
 def plot_series(series, ax: Axes = None, title: str = '', x_label: str = '', y_label: str = '',
-                percentage=False, show_std=False, tickLocator= mdates.AutoDateLocator()):
+                percentage=False, show_std=False):
     if ax is None:
         ax = gca()
     ax.set_title(title)
@@ -126,14 +126,10 @@ def plot_series(series, ax: Axes = None, title: str = '', x_label: str = '', y_l
     else:
         ax.plot(series)
 
-
-    
-    locator = tickLocator
-    formatter = mdates.DateFormatter('%d/%m/%Y %H:%M')
+    locator = mdates.AutoDateLocator()
+    formatter = mdates.DateFormatter('%Y-%m-%d')
     ax.xaxis.set_major_locator(locator)
     ax.xaxis.set_major_formatter(formatter)
-
-
 
 def plot_components(series: Series,  x_label: str = 'time', y_label:str =''):
     decomposition = seasonal_decompose(series, model = "add")
