@@ -102,6 +102,6 @@ for g in granularity:
     print(eval_results)
 
     plot_evaluation_results(train["QV2M"].values, prd_trn, test["QV2M"].values, prd_tst, f'images/transformation/{file_tag}_{g}_persistence_eval.png')
-    savefig(f'images/transformation/set2_train_aggregation_{g}_results.png',title = f"Persistence Results Aggregation {g}")
-    plot_forecasting_series(train["QV2M"], test["QV2M"], prd_trn, prd_tst, f'images/transformation/{file_tag}_{g}_persistence_plots.png', x_label=index_col, y_label=target, title = f"Persistence Results Aggregation {g}")
+    savefig(f'images/transformation/set2_train_aggregation_{g}_results.png')
+    plot_forecasting_series(train["QV2M"], test["QV2M"], prd_trn, prd_tst, f'images/transformation/{file_tag}_{g}_persistence_plots.png', x_label=index_col, y_label=target, figname = f"Persistence Results Aggregation {g}")
     savefig(f'images/transformation/set2_train_aggregation_{g}_plots.png')

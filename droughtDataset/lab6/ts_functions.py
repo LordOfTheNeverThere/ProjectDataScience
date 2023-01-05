@@ -84,6 +84,7 @@ def plot_evaluation_results(trn_y, prd_trn, tst_y, prd_tst, figname):
 
     print(eval1, eval2)
     _, axs = subplots(1, 2)
+    # axs.set_title(figname)
     multiple_bar_chart(['Train', 'Test'], eval1, ax=axs[0], title="Predictor's performance", percentage=False)
     multiple_bar_chart(['Train', 'Test'], eval2, ax=axs[1], title="Predictor's performance", percentage=False)
 
