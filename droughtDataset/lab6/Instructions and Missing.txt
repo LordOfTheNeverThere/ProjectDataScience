@@ -5,7 +5,7 @@ granularity
 -minimum=year
 
 profiling
-- juntar num pdf distribution histograms das 3 variáveis
+- juntar num pdf distribution histograms das 3 agregações
 - juntar num pdf os 2 stationary studies
 - no stationary study perceber se está ou falta algo
 transformation
