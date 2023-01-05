@@ -20,15 +20,17 @@ import matplotlib.pyplot as plt
 import ds_charts as ds
 from sklearn.model_selection import train_test_split
 
-data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col='date', sep=',', decimal='.', parse_dates=True, dayfirst=True)
-index_multi = 'date'
-target_multi = 'QV2M'
-target = 'QV2M'
-file_tag="dtimeseries"
-data_multi = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col=index_multi, parse_dates=True, dayfirst=True)
-index_col = 'date'
+#### READ DATA
 
-#### aggregation
+index_col = 'date'
+index_multi = 'date'
+target = 'QV2M'
+target_multi = 'QV2M'
+file_tag="dtimeseries"
+data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col='date', sep=',', decimal='.', parse_dates=True, dayfirst=True)
+data_multi = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col=index_multi, parse_dates=True, dayfirst=True)
+
+#### AGGREGATION
 
 def aggregate_by(data: Series, index_var: str, period: str):
     index = data.index.to_period(period)
@@ -37,7 +39,7 @@ def aggregate_by(data: Series, index_var: str, period: str):
     agg_df.set_index(index_var, drop=True, inplace=True)
     return agg_df
 
-## multivaried series
+## MULTIVARIED SERIES
 
 granularity = ('D', 'W', 'M', 'Q', 'Y')
 for j in range(len(granularity)):
@@ -52,8 +54,8 @@ for j in range(len(granularity)):
 #### FAZER OS TRAINING SETS
 
 trnX, tstX, trnY, tstY = split_temporal_data(data_multi, target_multi, trn_pct=0.70)
-data = data_multi('QV2M', axis = 1) # see
-data = data_multi.iloc[9:,:] # see
+#data = data_multi('QV2M', axis = 1) # see
+#data = data_multi.iloc[9:,:] # see
 train, test = split_dataframe(data, trn_pct=0.70)
 
 train.to_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_train.csv', index=False)

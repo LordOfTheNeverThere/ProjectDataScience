@@ -34,7 +34,7 @@ year_df.set_index('timestamp', drop=True, inplace=True)
 
 ##### 5-number summary
 ## day data
-_, axs = subplots(1, 5, figsize=(11*HEIGHT, HEIGHT/2))
+_, axs = subplots(1, 5, figsize=(4*HEIGHT, HEIGHT/2))
 axs[0].grid(False)
 axs[0].set_axis_off()
 axs[0].set_title('DAILY', fontweight="bold")
