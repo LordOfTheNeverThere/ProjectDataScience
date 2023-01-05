@@ -75,7 +75,7 @@ def split_dataframe(data, trn_pct=0.70):
 
 def plot_evaluation_results(trn_y, prd_trn, tst_y, prd_tst, figname):
     eval1 = {
-        'RMSE': [sqrt(PREDICTION_MEASURES['MSE'](trn_y, prd_trn)), sqrt(PREDICTION_MEASURES['MSE'](tst_y, prd_tst))],
+        'MSE': [sqrt(PREDICTION_MEASURES['MSE'](trn_y, prd_trn)), sqrt(PREDICTION_MEASURES['MSE'](tst_y, prd_tst))],
         'MAE': [PREDICTION_MEASURES['MAE'](trn_y, prd_trn), PREDICTION_MEASURES['MAE'](tst_y, prd_tst)]
         }
     eval2 = {

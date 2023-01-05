@@ -6,7 +6,7 @@ from matplotlib.pyplot import figure, savefig, show
 data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col='date', sep=',', decimal='.', parse_dates=True, infer_datetime_format=True)
 index_multi = 'date'
 target_multi = 'QV2M'
-data_multi = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col=index_multi, parse_dates=True, infer_datetime_format=True)
+data_multi = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col=index_multi, parse_dates=True, dayfirst=True)
 
 #### differentiation multivaried series
 

@@ -5,7 +5,7 @@ from matplotlib.pyplot import figure, savefig, show
 
 ## timestamp -> date
 
-data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col='date', sep=',', decimal='.', parse_dates=True, infer_datetime_format=True)
+data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col='date', sep=',', decimal='.', parse_dates=True, dayfirst=True)
 
 #### data stationarity
 

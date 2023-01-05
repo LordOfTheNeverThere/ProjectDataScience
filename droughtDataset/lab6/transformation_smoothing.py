@@ -6,7 +6,7 @@ from matplotlib.pyplot import figure, savefig, show
 data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col='date', sep=',', decimal='.', parse_dates=True, infer_datetime_format=True)
 index_multi = 'date'
 target_multi = 'QV2M'
-data_multi = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col=index_multi, parse_dates=True, infer_datetime_format=True)
+data_multi = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col=index_multi, parse_dates=True, dayfirst=True)
 
 #### original
 
@@ -27,13 +27,13 @@ show()
 
 #### smoothing multivaried series
 
-# WIN_SIZE = (10, 50, 100)
-# for j in range(len(WIN_SIZE)):
-#     rolling_multi = data_multi.rolling(window=WIN_SIZE[j])
-#     smooth_df_multi = rolling_multi.mean()
-#     figure(figsize=(3*HEIGHT, HEIGHT))
-#     plot_series(smooth_df_multi[target_multi], title=f'{target_multi} - Smoothing (win_size={WIN_SIZE[j]})', x_label=index_multi, y_label='value')
-#     #plot_series(smooth_df_multi['lights'])
-#     xticks(rotation = 45)
-#     savefig(f'images/transformation/set2_data_smoothing_{target_multi}_{WIN_SIZE[j]}.png')
-#     show()
+WIN_SIZE = (10, 50, 100, 150)
+for j in range(len(WIN_SIZE)):
+    rolling_multi = data_multi.rolling(window=WIN_SIZE[j])
+    smooth_df_multi = rolling_multi.mean()
+    figure(figsize=(3*HEIGHT, HEIGHT))
+    plot_series(smooth_df_multi[target_multi], title=f'{target_multi} - Smoothing (win_size={WIN_SIZE[j]})', x_label=index_multi, y_label='value')
+    #plot_series(smooth_df_multi['lights'])
+    xticks(rotation = 45)
+    savefig(f'images/transformation/set2_data_smoothing_{target_multi}_{WIN_SIZE[j]}.png')
+    show()
