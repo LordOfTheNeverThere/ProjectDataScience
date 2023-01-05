@@ -1,14 +1,12 @@
 N>1000
 granularity
--maximum=day
+-maximum=year
 -medium=month
 -minimum=year
 
 profiling
 - juntar num pdf distribution histograms das 3 variáveis
 - juntar num pdf os 2 stationary studies
-- é só da target variable = não eliminar o que está, mas fazer gráficos só para a target variable
-- colocar legendas (se for só a target variable, claro, não é preciso)
 - no stationary study perceber se está ou falta algo
 transformation
 - criar ciclos para as várias variáveis (não sei se é necessário)
