@@ -11,10 +11,9 @@ file_tag = 'diabetesV0.1'
 index_col = 'Date'
 target = 'Glucose'
 
-data = read_csv('dummy.csv')
-data['Date'] = pd.to_datetime(data['Date'], format = "%d/%m/%Y %H:%M")
-data = data.set_index('Date') ## Droping Index col
-
+data = read_csv('preForecastingGlucoseDiff1.csv')
+data['Date'] = pd.to_datetime(data['Date'], format="%Y-%m-%d")
+data = data.set_index('Date')  # Droping Index col
 
 train, test = split_dataframe(data, trn_pct=0.75)
 
@@ -48,3 +47,5 @@ print(eval_results)
 plot_evaluation_results(train.values, prd_trn, test.values,
                         prd_tst, f'images/{file_tag}_simpleAvg_eval.png')
 plot_forecasting_series(train, test, prd_trn, prd_tst, f'images/{file_tag}_simpleAvg_plots.png', x_label=index_col, y_label=target)
+
+# %%
