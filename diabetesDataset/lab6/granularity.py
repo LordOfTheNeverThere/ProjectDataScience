@@ -10,7 +10,7 @@ import pandas as pd
 
 #%% Hourly Distro
 
-data = read_csv('../glucose.csv')
+data = read_csv('glucose.csv')
 data['Date'] = pd.to_datetime(data['Date'], format = "%d/%m/%Y %H:%M")
 data = data.set_index('Date') ## Droping Index col
 print("Nr. Records = ", data.shape[0])
