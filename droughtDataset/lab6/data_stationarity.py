@@ -17,7 +17,7 @@ dt_series = Series(data['QV2M'])
 mean_line = Series(ones(len(dt_series.values)) * dt_series.mean(), index=dt_series.index)
 series = {'QV2M': dt_series, 'mean': mean_line}
 figure(figsize=(3*HEIGHT, HEIGHT))
-plot_series(series, x_label='time', y_label='values', title='Stationary Study', show_std=True)
+plot_series(series, x_label='time', y_label='values', title='Stationary Study Mean', show_std=True)
 savefig('images/profiling/set2_data_stationarity_1.png')
 show()
 
@@ -34,6 +34,6 @@ line += [line[-1]] * (n - len(line))
 mean_line = Series(line, index=dt_series.index)
 series = {'QV2M': dt_series, 'mean': mean_line}
 figure(figsize=(3*HEIGHT, HEIGHT))
-plot_series(series, x_label='time', y_label='values', title='Stationary Study', show_std=True)
+plot_series(series, x_label='time', y_label='values', title='Stationary Study Moving Average', show_std=True)
 savefig('images/profiling/set2_data_stationarity_2.png')
 show()
