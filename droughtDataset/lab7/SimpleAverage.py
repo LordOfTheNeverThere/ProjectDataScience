@@ -12,31 +12,42 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from math import sqrt
 from statsmodels.tsa.seasonal import seasonal_decompose
 from numpy import ndarray, array
-from ts_functions import 
 import numpy as np
 from pandas import read_csv, concat, unique, DataFrame
 import matplotlib.pyplot as plt
 import ds_charts as ds
 from sklearn.model_selection import train_test_split
 
+# #### READ DATA
+
 index_col = 'date'
 index_multi = 'date'
 target = 'QV2M'
 target_multi = 'QV2M'
 file_tag="dtimeseries"
+# data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col="date", sep=',', decimal='.', parse_dates=True, dayfirst=True)
+# data_multi = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col=index_multi, parse_dates=True, dayfirst=True)
 
-#### READ
+# #### FAZER OS TRAINING SETS
 
-train = read_csv(f'../Data/TimeSeries/Differentiation/{file_tag}_Differentiation_0.csv', index_col="date", sep=',', decimal='.', parse_dates=True, dayfirst=True)
-test = read_csv(f'../Data/TimeSeries/TrainTest/{file_tag}_test.csv', index_col="date", sep=',', decimal='.', parse_dates=True, dayfirst=True)
+# trnX, tstX, trnY, tstY = split_temporal_data(data_multi, target_multi, trn_pct=0.70)
+# #data = data_multi('QV2M', axis = 1) # see
+# #data = data_multi.iloc[9:,:] # see
+# train, test = split_dataframe(data, trn_pct=0.70)
 
-#### INITIALIZE
+# train.to_csv(f'../Data/TimeSeries/SimpleAverage/{file_tag}_train.csv', index=True)
+# test.to_csv(f'../Data/TimeSeries/SimpleAverage/{file_tag}_test.csv', index=True)
+
+### INITIALIZE
 
 measure = 'R2'
 flag_pct = False
 eval_results = {}
 
 #### SIMPLE AVERAGE
+
+train = read_csv(f'../Data/TimeSeries/SimpleAverage/{file_tag}_train.csv', index_col="date", sep=',', decimal='.', parse_dates=True, dayfirst=True)
+test = read_csv(f'../Data/TimeSeries/SimpleAverage/{file_tag}_test.csv', index_col="date", sep=',', decimal='.', parse_dates=True, dayfirst=True)
 
 #### CLASSIFIER
 
@@ -54,16 +65,16 @@ class SimpleAvgRegressor (RegressorMixin):
 
 fr_mod = SimpleAvgRegressor()
 fr_mod.fit(train)
-prd_trn = fr_mod.predict(train)
-prd_tst = fr_mod.predict(test)
+prd_trn = fr_mod.predict(train["QV2M"])
+prd_tst = fr_mod.predict(test["QV2M"])
 
 #### PLOTS AND RESULTS
 
 eval_results['SimpleAvg'] = PREDICTION_MEASURES[measure](test.values, prd_tst)
 print(eval_results)
 
-plot_evaluation_results(train["QV2M"].values, prd_trn, test["QV2M"].values, prd_tst, 'Evaluation')
-savefig(f'images/SimpleAverage/{file_tag}_simpleAvg_eval.png')
-plot_forecasting_series(train["QV2M"], test["QV2M"], prd_trn, prd_tst, 'Forecasting Simple Average', x_label=index_col, y_label=target)
-savefig(f'images/SimpleAverage/{file_tag}_simpleAvg_plots.png')
+#plot_evaluation_results(train["QV2M"].values, prd_trn, test["QV2M"].values, prd_tst, 'Evaluation')
+# savefig(f'images/SimpleAverage/{file_tag}_simpleAvg_eval.png')
+ plot_forecasting_series(train["QV2M"], test["QV2M"], prd_trn, prd_tst, 'Forecasting Simple Average', x_label=index_col, y_label=target)
+# savefig(f'images/SimpleAverage/{file_tag}_simpleAvg_plots.png')
 
