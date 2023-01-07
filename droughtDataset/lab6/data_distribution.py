@@ -64,6 +64,13 @@ savefig('images/profiling/set2_distribution_QV2M_summary.png')
 #show()
 #### boxplots 
 _, axs = subplots(1, 5, figsize=(5*HEIGHT, HEIGHT/2))
+
+axs[0].set_title("day")
+axs[1].set_title("week")
+axs[2].set_title("month")
+axs[3].set_title("quarter")
+axs[4].set_title("year")
+
 data.boxplot(ax=axs[0])
 week_df.boxplot(ax=axs[1])
 month_df.boxplot(ax=axs[2])
