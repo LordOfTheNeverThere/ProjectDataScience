@@ -10,7 +10,7 @@ from ts_functions import PREDICTION_MEASURES, plot_evaluation_results, plot_fore
 index_col = 'date'
 target = 'QV2M'
 file_tag="dtimeseries"
-data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col="date", sep=',', decimal='.', parse_dates=True, dayfirst=True)
+data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col="date", usecols=["date", "QV2M"], sep=',', decimal='.', parse_dates=True, dayfirst=True)
 
 #### FAZER OS TRAINING SETS
 
@@ -42,7 +42,7 @@ prd_tst = fr_mod.predict(test)
 eval_results['SimpleAvg'] = PREDICTION_MEASURES[measure](test.values, prd_tst)
 print(eval_results)
 
-plot_evaluation_results(train.values, prd_trn, test.values, prd_tst, "Simple Average Evaluation")
-savefig(f'images/SimpleAverage/set2_SimpleAvg_eval.png')
+plot_evaluation_results(train.values, prd_trn, test.values, prd_tst, "")
+savefig(f'images/SimpleAverage/{file_tag}_SimpleAvg_eval.png')
 plot_forecasting_series(train, test, prd_trn, prd_tst, "Simple Average Plots", x_label=index_col, y_label=target)
-savefig(f'images/SimpleAverage/set2_SimpleAvg_plots.png')
+savefig(f'images/SimpleAverage/{file_tag}_SimpleAvg_plots.png')
