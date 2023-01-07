@@ -68,7 +68,7 @@ prd_tst = fr_mod.predict(test)
 eval_results['SimpleAvg'] = PREDICTION_MEASURES[measure](test.values, prd_tst)
 print(eval_results)
 
-print(train.shape)
+print(train.shape, test.shape)
 
 plot_evaluation_results(train.values, prd_trn, test.values, prd_tst, 'Evaluation')
 savefig(f'images/SimpleAverage/{file_tag}_simpleAvg_eval.png')
