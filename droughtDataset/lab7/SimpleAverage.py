@@ -18,25 +18,20 @@ import matplotlib.pyplot as plt
 import ds_charts as ds
 from sklearn.model_selection import train_test_split
 
-# #### READ DATA
+#### READ DATA
 
 index_col = 'date'
-index_multi = 'date'
 target = 'QV2M'
-target_multi = 'QV2M'
 file_tag="dtimeseries"
-# data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col="date", sep=',', decimal='.', parse_dates=True, dayfirst=True)
-# data_multi = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col=index_multi, parse_dates=True, dayfirst=True)
 
-# #### FAZER OS TRAINING SETS
+#### FAZER OS TRAINING SETS
 
-# trnX, tstX, trnY, tstY = split_temporal_data(data_multi, target_multi, trn_pct=0.70)
-# #data = data_multi('QV2M', axis = 1) # see
-# #data = data_multi.iloc[9:,:] # see
-# train, test = split_dataframe(data, trn_pct=0.70)
+data = read_csv('../Data/TimeSeries/drought.forecasting_dataset.csv', index_col="date", sep=',', decimal='.', parse_dates=True, dayfirst=True)
+trnX, tstX, trnY, tstY = split_temporal_data(data, target, trn_pct=0.7)
+train, test = split_dataframe(data, trn_pct=0.7)
 
-# train.to_csv(f'../Data/TimeSeries/SimpleAverage/{file_tag}_train.csv', index=True)
-# test.to_csv(f'../Data/TimeSeries/SimpleAverage/{file_tag}_test.csv', index=True)
+train["QV2M"].to_csv(f'../Data/TimeSeries/SimpleAverage/{file_tag}_train.csv', index=True)
+test["QV2M"].to_csv(f'../Data/TimeSeries/SimpleAverage/{file_tag}_test.csv', index=True)
 
 ### INITIALIZE
 
@@ -65,16 +60,18 @@ class SimpleAvgRegressor (RegressorMixin):
 
 fr_mod = SimpleAvgRegressor()
 fr_mod.fit(train)
-prd_trn = fr_mod.predict(train["QV2M"])
-prd_tst = fr_mod.predict(test["QV2M"])
+prd_trn = fr_mod.predict(train)
+prd_tst = fr_mod.predict(test)
 
 #### PLOTS AND RESULTS
 
 eval_results['SimpleAvg'] = PREDICTION_MEASURES[measure](test.values, prd_tst)
 print(eval_results)
 
-#plot_evaluation_results(train["QV2M"].values, prd_trn, test["QV2M"].values, prd_tst, 'Evaluation')
-# savefig(f'images/SimpleAverage/{file_tag}_simpleAvg_eval.png')
- plot_forecasting_series(train["QV2M"], test["QV2M"], prd_trn, prd_tst, 'Forecasting Simple Average', x_label=index_col, y_label=target)
-# savefig(f'images/SimpleAverage/{file_tag}_simpleAvg_plots.png')
+print(train.shape)
+
+plot_evaluation_results(train.values, prd_trn, test.values, prd_tst, 'Evaluation')
+savefig(f'images/SimpleAverage/{file_tag}_simpleAvg_eval.png')
+plot_forecasting_series(train, test, prd_trn, prd_tst, 'Forecasting Simple Average', x_label=index_col, y_label=target)
+savefig(f'images/SimpleAverage/{file_tag}_simpleAvg_plots.png')
 
