@@ -75,9 +75,9 @@ print('Best results achieved with %s criteria, depth=%d and min_impurity_decreas
 from sklearn import tree
 
 labels = [str(value) for value in labels]
-plt.figure(figsize=(12,12))
+figure(figsize=(12,12))
 tree.plot_tree(best_model, feature_names=train.columns, class_names=labels)
-plt.show()
+show()
 savefig(f'images/DecisionTrees/DT_best_tree_C2_Set2.png')
 
 #see the parameters and the performance of the model
