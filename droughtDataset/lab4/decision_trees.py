@@ -49,7 +49,7 @@ for k in range(len(criteria)):
         values[d] = yvalues
     multiple_line_chart(min_impurity_decrease, values, ax=axs[0, k], title=f'Decision Trees with {f} Criteria',
                            xlabel='min_impurity_decrease', ylabel='Accuracy', percentage=True)
-savefig(f'images/DecisionTrees/DT_approaches_Set2.png')
+# savefig(f'images/DecisionTrees/DT_approaches_Set2.png')
 #show()
 print('Best results achieved with %s criteria, depth=%d and min_impurity_decrease=%1.5f ==> accuracy=%1.5f'%(best[0], best[1], best[2], last_best))
 
@@ -74,56 +74,58 @@ print('Best results achieved with %s criteria, depth=%d and min_impurity_decreas
 
 from sklearn import tree
 
-#labels = [str(value) for value in labels]
-#tree.plot_tree(best_model, feature_names=train.columns, class_names=labels)
-#savefig(f'images/DecisionTrees/DT_best_tree_C_Set2.png')
+labels = [str(value) for value in labels]
+plt.figure(figsize=(12,12))
+tree.plot_tree(best_model, feature_names=train.columns, class_names=labels)
+plt.show()
+savefig(f'images/DecisionTrees/DT_best_tree_C2_Set2.png')
 
 #see the parameters and the performance of the model
 
 prd_trn = best_model.predict(trnX)
 prd_tst = best_model.predict(tstX)
 plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-savefig(f'images/DT/DT_best_results_Set2.png')
+# savefig(f'images/DT/DT_best_results_Set2.png')
 #show()
 
 #importance of each variable in the discrimination
 
-from numpy import argsort, arange
-from ds_charts import horizontal_bar_chart
-from matplotlib.pyplot import Axes
-
-variables = train.columns
-importances = best_model.feature_importances_
-indices = argsort(importances)[::-1]
-elems = []
-imp_values = []
-for f in range(len(variables)):
-    elems += [variables[indices[f]]]
-    imp_values += [importances[indices[f]]]
-    print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
-
-figure()
-horizontal_bar_chart(elems, imp_values, error=None, title='Decision Tree Features importance', xlabel='importance', ylabel='variables')
-savefig(f'images/DT/{file_tag}_dt_variable_ranking.png')
-#show()
-
-#overfitting study
-
-from ds_charts import plot_overfitting_study
-
-imp = 0.0001
-f = 'entropy'
-eval_metric = accuracy_score
-y_tst_values = []
-y_trn_values = []
-for d in max_depths:
-    tree = DecisionTreeClassifier(max_depth=d, criterion=f, min_impurity_decrease=imp)
-    tree.fit(trnX, trnY)
-    prdY = tree.predict(tstX)
-    prd_tst_Y = tree.predict(tstX)
-    prd_trn_Y = tree.predict(trnX)
-    y_tst_values.append(eval_metric(tstY, prd_tst_Y))
-    y_trn_values.append(eval_metric(trnY, prd_trn_Y))
-plot_overfitting_study(max_depths, y_trn_values, y_tst_values, name=f'DT=imp{imp}_{f}', xlabel='max_depth', ylabel=str(eval_metric))
-savefig(f'images/DT/{file_tag}_overfitting.png')
-#show()
+# from numpy import argsort, arange
+# from ds_charts import horizontal_bar_chart
+# from matplotlib.pyplot import Axes
+#
+# variables = train.columns
+# importances = best_model.feature_importances_
+# indices = argsort(importances)[::-1]
+# elems = []
+# imp_values = []
+# for f in range(len(variables)):
+#     elems += [variables[indices[f]]]
+#     imp_values += [importances[indices[f]]]
+#     print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
+#
+# figure()
+# horizontal_bar_chart(elems, imp_values, error=None, title='Decision Tree Features importance', xlabel='importance', ylabel='variables')
+# # savefig(f'images/DT/{file_tag}_dt_variable_ranking.png')
+# #show()
+#
+# #overfitting study
+#
+# from ds_charts import plot_overfitting_study
+#
+# imp = 0.0001
+# f = 'entropy'
+# eval_metric = accuracy_score
+# y_tst_values = []
+# y_trn_values = []
+# for d in max_depths:
+#     tree = DecisionTreeClassifier(max_depth=d, criterion=f, min_impurity_decrease=imp)
+#     tree.fit(trnX, trnY)
+#     prdY = tree.predict(tstX)
+#     prd_tst_Y = tree.predict(tstX)
+#     prd_trn_Y = tree.predict(trnX)
+#     y_tst_values.append(eval_metric(tstY, prd_tst_Y))
+#     y_trn_values.append(eval_metric(trnY, prd_trn_Y))
+# plot_overfitting_study(max_depths, y_trn_values, y_tst_values, name=f'DT=imp{imp}_{f}', xlabel='max_depth', ylabel=str(eval_metric))
+# savefig(f'images/DT/{file_tag}_overfitting.png')
+# #show()
