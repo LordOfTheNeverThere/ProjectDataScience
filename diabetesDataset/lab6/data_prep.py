@@ -16,15 +16,15 @@ show()
 
 # %% missing values
 import pandas as pd
-data = read_csv('../glucose.csv', na_values='')
+data = pd.read_csv('glucose.csv', na_values='')
 
 data['Date'] = pd.to_datetime(data['Date'], format = "%d/%m/%Y %H:%M")
 data = data.set_index('Date')
 
 
 mv = {}
-for var in data_multi:
-    nr = data_multi[var].isna().sum()
+for var in data:
+    nr = data[var].isna().sum()
     if nr > 0:
         mv[var] = nr
 print(mv)
@@ -64,7 +64,7 @@ data['Date'] = to_datetime(data['Date'], format = "%Y/%m/%d %H:%M")
 data = data.set_index('Date')
 
 
-# %% aggregation    ----- best is daily
+# %% aggregation
 
 def aggregate_by(data: Series, index_var: str, period: str):
     index = data.index.to_period(period)
@@ -73,69 +73,6 @@ def aggregate_by(data: Series, index_var: str, period: str):
     agg_df.set_index(index_var, drop=True, inplace=True)
     return agg_df
 
-
-
-figure(figsize=(3*HEIGHT, HEIGHT))
-agg_multi_df = aggregate_by(data, index_multi, 'D')
-plot_series(agg_multi_df[target_multi], title='Glucose - Daily values', x_label='timestamp', y_label='values')
-plot_series(agg_multi_df['Insulin'], title='Glucose - Daily values', x_label='timestamp', y_label='values')
-xticks(rotation = 45)
-savefig('images/transformation/aggregation_d.png')
-
-# figure(figsize=(3*HEIGHT, HEIGHT))
-# agg_multi_df = aggregate_by(data, index_multi, 'W')
-# plot_series(agg_multi_df[target_multi], title='Glucose - Weekly values', x_label='timestamp', y_label='values')
-# plot_series(agg_multi_df['Insulin'], title='Glucose - Weekly values', x_label='timestamp', y_label='values')
-# xticks(rotation = 45)
-# savefig('images/transformation/aggregation_w.png')
-
-# figure(figsize=(3*HEIGHT, HEIGHT))
-# agg_multi_df = aggregate_by(data, index_multi, 'M')
-# plot_series(agg_multi_df[target_multi], title='Glucose - Monthly values', x_label='timestamp', y_label='values')
-# plot_series(agg_multi_df['Insulin'], title='Glucose - Monthly values', x_label='timestamp', y_label='values')
-# xticks(rotation = 45)
-# savefig('images/transformation/aggregation_m.png')
-
-
-
-
-# %%   smoothing   ----choose 10
-index_multi = 'Date'
-target_multi = 'Glucose'
-
-
-# WIN_SIZE = 30
-# rolling_multi = agg_multi_df.rolling(window=WIN_SIZE)
-# smooth_df_multi = rolling_multi.mean()
-# figure(figsize=(3*HEIGHT, HEIGHT))
-# plot_series(smooth_df_multi[target_multi], title=f'Glucose - Smoothing (win_size={WIN_SIZE})', x_label=index_multi, y_label='values')
-# plot_series(smooth_df_multi['Insulin'], title=f'Glucose - Smoothing (win_size={WIN_SIZE})', x_label=index_multi, y_label='values')
-# xticks(rotation = 45)
-# savefig('images/transformation/smoothing_30.png')
-
-
-# WIN_SIZE = 5
-# rolling_multi = agg_multi_df.rolling(window=WIN_SIZE)
-# smooth_df_multi = rolling_multi.mean()
-# figure(figsize=(3*HEIGHT, HEIGHT))
-# plot_series(smooth_df_multi[target_multi], title=f'Glucose - Smoothing (win_size={WIN_SIZE})', x_label=index_multi, y_label='values')
-# plot_series(smooth_df_multi['Insulin'], title=f'Glucose - Smoothing (win_size={WIN_SIZE})', x_label=index_multi, y_label='values')
-# xticks(rotation = 45)
-# savefig('images/transformation/smoothing_5.png')
-
-
-WIN_SIZE = 10
-rolling_multi = agg_multi_df.rolling(window=WIN_SIZE)
-smooth_df_multi = rolling_multi.mean()
-figure(figsize=(3*HEIGHT, HEIGHT))
-plot_series(smooth_df_multi[target_multi], title=f'Glucose - Smoothing (win_size={WIN_SIZE})', x_label=index_multi, y_label='values')
-plot_series(smooth_df_multi['Insulin'], title=f'Glucose - Smoothing (win_size={WIN_SIZE})', x_label=index_multi, y_label='values')
-xticks(rotation = 45)
-savefig('images/transformation/smoothing_10.png')
-
-smooth_df_multi.to_csv('glucose_after_smoothing.csv')
-
-# %%
 from sklearn.base import RegressorMixin
 from ts_functions import PREDICTION_MEASURES, plot_evaluation_results, plot_forecasting_series
 from pandas import DataFrame
@@ -148,6 +85,95 @@ def split_dataframe(data, trn_pct=0.70):
     train: DataFrame = df_cp.iloc[:trn_size, :]
     test: DataFrame = df_cp.iloc[trn_size:]
     return train, test
+
+data = data.drop('Insulin', axis = 1)
+train, test = split_dataframe(data, trn_pct=0.75)
+
+
+# %% hourly data - just run data original
+
+
+# %% daily
+
+figure(figsize=(3*HEIGHT, HEIGHT))
+agg_multi_df = aggregate_by(train, 'Date', 'D')
+plot_series(agg_multi_df, title='Glucose - Daily values', x_label='timestamp', y_label='values')
+# plot_series(agg_multi_df['Insulin'], title='Glucose - Daily values', x_label='timestamp', y_label='values')
+xticks(rotation = 45)
+# savefig('images/transformation/project/aggregation_daily.png')
+
+# %% weekly
+
+figure(figsize=(3*HEIGHT, HEIGHT))
+agg_multi_df = aggregate_by(train, 'Date', 'W')
+plot_series(agg_multi_df, title='Glucose - Weekly values', x_label='timestamp', y_label='values')
+xticks(rotation = 45)
+savefig('images/transformation/project/aggregation_weekly.png')
+
+# %% monthly
+
+figure(figsize=(3*HEIGHT, HEIGHT))
+agg_multi_df = aggregate_by(test, 'Date', 'M')
+plot_series(agg_multi_df, title='Glucose - Monthly values', x_label='timestamp', y_label='values')
+xticks(rotation = 45)
+savefig('images/transformation/project/aggregation_monthly.png')
+
+
+
+
+# %%   smoothing   ----choose 10
+index_multi = 'Date'
+target_multi = 'Glucose'
+
+
+# WIN_SIZE = 30
+# rolling_multi = train.rolling(window=WIN_SIZE)
+# smooth_df_multi = rolling_multi.mean()
+# figure(figsize=(3*HEIGHT, HEIGHT))
+# plot_series(data, title=f'Glucose - Smoothing (win_size={WIN_SIZE})', x_label=index_multi, y_label='values')
+# xticks(rotation = 45)
+
+# WIN_SIZE = 5
+# rolling_multi = train.rolling(window=WIN_SIZE)
+# smooth_df_multi = rolling_multi.mean()
+# figure(figsize=(3*HEIGHT, HEIGHT))
+# plot_series(smooth_df_multi, title=f'Glucose - Smoothing (win_size={WIN_SIZE})', x_label=index_multi, y_label='values')
+# xticks(rotation = 45)
+
+
+WIN_SIZE = 10
+rolling_multi = train.rolling(window=WIN_SIZE)
+smooth_df_multi = rolling_multi.mean()
+figure(figsize=(3*HEIGHT, HEIGHT))
+plot_series(smooth_df_multi, title=f'Glucose - Smoothing (win_size={WIN_SIZE})', x_label=index_multi, y_label='values')
+
+xticks(rotation = 45)
+
+# smooth_df_multi.to_csv('glucose_after_smoothing.csv')
+
+# %% forecasting
+
+from sklearn.base import RegressorMixin
+from ts_functions import PREDICTION_MEASURES, plot_evaluation_results, plot_forecasting_series
+from pandas import DataFrame
+measure = 'R2'
+flag_pct = False
+eval_results = {}
+def split_dataframe(data, trn_pct=0.70):
+    trn_size = int(len(data) * trn_pct)
+    df_cp = data.copy()
+    train: DataFrame = df_cp.iloc[:trn_size, :]
+    test: DataFrame = df_cp.iloc[trn_size:]
+    return train, test
+
+
+# %% 
+
+data = data.drop('Insulin', axis = 1)
+train, test = split_dataframe(data, trn_pct=0.75)
+
+# %%
+
 ########### só está para univariados ######### é preciso mudar
 # agg_multi_df = agg_multi_df.drop('Insulin', axis = 1)
 # train, test = split_dataframe(agg_multi_df, trn_pct=0.75)
@@ -155,10 +181,9 @@ def split_dataframe(data, trn_pct=0.70):
 # data = data.drop('Insulin', axis = 1)
 # train, test = split_dataframe(data, trn_pct=0.75)
 
-smooth_df_multi
-smooth_df_multi = smooth_df_multi.drop('Insulin', axis = 1)
-smooth_df_multi = smooth_df_multi.iloc[9:,:]
-train, test = split_dataframe(smooth_df_multi, trn_pct=0.75)
+# smooth_df_multi = smooth_df_multi.drop('Insulin', axis = 1)
+# smooth_df_multi = smooth_df_multi.iloc[9:,:]
+# train, test = split_dataframe(smooth_df_multi, trn_pct=0.75)
 
 class PersistenceRegressor (RegressorMixin):
     def __init__(self):
@@ -173,7 +198,7 @@ class PersistenceRegressor (RegressorMixin):
         prd = X.shift().values
         prd[0] = self.last
         return prd
-
+train = smooth_df_multi[9:]
 fr_mod = PersistenceRegressor()
 fr_mod.fit(train)
 prd_trn = fr_mod.predict(train)
@@ -186,10 +211,10 @@ print(eval_results)
 
 # %%
 
-plot_evaluation_results(train.values, prd_trn, test.values, prd_tst, 'images/transformation/persistence_eval.png')
-savefig('images/transformation/smoothing_eval_10.png')
-plot_forecasting_series(train, test, prd_trn, prd_tst, 'images/transformation/_persistence_plots.png', x_label='Date', y_label='Glucose')
-savefig('images/transformation/smoothing_plots_10.png')
+plot_evaluation_results(train.values, prd_trn, test.values, prd_tst, 'Evaluation aggregation hourly')
+savefig('images/transformation/project/smooth_10_eval.png')
+plot_forecasting_series(train, test, prd_trn, prd_tst, 'Plots aggregation hourly', x_label='Date', y_label='Glucose')
+savefig('images/transformation/project/smooth_10_plt.png')
 
 
 # %%

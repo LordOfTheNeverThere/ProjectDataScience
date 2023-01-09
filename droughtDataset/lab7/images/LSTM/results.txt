@@ -1,0 +1,67 @@
+Epoch: 0, loss: 0.59480
+Epoch: 500, loss: 0.01690
+Epoch: 1000, loss: 0.01504
+Epoch: 1500, loss: 0.01340
+Epoch: 2000, loss: 0.01184
+LSTM - seq length=4 hidden_units=8 and nr_episodes=500->0.72
+LSTM - seq length=4 hidden_units=8 and nr_episodes=1000->0.78
+LSTM - seq length=4 hidden_units=8 and nr_episodes=2500->0.84
+LSTM - seq length=4 hidden_units=8 and nr_episodes=5000->0.84
+LSTM - seq length=4 hidden_units=8 and nr_episodes=10000->0.84
+LSTM - seq length=4 hidden_units=16 and nr_episodes=500->0.73
+LSTM - seq length=4 hidden_units=16 and nr_episodes=1000->0.80
+LSTM - seq length=4 hidden_units=16 and nr_episodes=2500->0.84
+LSTM - seq length=4 hidden_units=16 and nr_episodes=5000->0.84
+LSTM - seq length=4 hidden_units=16 and nr_episodes=10000->0.84
+LSTM - seq length=4 hidden_units=32 and nr_episodes=500->0.75
+LSTM - seq length=4 hidden_units=32 and nr_episodes=1000->0.83
+LSTM - seq length=4 hidden_units=32 and nr_episodes=2500->0.84
+LSTM - seq length=4 hidden_units=32 and nr_episodes=5000->0.84
+LSTM - seq length=4 hidden_units=32 and nr_episodes=10000->0.84
+LSTM - seq length=20 hidden_units=8 and nr_episodes=500->0.73
+LSTM - seq length=20 hidden_units=8 and nr_episodes=1000->0.78
+LSTM - seq length=20 hidden_units=8 and nr_episodes=2500->0.84
+LSTM - seq length=20 hidden_units=8 and nr_episodes=5000->0.84
+LSTM - seq length=20 hidden_units=8 and nr_episodes=10000->0.84
+LSTM - seq length=20 hidden_units=16 and nr_episodes=500->0.78
+LSTM - seq length=20 hidden_units=16 and nr_episodes=1000->0.84
+LSTM - seq length=20 hidden_units=16 and nr_episodes=2500->0.84
+LSTM - seq length=20 hidden_units=16 and nr_episodes=5000->0.85
+LSTM - seq length=20 hidden_units=16 and nr_episodes=10000->0.83
+LSTM - seq length=20 hidden_units=32 and nr_episodes=500->0.77
+LSTM - seq length=20 hidden_units=32 and nr_episodes=1000->0.84
+LSTM - seq length=20 hidden_units=32 and nr_episodes=2500->0.85
+LSTM - seq length=20 hidden_units=32 and nr_episodes=5000->0.84
+LSTM - seq length=20 hidden_units=32 and nr_episodes=10000->0.77
+LSTM - seq length=60 hidden_units=8 and nr_episodes=500->0.74
+LSTM - seq length=60 hidden_units=8 and nr_episodes=1000->0.79
+LSTM - seq length=60 hidden_units=8 and nr_episodes=2500->0.85
+LSTM - seq length=60 hidden_units=8 and nr_episodes=5000->0.85
+LSTM - seq length=60 hidden_units=8 and nr_episodes=10000->0.85
+LSTM - seq length=60 hidden_units=16 and nr_episodes=500->0.74
+LSTM - seq length=60 hidden_units=16 and nr_episodes=1000->0.82
+LSTM - seq length=60 hidden_units=16 and nr_episodes=2500->0.85
+LSTM - seq length=60 hidden_units=16 and nr_episodes=5000->0.85
+LSTM - seq length=60 hidden_units=16 and nr_episodes=10000->0.83
+LSTM - seq length=60 hidden_units=32 and nr_episodes=500->0.74
+LSTM - seq length=60 hidden_units=32 and nr_episodes=1000->0.84
+LSTM - seq length=60 hidden_units=32 and nr_episodes=2500->0.85
+LSTM - seq length=60 hidden_units=32 and nr_episodes=5000->0.85
+LSTM - seq length=60 hidden_units=32 and nr_episodes=10000->0.81
+LSTM - seq length=100 hidden_units=8 and nr_episodes=500->0.75
+LSTM - seq length=100 hidden_units=8 and nr_episodes=1000->0.82
+LSTM - seq length=100 hidden_units=8 and nr_episodes=2500->0.84
+LSTM - seq length=100 hidden_units=8 and nr_episodes=5000->0.84
+LSTM - seq length=100 hidden_units=8 and nr_episodes=10000->0.85
+LSTM - seq length=100 hidden_units=16 and nr_episodes=500->0.77
+LSTM - seq length=100 hidden_units=16 and nr_episodes=1000->0.84
+LSTM - seq length=100 hidden_units=16 and nr_episodes=2500->0.85
+LSTM - seq length=100 hidden_units=16 and nr_episodes=5000->0.85
+LSTM - seq length=100 hidden_units=16 and nr_episodes=10000->0.83
+LSTM - seq length=100 hidden_units=32 and nr_episodes=500->0.72
+LSTM - seq length=100 hidden_units=32 and nr_episodes=1000->0.81
+LSTM - seq length=100 hidden_units=32 and nr_episodes=2500->0.85
+LSTM - seq length=100 hidden_units=32 and nr_episodes=5000->0.85
+LSTM - seq length=100 hidden_units=32 and nr_episodes=10000->0.82
+Best results with seq length=100 hidden=8 episodes=10000 ==> measure=0.85
+{'MSE': [0.09643705825587058, 0.0967912800567406], 'MAE': [0.07238956, 0.07358403]} {'R2': [0.8515861835324676, 0.8486733814548164]}
