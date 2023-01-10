@@ -11,8 +11,8 @@ file_tag = 'diabetesV0.1'
 index_col = 'Date'
 target = 'Glucose'
 
-data = read_csv('preForecastingGlucoseDiff1.csv')
-data['Date'] = pd.to_datetime(data['Date'], format="%Y-%m-%d")
+data = read_csv('../lab6/preTransformationsGlucose.csv')
+data['Date'] = pd.to_datetime(data['Date'], format="%Y-%m-%d %H:%M")
 data = data.set_index('Date')  # Droping Index col
 
 train, test = split_dataframe(data, trn_pct=0.75)
