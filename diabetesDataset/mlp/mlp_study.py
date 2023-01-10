@@ -67,7 +67,7 @@ for k in range(len(lr_type)):
         values[lr] = yvalues
     multiple_line_chart(max_iter, values, ax=axs[0, k], title=f'MLP with lr_type={d}',
                            xlabel='mx iter', ylabel='accuracy', percentage=True)
-savefig('images/mlp_study_tts.png')
+# savefig('images/mlp_study_tts.png')
 print(f'Best results with lr_type={best[0]}, learning rate={best[1]} and {best[2]} max iter, with accuracy={last_best}')
 # %% plot best results
 

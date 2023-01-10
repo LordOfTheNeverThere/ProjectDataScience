@@ -6,14 +6,7 @@ from sklearn.naive_bayes import GaussianNB
 from ds_charts import plot_evaluation_results, bar_chart
 from sklearn.model_selection import train_test_split
 
-data = read_csv('zScoredData.csv')
-data = data.drop(columns=['Unnamed: 0.1','Unnamed: 0'])
-
-print([min(data[x]) for x in data.columns ])
-for x in data:
-    if any(data[x] <0 ):
-        data[x] = data[x] + 4
-
+data = read_csv('minMaxedData.csv')
 
 
 #%%
@@ -32,14 +25,14 @@ trnX, tstX, trnY, tstY = train_test_split(X, y, train_size=0.7, stratify = y)
 from ds_charts import plot_evaluation_results
 from sklearn.naive_bayes import GaussianNB, MultinomialNB
 
-clf = MultinomialNB()
+clf = BernoulliNB()
 clf.fit(trnX, trnY)
 prd_trn = clf.predict(trnX)
 prd_tst = clf.predict(tstX)
 
 plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
 
-savefig('images/nb_bestresult.png')
+# savefig('images/nb_bestresult.png')
 #%%
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, CategoricalNB
 from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_score
@@ -76,4 +69,6 @@ bar_chart(xvalues, yvalues_3, title='Comparison of Naive Bayes Models', ylabel='
 fig.add_subplot(2, 2, 4)
 bar_chart(xvalues, yvalues_4, title='Comparison of Naive Bayes Models', ylabel='precision', percentage=True)
 
-savefig('images/nb_study.png')
+# savefig('images/nb_study.png')
+
+# %%
