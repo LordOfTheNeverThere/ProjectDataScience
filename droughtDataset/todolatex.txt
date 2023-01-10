@@ -1,0 +1,19 @@
+Duarte
+-Parte 1 de profiling
+-knn
+-RandomForests
+-MLP
+-Rolling Mean
+-LSTM
+
+Patrícia
+-Ouliers
+-Scaling
+-Balancing
+-Bayes
+-DT
+-Gradient Boosting
+-Data Profiling + Transformation
+-Simple Average
+-Persistence Model
+-ARIMA
