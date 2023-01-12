@@ -14,6 +14,7 @@ target = 'Glucose'
 data = read_csv('../lab6/preTransformationsGlucose.csv')
 data['Date'] = pd.to_datetime(data['Date'], format="%Y-%m-%d %H:%M")
 data = data.set_index('Date')  # Droping Index col
+data.drop(columns=['Insulin'], inplace=True)
 
 train, test = split_dataframe(data, trn_pct=0.75)
 

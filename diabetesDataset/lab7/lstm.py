@@ -67,9 +67,6 @@ data['Date'] = pd.to_datetime(data['Date'], format="%Y-%m-%d %H:%M")
 data = data.set_index('Date')  # Droping Index col
 
 nr_features = len(data.columns)
-sc = MinMaxScaler()
-data = DataFrame(sc.fit_transform(
-    data), index=data.index, columns=data.columns)
 manual_seed(50)
 train, test = split_dataframe(data, trn_pct=.70)
 

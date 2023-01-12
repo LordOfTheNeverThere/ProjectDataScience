@@ -1,5 +1,6 @@
 # %%# - Imports
 
+from matplotlib.pyplot import subplots, show
 import pandas as pd
 from pandas.plotting import register_matplotlib_converters
 from matplotlib.pyplot import figure, savefig, show, subplots
@@ -429,15 +430,27 @@ balancingEvaluator(data, 'readmitted')
 data = pd.read_csv('mv_replace_mv.csv')
 data.drop(['Unnamed: 0', 'encounter_id', 'patient_nbr'],
           axis=1, inplace=True)  # Dropping ids
-data, _ = zScoreScalling(data)
-data.to_csv('zScoredData.csv', index = False)
+norm_data_zscore, _ = zScoreScalling(data)
+norm_data_zscore.to_csv('zScoredData.csv', index = False)
 
 # %% Get Best Set Scalling (zScore)
 data = pd.read_csv('mv_replace_mv.csv')
 data.drop(['Unnamed: 0', 'encounter_id', 'patient_nbr'],
           axis=1, inplace=True)  # Dropping ids
-data, _ = minMaxScalling(data)
-data.to_csv('minMaxedData.csv', index = False)
+norm_data_minmax, _ = minMaxScalling(data)
+norm_data_minmax.to_csv('minMaxedData.csv', index = False)
+
+# %% Get Box Plots
+
+fig, axs = subplots(1, 3, figsize=(20, 10), squeeze=False)
+axs[0, 0].set_title('Original data')
+data.boxplot(ax=axs[0, 0])
+axs[0, 1].set_title('Z-score normalization')
+norm_data_zscore.boxplot(ax=axs[0, 1])
+axs[0, 2].set_title('MinMax normalization')
+norm_data_minmax.boxplot(ax=axs[0, 2])
+show()
+
 
 # %% 
 ## Best balancing technique is Tomek's Link + SMOTE

@@ -119,6 +119,6 @@ figure(figsize=(4, 8))
 horizontal_bar_chart(elems, importances[indices], stdevs[indices],
                      title='Gradient Boosting Features importance', xlabel='importance', ylabel='variables')
 savefig(f'images/{file_tag}_gb_ranking.png')
-tight_layout(pad=0.1, w_pad=0.1, h_pad=0.1)
+tight_layout(pad=0.5, w_pad=0.5, h_pad=0.5)
 
 # %%
