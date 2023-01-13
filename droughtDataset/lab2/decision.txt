@@ -3,3 +3,6 @@
 - Tiramos a coluna dos fips pois tem informação irrelevante (já temos lat e lon)
 
 - Para outliers, escolhemos stdev com 5 sigma apenas aplicado a algumas var, pois percebemos que algumas destas pareciam contínuas nos boxplots, pelo que não faria sentido estar a cortar muita informação. Compromisso no soil data tho. Depois escolhemos drop pois como escolhemos um ceiling alto de n X stdev, o número de linhas dropadas é apenas uma pequena fração do total (<8%), é adequada a forma de lidar com isto. ok done onto next one
+
+
+Looking at the boxplots (Fig. \ref{ds2boxplots}), some variables appeared to be continuous or had a small number of values, so we only applied this processing to the other ones: WS10M, WS10M\_MAX, WS10M\_MIN, WS10M\_RANGE, WS50M, WS50M\_MAX, WS50M\_MIN, WS50M\_RANGE, lat, lon, elevation, slope1, slope2, slope3, slope4, slope5, slope6, slope7, slope8, aspectN, aspectE, aspectS, aspectW, aspectUnknown, WAT\_LAND, NVG\_LAND, URB\_LAND, GRS\_LAND, FOR\_LAND, CULTRF\_LAND, CULTIR\_LAND, CULT\_LAND. After trying different combinations of \textit{iqr} and \textit{stdev} with the \textit{truncate}, \textit{replace} and \textit{drop} methods, we chose to \textit{drop} values with 5 \textit{stdev}, because we only lost a small portion of the data and there was no need to \textit{truncate} or \textit{replace} (Fig. \ref{ds2out}).
