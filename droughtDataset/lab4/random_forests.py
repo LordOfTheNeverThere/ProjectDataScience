@@ -21,47 +21,47 @@ tstX: ndarray = test.values
 
 n_estimators = [5, 10, 25, 50, 75, 100, 200, 300, 400]
 # n_estimators = [5]
-max_depths = [5, 10, 25]
+max_depths = [5, 10, 25, 50]
 # max_depths = [5]
 
 max_features = [.3, .5, .7, 1]
 best = ('', 0, 0)
 last_best = 0
 best_model = None
-#
-# cols = len(max_depths)
-# figure()
-# fig, axs = subplots(1, cols, figsize=(cols*HEIGHT, HEIGHT), squeeze=False)
-# for k in range(len(max_depths)):
-#
-#     d = max_depths[k]
-#     values = {}
-#     for f in max_features:
-#         print(f)
-#         yvalues = []
-#         for n in n_estimators:
-#             rf = RandomForestClassifier(n_estimators=n, max_depth=d, max_features=f)
-#             rf.fit(trnX, trnY)
-#             prdY = rf.predict(tstX)
-#             yvalues.append(accuracy_score(tstY, prdY))
-#             if yvalues[-1] > last_best:
-#                 best = (d, f, n)
-#                 last_best = yvalues[-1]
-#                 best_model = rf
-#
-#         values[f] = yvalues
-#     multiple_line_chart(n_estimators, values, ax=axs[0, k], title=f'Random Forests with max_depth={d}',
-#                            xlabel='nr estimators', ylabel='accuracy', percentage=True)
-# savefig(f'images/RandomForests/{file_tag}_rf_study.png')
-# # show()
-# print('Best results with depth=%d, %1.2f features and %d estimators, with accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
-#
-#
-# prd_trn = best_model.predict(trnX)
-# prd_tst = best_model.predict(tstX)
-# plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-# savefig(f'images/RandomForests/{file_tag}_rf_best.png')
-# # show()
+
+cols = len(max_depths)
+figure()
+fig, axs = subplots(1, cols, figsize=(cols*HEIGHT, HEIGHT), squeeze=False)
+for k in range(len(max_depths)):
+
+    d = max_depths[k]
+    values = {}
+    for f in max_features:
+        print(f)
+        yvalues = []
+        for n in n_estimators:
+            rf = RandomForestClassifier(n_estimators=n, max_depth=d, max_features=f)
+            rf.fit(trnX, trnY)
+            prdY = rf.predict(tstX)
+            yvalues.append(accuracy_score(tstY, prdY))
+            if yvalues[-1] > last_best:
+                best = (d, f, n)
+                last_best = yvalues[-1]
+                best_model = rf
+
+        values[f] = yvalues
+    multiple_line_chart(n_estimators, values, ax=axs[0, k], title=f'Random Forests with max_depth={d}',
+                           xlabel='nr estimators', ylabel='accuracy', percentage=True)
+savefig(f'images/RandomForests/{file_tag}_rf_study2.png')
+# show()
+print('Best results with depth=%d, %1.2f features and %d estimators, with accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
+
+
+prd_trn = best_model.predict(trnX)
+prd_tst = best_model.predict(tstX)
+plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
+savefig(f'images/RandomForests/{file_tag}_rf_best2.png')
+# show()
 #
 #
 # from numpy import std, argsort
@@ -83,7 +83,7 @@ best_model = None
 from ds_charts import plot_overfitting_study
 
 f = 0.7
-max_depth = 10
+max_depth = 50
 eval_metric = accuracy_score
 y_tst_values = []
 y_trn_values = []
