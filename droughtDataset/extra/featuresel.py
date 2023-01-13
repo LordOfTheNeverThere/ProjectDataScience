@@ -40,6 +40,7 @@ from pandas import DataFrame
 
 def drop_redundant(data: DataFrame, vars_2drop: dict) -> DataFrame:
     sel_2drop = []
+    print('CONA')
     print(vars_2drop.keys())
     for key in vars_2drop.keys():
         if key not in sel_2drop:
